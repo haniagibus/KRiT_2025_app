@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:krit_app/views/screens/home_screen.dart';
-import 'package:krit_app/views/screens/login_screen.dart';
-import 'package:krit_app/views/screens/schedule_screen.dart';
-import 'package:krit_app/views/screens/reports_screen.dart';
-import 'package:krit_app/views/widgets/side_menu.dart';
+import 'package:krit_app/views/screens/home/home_screen.dart';
+import 'package:krit_app/views/screens/schedule/schedule_screen.dart';
+import 'package:krit_app/views/screens/reports/reports_screen.dart';
 import 'package:krit_app/theme/app_theme.dart';
+import 'package:krit_app/views/widgets/side_menu.dart';
 import 'package:krit_app/generated/l10n.dart';
 
 void main() {
@@ -76,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             HomeScreen(),
             ScheduleScreen(),
-            ReportsScreen(),
+            ReportsScreen()
           ],
         ),
       ),

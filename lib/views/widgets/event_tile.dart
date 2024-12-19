@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:krit_app/models/event.dart';
-import 'package:krit_app/views/screens/event_screen.dart';
+import 'package:krit_app/models/event/event.dart';
+import 'package:krit_app/views/screens/schedule/event_screen.dart';
 import 'package:krit_app/theme/app_colors.dart';
 
 class EventTile extends StatelessWidget {
