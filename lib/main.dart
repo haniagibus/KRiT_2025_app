@@ -30,12 +30,7 @@ class MyApp extends StatelessWidget {
         Locale('en', ''),
         Locale('pl', ''),
       ],
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
-      routes: {
-        '/home': (context) => const HomeScreen(),
-        '/schedule': (context) => ScheduleScreen(),
-        '/reports': (context) => const ReportsScreen(),
-      },
+      home: MyHomePage(title: 'Flutter Demo Home Page')
     );
   }
 }

@@ -7,6 +7,7 @@ class Event {
   final DateTime date;
   final String description;
 
+
   Event(this.name, this.logoUrl, this.coverImageUrl, this.timeBegin, this.timeEnd,
       this.date, this.description);
 
@@ -30,14 +31,20 @@ class Event {
   };
 }
 
+
+
 class MockPartner extends Event {
-  MockPartner(int id)
+  MockPartner(int id,String title, DateTime date)
       : super(
-      "mock event",
+      title,
       "https://picsum.photos/500/500?$id",
       "https://picsum.photos/1000/300?$id",
       "10:00",
       "11:00",
-      DateTime(2025, 1, 16),
+      date,
       "mock event description");
 }
+
+
+
+
