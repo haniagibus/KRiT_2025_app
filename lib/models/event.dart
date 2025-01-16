@@ -6,9 +6,10 @@ class Event {
   final String timeEnd;
   final DateTime date;
   final String description;
+  bool isFavourite;
 
   Event(this.name, this.logoUrl, this.coverImageUrl, this.timeBegin, this.timeEnd,
-      this.date, this.description);
+      this.date, this.description, {this.isFavourite = false});
 
   Event.fromJson(Map<String, dynamic> json)
       : name = json['name'],
@@ -17,7 +18,8 @@ class Event {
         timeBegin = json['begin'],
         timeEnd = json['end'],
         date = DateTime.parse(json['date']),
-        description = json['description'];
+        description = json['description'],
+        isFavourite = json['isFavourite'] ?? false; //obsługa braku pola
 
   Map<String, dynamic> toJson() => {
     'name': name,
@@ -26,7 +28,8 @@ class Event {
     'begin': timeBegin,
     'end': timeEnd,
     'date': date.toIso8601String(),
-    'description': description
+    'description': description,
+    'isFavourite': isFavourite
   };
 }
 

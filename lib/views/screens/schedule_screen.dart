@@ -73,10 +73,19 @@ class _EventViewState extends State<ScheduleScreen> {
     if (partners == null || !partners.isNotEmpty) {
       return [];
     }
-    List<EventTile> list = [];
-    for (var partnerData in partners) {
-      list.add(EventTile(partnerData));
-    }
-    return list;
+
+    return partners.map((event){
+      return EventTile(
+        event,
+        onFavouriteControl: (){
+          _eventsDataStorage.controlFavourite(event);
+        },
+      );
+    }).toList();
+    // List<EventTile> list = [];
+    // for (var partnerData in partners) {
+    //   list.add(EventTile(partnerData));
+    // }
+    // return list;
   }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:krit_app/models/event.dart';
 import 'package:krit_app/models/events_data_storage.dart';
-
 import 'event_tile.dart';
 
 class CalendarWidget extends StatefulWidget {
@@ -20,7 +19,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   void initState() {
     super.initState();
     _eventsDataStorage = EventsDataStorage(_refresh); // Initialize event data storage
-    _eventsForSelectedDate = _eventsDataStorage.getEventsForDate(_selectedDate); // Show all events initially
+    _eventsForSelectedDate =
+        _eventsDataStorage.getEventsForDate(_selectedDate); // Show events for today
   }
 
   void _refresh() {
@@ -52,7 +52,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   onTap: () {
                     setState(() {
                       _selectedDate = date;
-                      _eventsForSelectedDate = _eventsDataStorage.getEventsForDate(_selectedDate); // Aktualizacja na podstawie nowego _selectedDate
+                      _eventsForSelectedDate =
+                          _eventsDataStorage.getEventsForDate(_selectedDate);
                     });
                   },
                   child: Container(
@@ -67,7 +68,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "${date.day}" ".""${date.month}",
+                          "${date.day}.${date.month}",
                           style: TextStyle(
                             fontSize: 20,
                             color: isSelected ? Colors.white : Colors.black,
@@ -91,17 +92,19 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       ),
     );
   }
-}
 
-//tego tu nie powinno chyba, przekazywac kalendarzowi liste wyszukanych eventów? on segregowałby je po dacie?
-//nie wiem ://
-List<EventTile> _createWidgets(List<Event>? partners) {
-  if (partners == null || !partners.isNotEmpty) {
-    return [];
+  List<EventTile> _createWidgets(List<Event>? events) {
+    if (events == null || events.isEmpty) {
+      return [];
+    }
+
+    return events.map((event) {
+      return EventTile(
+        event,
+        onFavouriteControl: () {
+          _eventsDataStorage.controlFavourite(event); // Toggle favourite state
+        },
+      );
+    }).toList();
   }
-  List<EventTile> list = [];
-  for (var partnerData in partners) {
-    list.add(EventTile(partnerData));
-  }
-  return list;
 }
