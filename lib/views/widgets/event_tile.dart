@@ -4,7 +4,7 @@ import 'package:krit_app/models/event.dart';
 class EventTile extends StatelessWidget {
   final Event event;
   EventTile(this.event);
-
+//dodawanie do ulubionych serduszkiem?
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -21,11 +21,12 @@ class EventTile extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
               image: DecorationImage(
-                image: AssetImage(event.logoUrl),
-                fit: BoxFit.cover,
+                image: NetworkImage(
+                  event.logoUrl,
+                ),
+              ),
               ),
             ),
-          ),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
@@ -33,7 +34,17 @@ class EventTile extends StatelessWidget {
               children: [
                 const SizedBox(height: 4),
                 Text(
-                  event.timeBegin + " - " + event.timeEnd,
+                  "${event.timeBegin} - ${event.timeEnd}",
+                  style: const TextStyle(
+                    color: Color.fromRGBO(29, 27, 32, 1),
+                    fontFamily: 'Roboto',
+                    fontSize: 16,
+                    letterSpacing: 0.5,
+                    height: 1.5,
+                  ),
+                ),
+                Text(
+                  event.date.toLocal().toString().split(' ')[0],
                   style: const TextStyle(
                     color: Color.fromRGBO(29, 27, 32, 1),
                     fontFamily: 'Roboto',

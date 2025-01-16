@@ -12,7 +12,7 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          SearchbarWidget(),
+          SearchBarApp(),
           SizedBox(height: 16),
           Expanded(
             child: Container(),

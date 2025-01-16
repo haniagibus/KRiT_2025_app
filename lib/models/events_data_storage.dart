@@ -27,6 +27,14 @@ class EventsDataStorage {
     // }
   }
 
+  List<Event> getEventsForDate(DateTime date) {
+    return _eventList.where((event) {
+      DateTime eventDateOnly = DateTime(event.date.year, event.date.month, event.date.day);
+      DateTime inputDateOnly = DateTime(date.year, date.month, date.day);
+      return eventDateOnly.isAtSameMomentAs(inputDateOnly);
+    }).toList();
+  }
+
   // Future<void> updateData() async {
   //   if (Config.useMockData) return;
   //   // TODO: Check the status and give information to the user if it failed
