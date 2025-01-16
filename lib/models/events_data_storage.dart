@@ -11,6 +11,7 @@ class EventsDataStorage {
   List<Event> _eventList = [];
   List<Event> get eventList => UnmodifiableListView(_eventList);
   late Function _callback;
+  List<Event> get favoriteEvents => _eventList.where((event) => event.isFavourite).toList();
 
   factory EventsDataStorage(Function callback) {
     _singleton._callback = callback;
@@ -51,6 +52,15 @@ class EventsDataStorage {
       DateTime inputDateOnly = DateTime(date.year, date.month, date.day);
       return eventDateOnly.isAtSameMomentAs(inputDateOnly);
     }).toList();
+  }
+
+  void controlFavourite(Event event) {
+    final index = _eventList.indexOf(event);
+    if (index != -1) {
+      // Zmieniamy stan ulubionego
+      _eventList[index].isFavourite = !event.isFavourite;
+      _callback(); // Odświeżenie widoku
+    }
   }
 
   // Future<void> updateData() async {

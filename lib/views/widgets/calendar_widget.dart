@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:krit_app/models/event.dart';
-
+import 'package:krit_app/models/events_data_storage.dart';
 import 'event_tile.dart';
 
 class CalendarWidget extends StatefulWidget {
@@ -103,5 +103,20 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         ],
       ),
     );
+  }
+
+  List<EventTile> _createWidgets(List<Event>? events) {
+    if (events == null || events.isEmpty) {
+      return [];
+    }
+
+    return events.map((event) {
+      return EventTile(
+        event,
+        onFavouriteControl: () {
+          _eventsDataStorage.controlFavourite(event); // Toggle favourite state
+        },
+      );
+    }).toList();
   }
 }
