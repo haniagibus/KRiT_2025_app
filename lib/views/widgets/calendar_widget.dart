@@ -4,28 +4,37 @@ import 'package:krit_app/models/events_data_storage.dart';
 import 'event_tile.dart';
 
 class CalendarWidget extends StatefulWidget {
-  const CalendarWidget({super.key});
+  final List<Event> events;
+  const CalendarWidget({super.key, required this.events});
 
   @override
   _CalendarWidgetState createState() => _CalendarWidgetState();
 }
 
 class _CalendarWidgetState extends State<CalendarWidget> {
-  late final EventsDataStorage _eventsDataStorage;
   DateTime _selectedDate = DateTime.now();
-  List<Event> _eventsForSelectedDate = [];
+  late List<Event> _eventsForSelectedDate;
 
   @override
   void initState() {
     super.initState();
-    _eventsDataStorage = EventsDataStorage(_refresh); // Initialize event data storage
-    _eventsForSelectedDate =
-        _eventsDataStorage.getEventsForDate(_selectedDate); // Show events for today
+    _filterEventsByDate();
   }
 
-  void _refresh() {
+  @override
+  void didUpdateWidget(covariant CalendarWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _filterEventsByDate();
+  }
+
+  void _filterEventsByDate() {
     setState(() {
-      _eventsForSelectedDate = _eventsDataStorage.getEventsForDate(_selectedDate);
+      _eventsForSelectedDate = widget.events
+          .where((event) =>
+      event.date.year == _selectedDate.year &&
+          event.date.month == _selectedDate.month &&
+          event.date.day == _selectedDate.day)
+          .toList();
     });
   }
 
@@ -38,54 +47,57 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       body: Column(
         children: [
           SizedBox(
-            height: 100,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 7, // Display 7 days (a week)
-              itemBuilder: (context, index) {
-                final date = DateTime.now().add(Duration(days: index));
-                final isSelected = date.day == _selectedDate.day &&
-                    date.month == _selectedDate.month &&
-                    date.year == _selectedDate.year;
+            height: 50,
+            child: Row(
+              children: List.generate(
+                3,
+                    (index) {
+                  final date = DateTime.now().add(Duration(days: index));
+                  final isSelected = date.day == _selectedDate.day &&
+                      date.month == _selectedDate.month &&
+                      date.year == _selectedDate.year;
 
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _selectedDate = date;
-                      _eventsForSelectedDate =
-                          _eventsDataStorage.getEventsForDate(_selectedDate);
-                    });
-                  },
-                  child: Container(
-                    width: tileWidth,
-                    margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: isSelected ? Colors.blue : Colors.grey[300],
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "${date.day}.${date.month}",
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: isSelected ? Colors.white : Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
+                  return Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _selectedDate = date;
+                          _filterEventsByDate();
+                        });
+                      },
+                      child: Container(
+                        //margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                        //padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: isSelected ? Colors.blue : Colors.grey[300],
+                          //borderRadius: BorderRadius.circular(8),
                         ),
-                      ],
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "${date.day}/${date.month}",
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: isSelected ? Colors.white : Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           ),
           // Event list for the selected date
           Expanded(
             child: ListView(
-              children: _createWidgets(_eventsForSelectedDate),
+              children: _eventsForSelectedDate
+                  .map((event) => EventTile(event))
+                  .toList(),
             ),
           ),
         ],

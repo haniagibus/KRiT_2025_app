@@ -4,6 +4,8 @@ import 'package:krit_app/models/events_data_storage.dart';
 import 'package:krit_app/views/widgets/event_tile.dart';
 import 'package:krit_app/views/widgets/searchbar_widget.dart';
 
+import '../widgets/calendar_widget.dart';
+
 class ScheduleScreen extends StatefulWidget {
   const ScheduleScreen({super.key});
 
@@ -22,8 +24,7 @@ class _EventViewState extends State<ScheduleScreen> {
     _filteredEvents = _eventsDataStorage.eventList;
     super.initState();
   }
-//filtrowanie w search bar? search bar na kazdej stronie szuka tego samego?
-  // czy ma byc na kazdej stronie, wtedy dac go do main??
+
   void _filterEvents() {
     final query = _searchQuery.toLowerCase();
     if (query.isEmpty) {
@@ -60,9 +61,14 @@ class _EventViewState extends State<ScheduleScreen> {
             style: TextStyle(fontSize: 16, color: Colors.grey),
           ),
         ),
-        Expanded(
-          child: ListView(
-            children: _createWidgets(_filteredEvents),
+        // Expanded(
+        //   child: ListView(
+        //     children: _createWidgets(_filteredEvents),
+        //   ),
+        // ),
+        Flexible(
+          child: CalendarWidget(
+            events: _filteredEvents ?? [],
           ),
         ),
       ],
@@ -82,10 +88,5 @@ class _EventViewState extends State<ScheduleScreen> {
         },
       );
     }).toList();
-    // List<EventTile> list = [];
-    // for (var partnerData in partners) {
-    //   list.add(EventTile(partnerData));
-    // }
-    // return list;
   }
 }

@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:math';
 import 'package:krit_app/config.dart';
 //import 'package:krit_app/models/requests.dart';
 
@@ -17,10 +18,27 @@ class EventsDataStorage {
     return _singleton;
   }
 
+  final random = Random();
+
+  String randomTitle() {
+    return titles[random.nextInt(titles.length)];
+  }
+
+  DateTime randomDate() {
+    return dates[random.nextInt(dates.length)];
+  }
+  final titles = ["Pool Dance", "Food Carnival", "Coding Bootcamp", "Movie Night", "Yoga Session"];
+
+  final dates = [
+    DateTime(2025, 1, 16),
+    DateTime(2025, 1, 17),
+    DateTime(2025, 1, 18),
+  ];
+
   EventsDataStorage._internal() {
     if (Config.useMockData) {
       for (int i = 0; i < 10; i++) {
-        _eventList.add(MockPartner(i));
+        _eventList.add(MockPartner(i,randomTitle(),randomDate()));
       }
     }
     // else {
