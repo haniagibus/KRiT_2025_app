@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:krit_app/models/event.dart';
 import 'package:krit_app/views/screens/event_screen.dart';
+import 'package:krit_app/theme/app_colors.dart';
 
 class EventTile extends StatelessWidget {
   final Event event;
@@ -11,15 +12,15 @@ class EventTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onTap: () {
-          // Navigate to the EventScreen when the tile is tapped
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => EventScreen(event: event),
-            ),
-          );
-        },
+      onTap: () {
+        // Navigate to the EventScreen when the tile is tapped
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => EventScreen(event: event),
+          ),
+        );
+      },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: const BoxDecoration(
@@ -38,8 +39,8 @@ class EventTile extends StatelessWidget {
                     event.logoUrl,
                   ),
                 ),
-                ),
               ),
+            ),
             const SizedBox(width: 16),
             Expanded(
               child: Column(
@@ -82,27 +83,27 @@ class EventTile extends StatelessWidget {
               ),
             ),
             Center(
-              child: Icon(
-                Icons.arrow_forward_ios,
-                color: Colors.grey[700],
-                size: 24,
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      event.isFavourite ? Icons.star : Icons.star_border,
+                      color: event.isFavourite
+                          ? AppColors.accent
+                          : Colors.grey,
+                    ),
+                    onPressed: onFavouriteControl,
+                  ),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    color: Colors.grey[700],
+                    size: 24,
+                  ),
+                ],
               ),
             ),
-          ),
-      // Gwiazdka (ulubione)
-        IconButton(
-          icon:Icon(
-            event.isFavourite ? Icons.star : Icons.star_border,
-            color: event.isFavourite ? Colors.deepOrangeAccent : Colors.grey,
-          ),
-          onPressed: onFavouriteControl,
+          ],
         ),
-          Icon(
-            Icons.arrow_forward,
-            color: Colors.grey[700],
-            size: 24,
-          ),
-        ],
       ),
     );
   }

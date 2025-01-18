@@ -38,9 +38,9 @@ class EventsDataStorage {
   EventsDataStorage._internal() {
     if (Config.useMockData) {
       for (int i = 0; i < 10; i++) {
-        MockPartner mockPartner = new MockPartner(i);
-        mockPartner.name = mockPartner.name + i.toString();
-        _eventList.add(mockPartner);
+        MockEvent mockEvent = new MockEvent(i, randomTitle(),randomDate());
+        mockEvent.name = mockEvent.name + i.toString();
+        _eventList.add(mockEvent);
       }
     }
     // else {

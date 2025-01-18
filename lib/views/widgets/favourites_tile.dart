@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:krit_app/models/events_data_storage.dart';
 import 'package:krit_app/views/widgets/event_tile.dart';
+import 'package:krit_app/theme/app_colors.dart';
 
 import '../../models/event.dart';
 
@@ -19,12 +20,15 @@ class FavoritesTile extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Ulubione Wydarzenia',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
+        Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: const Text(
+            'Ulubione Wydarzenia',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: AppColors.textPrimary,
+            ),
           ),
         ),
         const SizedBox(height: 16),

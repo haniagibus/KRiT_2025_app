@@ -1,122 +1,114 @@
 import 'package:flutter/material.dart';
 import 'package:krit_app/models/event.dart';
 import 'package:krit_app/models/events_data_storage.dart';
+import 'package:krit_app/theme/app_colors.dart';
 import 'event_tile.dart';
 
 class CalendarWidget extends StatefulWidget {
-  final List<Event> events;
-  const CalendarWidget({super.key, required this.events});
+  final EventsDataStorage eventsDataStorage;
+  final String searchQuery;
+
+  const CalendarWidget({
+    super.key,
+    required this.eventsDataStorage,
+    required this.searchQuery,
+  });
 
   @override
   _CalendarWidgetState createState() => _CalendarWidgetState();
 }
 
 class _CalendarWidgetState extends State<CalendarWidget> {
-  DateTime _selectedDate = DateTime.now();
+  late List<DateTime> _availableDates;
   late List<Event> _eventsForSelectedDate;
 
   @override
   void initState() {
     super.initState();
-    _filterEventsByDate();
+    _initializeDates();
+    _filterEventsByDate(_availableDates[0]);
   }
 
-  @override
-  void didUpdateWidget(covariant CalendarWidget oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _filterEventsByDate();
+  void _initializeDates() {
+    final now = DateTime.now();
+    _availableDates = List.generate(3, (index) => now.add(Duration(days: index))); // Show only 3 days
   }
 
-  void _filterEventsByDate() {
+  void _filterEventsByDate(DateTime selectedDate) {
+    final events = widget.eventsDataStorage.eventList
+        .where((event) => event.name.toLowerCase().contains(widget.searchQuery.toLowerCase()))
+        .toList();
+
     setState(() {
-      _eventsForSelectedDate = widget.events
-          .where((event) =>
-      event.date.year == _selectedDate.year &&
-          event.date.month == _selectedDate.month &&
-          event.date.day == _selectedDate.day)
-          .toList();
+      _eventsForSelectedDate = events.where((event) {
+        return event.date.year == selectedDate.year &&
+            event.date.month == selectedDate.month &&
+            event.date.day == selectedDate.day;
+      }).toList();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final tileWidth = screenWidth / 3;
-
-    return Scaffold(
-      body: Column(
+    return DefaultTabController(
+      length: _availableDates.length,
+      child: Column(
         children: [
-          SizedBox(
-            height: 50,
-            child: Row(
-              children: List.generate(
-                3,
-                    (index) {
-                  final date = DateTime.now().add(Duration(days: index));
-                  final isSelected = date.day == _selectedDate.day &&
-                      date.month == _selectedDate.month &&
-                      date.year == _selectedDate.year;
-
-                  return Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _selectedDate = date;
-                          _filterEventsByDate();
-                        });
-                      },
-                      child: Container(
-                        //margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                        //padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: isSelected ? Colors.blue : Colors.grey[300],
-                          //borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              "${date.day}/${date.month}",
-                              style: TextStyle(
-                                fontSize: 15,
-                                color: isSelected ? Colors.white : Colors.black,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+          // Tabs for dates
+          Container(
+            color: AppColors.background,
+            child: TabBar(
+              indicatorColor: AppColors.accent,
+              indicatorWeight: 4.0,
+              labelPadding: EdgeInsets.symmetric(vertical: 8.0),
+              tabs: _availableDates.map((date) {
+                return Tab(
+                  child: Text(
+                    "${date.day}/${date.month}",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              }).toList(),
+              labelColor: AppColors.accent,
+              unselectedLabelColor: AppColors.textSecondary,
+              onTap: (index) {
+                _filterEventsByDate(_availableDates[index]);
+              },
             ),
           ),
-          // Event list for the selected date
+          // Events list for the selected tab's date
           Expanded(
-            child: ListView(
-              children: _eventsForSelectedDate
-                  .map((event) => EventTile(event))
-                  .toList(),
+            child: TabBarView(
+              physics: NeverScrollableScrollPhysics(),
+              children: _availableDates.map((date) {
+                final eventsForDay = _eventsForSelectedDate.where((event) {
+                  return event.date.year == date.year &&
+                      event.date.month == date.month &&
+                      event.date.day == date.day;
+                }).toList();
+
+                return ListView(
+                  children: eventsForDay
+                      .map(
+                        (event) => EventTile(
+                      event,
+                      onFavouriteControl: () {
+                        setState(() {
+                          widget.eventsDataStorage.controlFavourite(event);
+                        });
+                      },
+                    ),
+                  )
+                      .toList(),
+                );
+              }).toList(),
             ),
           ),
         ],
       ),
     );
-  }
-
-  List<EventTile> _createWidgets(List<Event>? events) {
-    if (events == null || events.isEmpty) {
-      return [];
-    }
-
-    return events.map((event) {
-      return EventTile(
-        event,
-        onFavouriteControl: () {
-          _eventsDataStorage.controlFavourite(event); // Toggle favourite state
-        },
-      );
-    }).toList();
   }
 }

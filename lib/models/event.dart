@@ -34,10 +34,8 @@ class Event {
   };
 }
 
-
-
-class MockPartner extends Event {
-  MockPartner(int id,String title, DateTime date)
+class MockEvent extends Event {
+  MockEvent(int id,String title, DateTime date)
       : super(
       title,
       "https://picsum.photos/500/500?$id",
