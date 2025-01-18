@@ -31,7 +31,7 @@ class ReportTile extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(8)),
         ),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center, // Align the items in the center
           children: [
             // Ikona zamiast obrazka
             Container(
@@ -48,9 +48,11 @@ class ReportTile extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 16),
+            // Using Column to group text elements, ensuring it aligns with the icon
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center, // Center content vertically
                 children: [
                   const SizedBox(height: 4),
                   Text(
@@ -86,7 +88,9 @@ class ReportTile extends StatelessWidget {
                 ],
               ),
             ),
-            Center(
+            // Center the arrow by using mainAxisAlignment
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
               child: Icon(
                 Icons.arrow_forward_ios,
                 color: Colors.grey[700],
