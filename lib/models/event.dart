@@ -1,5 +1,5 @@
 class Event {
-  final String name;
+  String name;
   final String logoUrl;
   final String coverImageUrl;
   final String timeBegin;
