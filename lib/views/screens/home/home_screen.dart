@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:krit_app/models/events_data_storage.dart';
-import '../widgets/favourites_tile.dart';
-import '../widgets/searchbar_widget.dart';
+import 'package:krit_app/models/event/events_data_storage.dart';
+import '../../widgets/favourites_tile.dart';
+import '../../widgets/searchbar_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

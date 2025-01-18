@@ -7,10 +7,19 @@ class Event {
   final DateTime date;
   final String description;
   bool isFavourite;
+  final String room;  // Nowe pole do przechowywania informacji o sali
 
-
-  Event(this.name, this.logoUrl, this.coverImageUrl, this.timeBegin, this.timeEnd,
-      this.date, this.description, {this.isFavourite = false});
+  Event(
+      this.name,
+      this.logoUrl,
+      this.coverImageUrl,
+      this.timeBegin,
+      this.timeEnd,
+      this.date,
+      this.description,
+      this.room, // Nowe pole w konstruktorze
+          {this.isFavourite = false}
+      );
 
   Event.fromJson(Map<String, dynamic> json)
       : name = json['name'],
@@ -20,7 +29,9 @@ class Event {
         timeEnd = json['end'],
         date = DateTime.parse(json['date']),
         description = json['description'],
-        isFavourite = json['isFavourite'] ?? false; //obsługa braku pola
+        room = json['room'],
+        isFavourite = json['isFavourite'] ?? false; // obsługa braku pola
+
 
   Map<String, dynamic> toJson() => {
     'name': name,
@@ -30,22 +41,21 @@ class Event {
     'end': timeEnd,
     'date': date.toIso8601String(),
     'description': description,
-    'isFavourite': isFavourite
+    'room': room,
+    'isFavourite': isFavourite,
   };
 }
 
 class MockEvent extends Event {
-  MockEvent(int id,String title, DateTime date)
+  MockEvent(int id, String title, DateTime date)
       : super(
-      title,
-      "https://picsum.photos/500/500?$id",
-      "https://picsum.photos/1000/300?$id",
-      "10:00",
-      "11:00",
-      date,
-      "mock event description");
+    title,
+    "https://picsum.photos/500/500?$id",
+    "https://picsum.photos/1000/300?$id",
+    "10:00",
+    "11:00",
+    date,
+    "mock event description",
+    "NE 000",
+  );
 }
-
-
-
-

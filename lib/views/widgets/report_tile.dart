@@ -1,23 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:krit_app/models/event/event.dart';
-import 'package:krit_app/views/screens/schedule/event_screen.dart';
+import 'package:krit_app/models/report/report.dart';
 import 'package:krit_app/theme/app_colors.dart';
+import 'package:krit_app/views/screens/reports/report_screen.dart'; // Importujemy nasz ekran raportu
 
-class EventTile extends StatelessWidget {
-  final Event event;
-  final VoidCallback onFavouriteControl;
+class ReportTile extends StatelessWidget {
+  final Report report;
+  final VoidCallback onTap;
 
-  EventTile(this.event, {required this.onFavouriteControl});
+  ReportTile({
+    required this.report,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navigate to the EventScreen when the tile is tapped
+        // Otwieramy ekran raportu, przekazując raport
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => EventScreen(event: event),
+            builder: (context) => ReportScreen(report: report),
           ),
         );
       },
@@ -25,20 +28,23 @@ class EventTile extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: const BoxDecoration(
           color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(8)),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Ikona zamiast obrazka
             Container(
               width: 56,
               height: 56,
               decoration: BoxDecoration(
+                color: AppColors.secondary,
                 borderRadius: BorderRadius.circular(16),
-                image: DecorationImage(
-                  image: NetworkImage(
-                    event.logoUrl,
-                  ),
-                ),
+              ),
+              child: const Icon(
+                Icons.article,
+                size: 32,
+                color: Colors.white,
               ),
             ),
             const SizedBox(width: 16),
@@ -48,7 +54,7 @@ class EventTile extends StatelessWidget {
                 children: [
                   const SizedBox(height: 4),
                   Text(
-                    "${event.timeBegin} - ${event.timeEnd}",
+                    report.title,
                     style: const TextStyle(
                       color: Color.fromRGBO(29, 27, 32, 1),
                       fontFamily: 'Roboto',
@@ -58,19 +64,7 @@ class EventTile extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    event.date.toLocal().toString().split(' ')[0],
-                    style: const TextStyle(
-                      color: Color.fromRGBO(29, 27, 32, 1),
-                      fontFamily: 'Roboto',
-                      fontSize: 16,
-                      letterSpacing: 0.5,
-                      height: 1.5,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    event.name,
-                    textAlign: TextAlign.center,
+                    "by ${report.author}",
                     style: const TextStyle(
                       color: Color.fromRGBO(73, 69, 79, 1),
                       fontFamily: 'Roboto',
@@ -79,27 +73,24 @@ class EventTile extends StatelessWidget {
                       height: 1.43,
                     ),
                   ),
+                  const SizedBox(height: 8),
+                  Text(
+                    report.description,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Color.fromRGBO(100, 100, 100, 1),
+                      fontSize: 12,
+                    ),
+                  ),
                 ],
               ),
             ),
             Center(
-              child: Row(
-                children: [
-                  IconButton(
-                    icon: Icon(
-                      event.isFavourite ? Icons.star : Icons.star_border,
-                      color: event.isFavourite
-                          ? AppColors.accent
-                          : Colors.grey,
-                    ),
-                    onPressed: onFavouriteControl,
-                  ),
-                  Icon(
-                    Icons.arrow_forward_ios,
-                    color: Colors.grey[700],
-                    size: 24,
-                  ),
-                ],
+              child: Icon(
+                Icons.arrow_forward_ios,
+                color: Colors.grey[700],
+                size: 24,
               ),
             ),
           ],

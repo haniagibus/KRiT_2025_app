@@ -1,7 +1,6 @@
 import 'dart:collection';
 import 'dart:math';
 import 'package:krit_app/config.dart';
-//import 'package:krit_app/models/requests.dart';
 
 import 'event.dart';
 
