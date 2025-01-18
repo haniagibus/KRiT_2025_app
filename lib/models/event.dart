@@ -6,9 +6,11 @@ class Event {
   final String timeEnd;
   final DateTime date;
   final String description;
+  bool isFavourite;
+
 
   Event(this.name, this.logoUrl, this.coverImageUrl, this.timeBegin, this.timeEnd,
-      this.date, this.description);
+      this.date, this.description, {this.isFavourite = false});
 
   Event.fromJson(Map<String, dynamic> json)
       : name = json['name'],
@@ -17,7 +19,8 @@ class Event {
         timeBegin = json['begin'],
         timeEnd = json['end'],
         date = DateTime.parse(json['date']),
-        description = json['description'];
+        description = json['description'],
+        isFavourite = json['isFavourite'] ?? false; //obsługa braku pola
 
   Map<String, dynamic> toJson() => {
     'name': name,
@@ -26,18 +29,25 @@ class Event {
     'begin': timeBegin,
     'end': timeEnd,
     'date': date.toIso8601String(),
-    'description': description
+    'description': description,
+    'isFavourite': isFavourite
   };
 }
 
+
+
 class MockPartner extends Event {
-  MockPartner(int id)
+  MockPartner(int id,String title, DateTime date)
       : super(
-      "mock event",
+      title,
       "https://picsum.photos/500/500?$id",
       "https://picsum.photos/1000/300?$id",
       "10:00",
       "11:00",
-      DateTime(2025, 1, 16),
+      date,
       "mock event description");
 }
+
+
+
+

@@ -4,8 +4,10 @@ import 'package:krit_app/views/screens/event_screen.dart';
 
 class EventTile extends StatelessWidget {
   final Event event;
-  EventTile(this.event);
-//dodawanie do ulubionych serduszkiem?
+  final VoidCallback onFavouriteControl;
+
+  EventTile(this.event, {required this.onFavouriteControl});
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -86,9 +88,22 @@ class EventTile extends StatelessWidget {
                 size: 24,
               ),
             ),
-          ],
+          ),
+      // Gwiazdka (ulubione)
+        IconButton(
+          icon:Icon(
+            event.isFavourite ? Icons.star : Icons.star_border,
+            color: event.isFavourite ? Colors.deepOrangeAccent : Colors.grey,
+          ),
+          onPressed: onFavouriteControl,
         ),
-      )
+          Icon(
+            Icons.arrow_forward,
+            color: Colors.grey[700],
+            size: 24,
+          ),
+        ],
+      ),
     );
   }
 }
