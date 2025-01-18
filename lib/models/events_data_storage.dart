@@ -27,7 +27,7 @@ class EventsDataStorage {
   DateTime randomDate() {
     return dates[random.nextInt(dates.length)];
   }
-  final titles = ["Pool Dance", "Food Carnival", "Coding Bootcamp", "Movie Night", "Yoga Session"];
+  final titles = ["Pole Dnce", "Food Carnival", "Coding Bootcamp", "Movie Night", "Yoga Session"];
 
   final dates = [
     DateTime(2025, 1, 16),
