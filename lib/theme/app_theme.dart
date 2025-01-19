@@ -22,5 +22,15 @@ class AppTheme {
       unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal),
       showUnselectedLabels: true, // Show labels for unselected items
     ),
+    // buttonTheme: ButtonThemeData(
+    //   buttonColor: AppColors.accent, // Define the default button color
+    //   textTheme: ButtonTextTheme.primary,
+    // ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        foregroundColor: AppColors.primary,
+        backgroundColor: AppColors.button_background
+      ),
+    ),
   );
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:krit_app/models/event.dart';
-import 'package:krit_app/models/events_data_storage.dart';
+import 'package:krit_app/models/event/event.dart';
+import 'package:krit_app/models/event/events_data_storage.dart';
 import 'package:krit_app/views/widgets/searchbar_widget.dart';
-import '../widgets/calendar_widget.dart';
+import '../../widgets/calendar_widget.dart';
 
 class ScheduleScreen extends StatefulWidget {
   const ScheduleScreen({super.key});
