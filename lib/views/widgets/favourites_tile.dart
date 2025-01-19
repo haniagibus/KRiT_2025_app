@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:krit_app/models/event/events_data_storage.dart';
 import 'package:krit_app/views/widgets/event_tile.dart';
 import 'package:krit_app/theme/app_colors.dart';
 

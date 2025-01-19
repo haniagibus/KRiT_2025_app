@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:krit_app/models/report/report.dart'; // Import the report model
+import 'package:krit_app/models/report/report.dart';
 import 'package:krit_app/theme/app_colors.dart';
-import 'package:krit_app/theme/app_theme.dart';
 import 'package:krit_app/views/screens/reports/pdf_view_screen.dart';
 
 class ReportScreen extends StatelessWidget {

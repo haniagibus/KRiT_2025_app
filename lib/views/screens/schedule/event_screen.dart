@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:krit_app/models/event/event.dart';
-import 'package:krit_app/theme/app_theme.dart';
 import 'package:krit_app/theme/app_colors.dart';
-import 'package:intl/intl.dart'; // Używamy pakietu intl do formatowania daty
+import 'package:intl/intl.dart';
 
 class EventScreen extends StatelessWidget {
   final Event event;
