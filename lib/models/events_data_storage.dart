@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:math';
 import 'package:krit_app/config.dart';
 //import 'package:krit_app/models/requests.dart';
 
@@ -10,18 +11,36 @@ class EventsDataStorage {
   List<Event> _eventList = [];
   List<Event> get eventList => UnmodifiableListView(_eventList);
   late Function _callback;
+  List<Event> get favoriteEvents => _eventList.where((event) => event.isFavourite).toList();
 
   factory EventsDataStorage(Function callback) {
     _singleton._callback = callback;
     return _singleton;
   }
 
+  final random = Random();
+
+  String randomTitle() {
+    return titles[random.nextInt(titles.length)];
+  }
+
+  DateTime randomDate() {
+    return dates[random.nextInt(dates.length)];
+  }
+  final titles = ["Pool Dance", "Food Carnival", "Coding Bootcamp", "Movie Night", "Yoga Session"];
+
+  final dates = [
+    DateTime(2025, 1, 16),
+    DateTime(2025, 1, 17),
+    DateTime(2025, 1, 18),
+  ];
+
   EventsDataStorage._internal() {
     if (Config.useMockData) {
       for (int i = 0; i < 10; i++) {
-        MockPartner mockPartner = new MockPartner(i);
-        mockPartner.name = mockPartner.name + i.toString();
-        _eventList.add(mockPartner);
+        MockEvent mockEvent = new MockEvent(i, randomTitle(),randomDate());
+        mockEvent.name = mockEvent.name + i.toString();
+        _eventList.add(mockEvent);
       }
     }
     // else {
@@ -35,6 +54,15 @@ class EventsDataStorage {
       DateTime inputDateOnly = DateTime(date.year, date.month, date.day);
       return eventDateOnly.isAtSameMomentAs(inputDateOnly);
     }).toList();
+  }
+
+  void controlFavourite(Event event) {
+    final index = _eventList.indexOf(event);
+    if (index != -1) {
+      // Zmieniamy stan ulubionego
+      _eventList[index].isFavourite = !event.isFavourite;
+      _callback(); // Odświeżenie widoku
+    }
   }
 
   // Future<void> updateData() async {
