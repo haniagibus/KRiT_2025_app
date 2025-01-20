@@ -7,7 +7,7 @@ class Event {
   final DateTime date;
   final String description;
   bool isFavourite;
-  final String room;  // Nowe pole do przechowywania informacji o sali
+  final String room;
 
   Event(
       this.name,
@@ -17,7 +17,7 @@ class Event {
       this.timeEnd,
       this.date,
       this.description,
-      this.room, // Nowe pole w konstruktorze
+      this.room,
           {this.isFavourite = false}
       );
 

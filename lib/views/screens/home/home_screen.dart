@@ -30,15 +30,25 @@ class _HomeScreenState extends State<HomeScreen> {
     final favoriteEvents = _eventsDataStorage.favoriteEvents;
 
     return Scaffold(
-      // body: Padding(
-      //   padding: const EdgeInsets.all(8.0),  // Dodanie paddingu do całej zawartości
       body: Column(
         children: [
+          // Padding(
+          //   padding: const EdgeInsets.only(bottom: 16.0),
+          //   child: SearchBarApp(),
+          // ),
           Padding(
-            padding: const EdgeInsets.only(bottom: 16.0),  // Padding tylko dla SearchBarApp
-            child: SearchBarApp(),
+            padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12.0),
+              child: Image.asset(
+                'assets/images/mapa.png',
+                height: 300,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
-          // Tutaj przenosimy całą logikę wyświetlania ulubionych wydarzeń do widgetu FavoritesTile
+          const SizedBox(height: 24.0),
           Expanded(
             child: FavoritesTile(
               favoriteEvents: favoriteEvents,

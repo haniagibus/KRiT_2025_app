@@ -21,31 +21,41 @@ class CalendarWidget extends StatefulWidget {
 class _CalendarWidgetState extends State<CalendarWidget> {
   late List<DateTime> _availableDates;
   late List<Event> _eventsForSelectedDate;
+  late DateTime _selectedDate;
 
   @override
   void initState() {
     super.initState();
     _initializeDates();
-    _filterEventsByDate(_availableDates[0]);
+    _selectedDate = _availableDates[0];
+    _filterEventsByDate();
   }
 
   void _initializeDates() {
     final now = DateTime.now();
-    _availableDates = List.generate(3, (index) => now.add(Duration(days: index))); // Show only 3 days
+    _availableDates = List.generate(3, (index) => now.add(Duration(days: index)));
   }
 
-  void _filterEventsByDate(DateTime selectedDate) {
+  void _filterEventsByDate() {
     final events = widget.eventsDataStorage.eventList
         .where((event) => event.name.toLowerCase().contains(widget.searchQuery.toLowerCase()))
         .toList();
 
     setState(() {
       _eventsForSelectedDate = events.where((event) {
-        return event.date.year == selectedDate.year &&
-            event.date.month == selectedDate.month &&
-            event.date.day == selectedDate.day;
+        return event.date.year == _selectedDate.year &&
+            event.date.month == _selectedDate.month &&
+            event.date.day == _selectedDate.day;
       }).toList();
     });
+  }
+
+  @override
+  void didUpdateWidget(CalendarWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.searchQuery != oldWidget.searchQuery) {
+      _filterEventsByDate();
+    }
   }
 
   @override
@@ -54,7 +64,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       length: _availableDates.length,
       child: Column(
         children: [
-          // Tabs for dates
           Container(
             color: AppColors.background,
             child: TabBar(
@@ -75,36 +84,27 @@ class _CalendarWidgetState extends State<CalendarWidget> {
               labelColor: AppColors.accent,
               unselectedLabelColor: AppColors.textSecondary,
               onTap: (index) {
-                _filterEventsByDate(_availableDates[index]);
+                setState(() {
+                  _selectedDate = _availableDates[index];
+                  _filterEventsByDate();
+                });
               },
             ),
           ),
-          // Events list for the selected tab's date
           Expanded(
-            child: TabBarView(
-              physics: NeverScrollableScrollPhysics(),
-              children: _availableDates.map((date) {
-                final eventsForDay = _eventsForSelectedDate.where((event) {
-                  return event.date.year == date.year &&
-                      event.date.month == date.month &&
-                      event.date.day == date.day;
-                }).toList();
-
-                return ListView(
-                  children: eventsForDay
-                      .map(
-                        (event) => EventTile(
-                      event,
-                      onFavouriteControl: () {
-                        setState(() {
-                          widget.eventsDataStorage.controlFavourite(event);
-                        });
-                      },
-                    ),
-                  )
-                      .toList(),
-                );
-              }).toList(),
+            child: ListView(
+              children: _eventsForSelectedDate
+                  .map(
+                    (event) => EventTile(
+                  event,
+                  onFavouriteControl: () {
+                    setState(() {
+                      widget.eventsDataStorage.controlFavourite(event);
+                    });
+                  },
+                ),
+              )
+                  .toList(),
             ),
           ),
         ],

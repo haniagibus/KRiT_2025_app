@@ -14,16 +14,12 @@ class ScheduleScreen extends StatefulWidget {
 class _EventViewState extends State<ScheduleScreen> {
   late final EventsDataStorage _eventsDataStorage;
   String _searchQuery = '';
-  List<Event>? _filteredEvents;
 
   @override
   void initState() {
-    _eventsDataStorage = EventsDataStorage(_refresh);
-    _filteredEvents = _eventsDataStorage.eventList;
+    _eventsDataStorage = EventsDataStorage(() => setState(() {}));
     super.initState();
   }
-
-  void _refresh() {}
 
   @override
   Widget build(BuildContext context) {

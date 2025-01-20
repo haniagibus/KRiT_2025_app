@@ -19,7 +19,6 @@ class ReportScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 10),
-            // Header: Icon + Title
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Row(
@@ -57,7 +56,6 @@ class ReportScreen extends StatelessWidget {
               indent: 16,
               endIndent: 16,
             ),
-            // Author
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Row(

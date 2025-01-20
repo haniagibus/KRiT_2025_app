@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_pdfview/flutter_pdfview.dart'; // Import flutter_pdfview
+import 'package:flutter_pdfview/flutter_pdfview.dart';
 
 class PDFViewScreen extends StatefulWidget {
   final String pdfUrl; // PDF file path
@@ -26,7 +26,7 @@ class _PDFViewScreenState extends State<PDFViewScreen> {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: PDFView(
-          filePath: widget.pdfUrl, // Provide the local file path
+          filePath: widget.pdfUrl,
         ),
       ),
     );
