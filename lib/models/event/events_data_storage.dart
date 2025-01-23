@@ -26,12 +26,12 @@ class EventsDataStorage {
   DateTime randomDate() {
     return dates[random.nextInt(dates.length)];
   }
-  final titles = ["Pole Dnce", "Food Carnival", "Coding Bootcamp", "Movie Night", "Yoga Session"];
+  final titles = ["Food Carnival", "Coding Bootcamp", "Movie Night", "Yoga Session"];
 
   final dates = [
-    DateTime(2025, 1, 16),
-    DateTime(2025, 1, 17),
-    DateTime(2025, 1, 18),
+    DateTime(2025, 1, 19),
+    DateTime(2025, 1, 20),
+    DateTime(2025, 1, 21),
   ];
 
   EventsDataStorage._internal() {
@@ -58,7 +58,6 @@ class EventsDataStorage {
   void controlFavourite(Event event) {
     final index = _eventList.indexOf(event);
     if (index != -1) {
-      // Zmieniamy stan ulubionego
       _eventList[index].isFavourite = !event.isFavourite;
       _callback(); // Odświeżenie widoku
     }

@@ -31,17 +31,15 @@ class FavoritesTile extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        // Wyświetl ulubione wydarzenia, jeśli istnieją
-        favoriteEvents.isEmpty
-            ? const Center(
-          child: Text(
-            "Brak ulubionych wydarzeń",
-            style: TextStyle(fontSize: 16, color: Colors.grey),
-          ),
-        )
-            : Container(
-          height: 300, // Maksymalna wysokość na 3 wydarzenia
-          child: ListView.builder(
+        Expanded(
+          child: favoriteEvents.isEmpty
+              ? const Center(
+            child: Text(
+              "Brak ulubionych wydarzeń",
+              style: TextStyle(fontSize: 16, color: Colors.grey),
+            ),
+          )
+              : ListView.builder(
             itemCount: favoriteEvents.length,
             itemBuilder: (context, index) {
               final event = favoriteEvents[index];
