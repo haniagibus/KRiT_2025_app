@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:krit_app/models/event/event.dart';
 import 'package:krit_app/theme/app_colors.dart';
-import 'package:intl/intl.dart';
 
 class EventScreen extends StatelessWidget {
   final Event event;
@@ -10,37 +9,32 @@ class EventScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Formatowanie daty na polski sposób (np. 18 stycznia 2025)
-    String formattedDate = DateFormat('d MMM', 'pl_PL').format(event.date);
-
-    // Formatowanie godziny, np. 12:00 - 14:00
-    String timeRange = "${event.timeBegin} - ${event.timeEnd}";
-
     return Scaffold(
       appBar: AppBar(
-        title: Text(event.name),
         backgroundColor: AppBarTheme().backgroundColor,
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Cover Image
-            Image.network(
-              event.coverImageUrl,
-              width: double.infinity,
-              height: 200,
-              fit: BoxFit.cover,
-            ),
             const SizedBox(height: 10),
             // Logo and Name
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Row(
                 children: [
-                  CircleAvatar(
-                    backgroundImage: NetworkImage(event.logoUrl),
-                    radius: 30,
+                  Container(
+                    width: 56,
+                    height: 56,
+                    decoration: BoxDecoration(
+                      color: AppColors.secondary,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: const Icon(
+                      Icons.event,
+                      size: 32,
+                      color: Colors.white,
+                    ),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
@@ -78,7 +72,7 @@ class EventScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              formattedDate, // Zmieniona data na polski format
+                              event.formattedDate, // Zmieniona data na polski format
                               style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -105,7 +99,7 @@ class EventScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              timeRange, // Wyświetlanie godzin
+                              event.formattedTime, // Wyświetlanie godzin
                               style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,

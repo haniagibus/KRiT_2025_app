@@ -43,9 +43,9 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
     setState(() {
       _eventsForSelectedDate = events.where((event) {
-        return event.date.year == _selectedDate.year &&
-            event.date.month == _selectedDate.month &&
-            event.date.day == _selectedDate.day;
+        return event.dateTimeStart.year == _selectedDate.year &&
+            event.dateTimeStart.month == _selectedDate.month &&
+            event.dateTimeStart.day == _selectedDate.day;
       }).toList();
     });
   }
@@ -104,7 +104,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   },
                 ),
               )
-                  .toList(),
+              .toList(),
             ),
           ),
         ],

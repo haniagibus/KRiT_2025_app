@@ -98,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.book),
-            label: "Raporty",
+            label: "Referaty",
           ),
         ],
         currentIndex: _selectedIndex,

@@ -33,12 +33,13 @@ class EventTile extends StatelessWidget {
               width: 56,
               height: 56,
               decoration: BoxDecoration(
+                color: AppColors.secondary,
                 borderRadius: BorderRadius.circular(16),
-                image: DecorationImage(
-                  image: NetworkImage(
-                    event.logoUrl,
-                  ),
-                ),
+              ),
+              child: const Icon(
+                Icons.event,
+                size: 32,
+                color: Colors.white,
               ),
             ),
             const SizedBox(width: 16),
@@ -48,7 +49,7 @@ class EventTile extends StatelessWidget {
                 children: [
                   const SizedBox(height: 4),
                   Text(
-                    "${event.timeBegin} - ${event.timeEnd}",
+                    event.formattedTime,
                     style: const TextStyle(
                       color: Color.fromRGBO(29, 27, 32, 1),
                       fontFamily: 'Roboto',
@@ -58,7 +59,7 @@ class EventTile extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    event.date.toLocal().toString().split(' ')[0],
+                    event.formattedDate,
                     style: const TextStyle(
                       color: Color.fromRGBO(29, 27, 32, 1),
                       fontFamily: 'Roboto',

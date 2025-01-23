@@ -1,61 +1,78 @@
+import 'package:intl/intl.dart';
+import 'package:krit_app/models/event/event_type.dart';
+import 'package:krit_app/models/report/report.dart';
+
 class Event {
   String name;
-  final String logoUrl;
-  final String coverImageUrl;
-  final String timeBegin;
-  final String timeEnd;
-  final DateTime date;
+  EventType type;
+  final DateTime dateTimeStart;
+  final DateTime dateTimeEnd;
+  final String formattedDate;
+  final String formattedTime;
   final String description;
-  bool isFavourite;
+  final String building;
   final String room;
+  List<Report> reports;
+  bool isFavourite;
+
 
   Event(
       this.name,
-      this.logoUrl,
-      this.coverImageUrl,
-      this.timeBegin,
-      this.timeEnd,
-      this.date,
+      this.type,
+      this.dateTimeStart,
+      this.dateTimeEnd,
+      this.formattedDate,
+      this.formattedTime,
       this.description,
+      this.building,
       this.room,
+      this.reports,
           {this.isFavourite = false}
       );
 
   Event.fromJson(Map<String, dynamic> json)
       : name = json['name'],
-        logoUrl = json['logo'],
-        coverImageUrl = json['cover'],
-        timeBegin = json['begin'],
-        timeEnd = json['end'],
-        date = DateTime.parse(json['date']),
+        type = EventType.values.firstWhere(
+                (e) => e.toString() == 'EventType.${json['type']}'),
+        dateTimeStart = DateTime.parse(json['dateTimeStart']),
+        dateTimeEnd = DateTime.parse(json['dateTimeStart']),
+        formattedDate = json['formattedDate'],
+        formattedTime = json['formattedTime'],
         description = json['description'],
+        building = json['building'],
         room = json['room'],
-        isFavourite = json['isFavourite'] ?? false; // obsługa braku pola
+        reports = json['reports'],
+        isFavourite = json['isFavourite'] ?? false;
 
 
   Map<String, dynamic> toJson() => {
     'name': name,
-    'logo': logoUrl,
-    'cover': coverImageUrl,
-    'begin': timeBegin,
-    'end': timeEnd,
-    'date': date.toIso8601String(),
+    'type': type.toString().split('.').last,
+    'dateTimeStart': dateTimeStart.toIso8601String(),
+    'dateTimeEnd': dateTimeEnd.toIso8601String(),
+    'formattedDate': formattedDate,
+    'formattedTime': formattedTime,
     'description': description,
+    'building': building,
     'room': room,
+    'reports': reports,
     'isFavourite': isFavourite,
   };
 }
 
 class MockEvent extends Event {
-  MockEvent(int id, String title, DateTime date)
+  MockEvent(int id, String title, EventType type, DateTime dateStart, DateTime dateEnd,
+      String description, String building, String room, List<Report> reports)
       : super(
     title,
-    "https://picsum.photos/500/500?$id",
-    "https://picsum.photos/1000/300?$id",
-    "10:00",
-    "11:00",
-    date,
-    "mock event description",
-    "NE 000",
+    type,
+    dateStart,
+    dateEnd,
+    DateFormat('d MMM', 'pl_PL').format(dateStart),
+    "${DateFormat('HH:mm', 'pl_PL').format(dateStart)} - ${DateFormat('HH:mm', 'pl_PL').format(dateEnd)}",
+    description,
+    building,
+    room,
+    reports,
   );
 }
