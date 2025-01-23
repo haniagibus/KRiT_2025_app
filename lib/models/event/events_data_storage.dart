@@ -54,9 +54,9 @@ class EventsDataStorage {
   ];
 
   final dates = [
-    DateTime(2025, 1, 23, 10, 0),
-    DateTime(2025, 1, 24, 14, 30),
-    DateTime(2025, 1, 25, 18, 0),
+    DateTime(2025, 1, 24, 10, 0),
+    DateTime(2025, 1, 25, 14, 30),
+    DateTime(2025, 1, 26, 18, 0),
   ];
 
   final buildings = ["Main Hall", "Tech Building", "Library", "Gymnasium"];
@@ -71,24 +71,45 @@ class EventsDataStorage {
   EventsDataStorage._internal() {
     if (Config.useMockData) {
       for (int i = 0; i < 10; i++) {
-        MockEvent mockEvent = MockEvent(
-          i,
-          randomTitle(),
-          randomEventType(),
-          randomDate(),
-          randomDate().add(Duration(hours: 2)), // Random 2-hour duration
-          randomDescription(),
-          randomBuilding(),
-          randomRoom(),
-          [],
-        );
-        mockEvent.name += " $i";
-        _eventList.add(mockEvent);
+        _eventList.add(Event(
+          id: i,
+          name: randomTitle(),
+          type: randomEventType(),
+          dateTimeStart: randomDate(),
+          dateTimeEnd: randomDate().add(Duration(hours: 2)), // Random 2-hour duration
+          description: randomDescription(),
+          building: randomBuilding(),
+          room: randomRoom(),
+          reports: [], // Empty reports for mock data
+          isFavourite: false, // Default value for favourites
+        ));
       }
     }
-    // else {
-    //   updateData();
-    // }
+  }
+
+  // Similar to the ReportsDataStorage's filtering, implement a filtering method
+  List<Event> filterEvents(String query) {
+    return _eventList.where((event) {
+      // Check if the event name or description matches the query (case-insensitive)
+      bool matchesName = event.name.toLowerCase().contains(query.toLowerCase());
+      bool matchesDescription = event.description.toLowerCase().contains(query.toLowerCase());
+
+      // Check if the event type matches the query (case-insensitive)
+      bool matchesType = event.type.toString().toLowerCase().contains(query.toLowerCase());
+
+      return matchesName || matchesDescription || matchesType;
+    }).toList();
+  }
+
+
+  // Control favourite status for an event (similar to ReportsDataStorage)
+  void controlFavourite(Event event) {
+    final index = _eventList.indexOf(event);
+    if (index != -1) {
+      // Toggle favourite state
+      _eventList[index].isFavourite = !event.isFavourite;
+      _callback(); // Refresh view
+    }
   }
 
   List<Event> getEventsForDate(DateTime date) {
@@ -100,26 +121,4 @@ class EventsDataStorage {
       return eventDateOnly.isAtSameMomentAs(inputDateOnly);
     }).toList();
   }
-
-  void controlFavourite(Event event) {
-    final index = _eventList.indexOf(event);
-    if (index != -1) {
-      // Toggle favourite state
-      _eventList[index].isFavourite = !event.isFavourite;
-      _callback(); // Refresh view
-    }
-  }
-
-// Uncomment and implement when fetching real data
-// Future<void> updateData() async {
-//   if (Config.useMockData) return;
-//   var response = await Requests().get(Config.apiUrl + 'events');
-//   final json = response.data;
-
-//   _eventList.clear();
-//   for (var json in json) {
-//     _eventList.add(Event.fromJson(json));
-//   }
-//   _callback();
-// }
 }

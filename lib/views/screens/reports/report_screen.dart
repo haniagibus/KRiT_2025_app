@@ -3,6 +3,8 @@ import 'package:krit_app/models/report/report.dart';
 import 'package:krit_app/theme/app_colors.dart';
 import 'package:krit_app/views/screens/reports/pdf_view_screen.dart';
 
+import '../../widgets/element_icon.dart';
+
 class ReportScreen extends StatelessWidget {
   final Report report;
 
@@ -23,18 +25,9 @@ class ReportScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Row(
                 children: [
-                  Container(
-                    width: 56,
-                    height: 56,
-                    decoration: BoxDecoration(
-                      color: AppColors.secondary,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: const Icon(
-                      Icons.article,
-                      size: 32,
-                      color: Colors.white,
-                    ),
+                  ElementIcon(
+                      backgroundColor: AppColors.secondary,
+                      icon: Icons.article
                   ),
                   const SizedBox(width: 16),
                   Expanded(

@@ -3,76 +3,65 @@ import 'package:krit_app/models/event/event_type.dart';
 import 'package:krit_app/models/report/report.dart';
 
 class Event {
-  String name;
-  EventType type;
+  final int id;
+  final String name;
+  final EventType type;
   final DateTime dateTimeStart;
   final DateTime dateTimeEnd;
-  final String formattedDate;
-  final String formattedTime;
   final String description;
   final String building;
   final String room;
-  List<Report> reports;
+  final List<Report> reports;
   bool isFavourite;
 
+  // Computed properties for formatted date and time
+  String get formattedDate => DateFormat('d MMM', 'pl_PL').format(dateTimeStart);
+  String get formattedTime =>
+      "${DateFormat('HH:mm', 'pl_PL').format(dateTimeStart)} - ${DateFormat('HH:mm', 'pl_PL').format(dateTimeEnd)}";
 
-  Event(
-      this.name,
-      this.type,
-      this.dateTimeStart,
-      this.dateTimeEnd,
-      this.formattedDate,
-      this.formattedTime,
-      this.description,
-      this.building,
-      this.room,
-      this.reports,
-          {this.isFavourite = false}
-      );
+  Event({
+    required this.id,
+    required this.name,
+    required this.type,
+    required this.dateTimeStart,
+    required this.dateTimeEnd,
+    required this.description,
+    required this.building,
+    required this.room,
+    required this.reports,
+    this.isFavourite = false,
+  });
 
-  Event.fromJson(Map<String, dynamic> json)
-      : name = json['name'],
-        type = EventType.values.firstWhere(
-                (e) => e.toString() == 'EventType.${json['type']}'),
-        dateTimeStart = DateTime.parse(json['dateTimeStart']),
-        dateTimeEnd = DateTime.parse(json['dateTimeStart']),
-        formattedDate = json['formattedDate'],
-        formattedTime = json['formattedTime'],
-        description = json['description'],
-        building = json['building'],
-        room = json['room'],
-        reports = json['reports'],
-        isFavourite = json['isFavourite'] ?? false;
+  // Add fromJson for deserialization
+  factory Event.fromJson(Map<String, dynamic> json) {
+    return Event(
+      id: json['id'],
+      name: json['name'],
+      type: EventType.values.firstWhere(
+              (e) => e.toString() == 'EventType.${json['type']}'),
+      dateTimeStart: DateTime.parse(json['dateTimeStart']),
+      dateTimeEnd: DateTime.parse(json['dateTimeEnd']),
+      description: json['description'],
+      building: json['building'],
+      room: json['room'],
+      reports: (json['reports'] as List<dynamic>)
+          .map((reportJson) => Report.fromJson(reportJson))
+          .toList(),
+      isFavourite: json['isFavourite'] ?? false,
+    );
+  }
 
-
+  // Add toJson for serialization
   Map<String, dynamic> toJson() => {
+    'id': id,
     'name': name,
     'type': type.toString().split('.').last,
     'dateTimeStart': dateTimeStart.toIso8601String(),
     'dateTimeEnd': dateTimeEnd.toIso8601String(),
-    'formattedDate': formattedDate,
-    'formattedTime': formattedTime,
     'description': description,
     'building': building,
     'room': room,
-    'reports': reports,
+    'reports': reports.map((report) => report.toJson()).toList(),
     'isFavourite': isFavourite,
   };
-}
-
-class MockEvent extends Event {
-  MockEvent(int id, String title, EventType type, DateTime dateStart, DateTime dateEnd,
-      String description, String building, String room, List<Report> reports)
-      : super(
-    title,
-    type,
-    dateStart,
-    dateEnd,
-    DateFormat('d MMM', 'pl_PL').format(dateStart),
-    "${DateFormat('HH:mm', 'pl_PL').format(dateStart)} - ${DateFormat('HH:mm', 'pl_PL').format(dateEnd)}",
-    description,
-    building,
-    room,
-    reports,
-  );
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:krit_app/models/event/events_data_storage.dart';
 import '../../widgets/home/favourites_tile.dart';
-import '../../widgets/searchbar_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -30,37 +29,42 @@ class _HomeScreenState extends State<HomeScreen> {
     final favoriteEvents = _eventsDataStorage.favoriteEvents;
 
     return Scaffold(
-      body: Column(
-        children: [
-          // Padding(
-          //   padding: const EdgeInsets.only(bottom: 16.0),
-          //   child: SearchBarApp(),
-          // ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
-            child: ClipRRect(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+        child: Column(
+          children: [
+            // Padding(
+            //   padding: const EdgeInsets.only(bottom: 16.0),
+            //   child: SearchBarApp(),
+            // ),
+            ClipRRect(
               borderRadius: BorderRadius.circular(12.0),
               child: Image.asset(
-                'assets/images/mapa.png',
+                'assets/images/map.png',
                 height: 300,
                 width: double.infinity,
                 fit: BoxFit.cover,
               ),
             ),
-          ),
-          const SizedBox(height: 24.0),
-          Expanded(
-            child: FavoritesTile(
-              favoriteEvents: favoriteEvents,
-              onFavouriteControl: (event) {
-                setState(() {
-                  _eventsDataStorage.controlFavourite(event);
-                });
-              },
+            const SizedBox(height: 8.0),
+            const Divider(
+              color: Colors.grey,
+              thickness: 1,
             ),
-          ),
-        ],
-      ),
+            const SizedBox(height: 8.0),
+            Expanded(
+              child: FavoritesTile(
+                favoriteEvents: favoriteEvents,
+                onFavouriteControl: (event) {
+                  setState(() {
+                    _eventsDataStorage.controlFavourite(event);
+                  });
+                },
+              ),
+            ),
+          ],
+        ),
+      )
     );
   }
 }

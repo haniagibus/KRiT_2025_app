@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:krit_app/models/report/report.dart';
 import 'package:krit_app/theme/app_colors.dart';
-import 'package:krit_app/views/screens/reports/report_screen.dart'; // Importujemy nasz ekran raportu
+import 'package:krit_app/views/screens/reports/report_screen.dart';
+
+import '../element_icon.dart'; // Importujemy nasz ekran raportu
 
 class ReportTile extends StatelessWidget {
   final Report report;
@@ -33,19 +35,9 @@ class ReportTile extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center, // Align the items in the center
           children: [
-            // Ikona zamiast obrazka
-            Container(
-              width: 56,
-              height: 56,
-              decoration: BoxDecoration(
-                color: AppColors.secondary,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: const Icon(
-                Icons.article,
-                size: 32,
-                color: Colors.white,
-              ),
+            ElementIcon(
+                backgroundColor: AppColors.secondary,
+                icon: Icons.article
             ),
             const SizedBox(width: 16),
             // Using Column to group text elements, ensuring it aligns with the icon

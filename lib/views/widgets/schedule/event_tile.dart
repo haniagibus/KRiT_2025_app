@@ -3,6 +3,8 @@ import 'package:krit_app/models/event/event.dart';
 import 'package:krit_app/views/screens/schedule/event_screen.dart';
 import 'package:krit_app/theme/app_colors.dart';
 
+import '../element_icon.dart';
+
 class EventTile extends StatelessWidget {
   final Event event;
   final VoidCallback onFavouriteControl;
@@ -29,18 +31,9 @@ class EventTile extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: 56,
-              height: 56,
-              decoration: BoxDecoration(
-                color: AppColors.secondary,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: const Icon(
-                Icons.event,
-                size: 32,
-                color: Colors.white,
-              ),
+            ElementIcon(
+                backgroundColor: AppColors.secondary,
+                icon: Icons.event
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -53,17 +46,7 @@ class EventTile extends StatelessWidget {
                     style: const TextStyle(
                       color: Color.fromRGBO(29, 27, 32, 1),
                       fontFamily: 'Roboto',
-                      fontSize: 16,
-                      letterSpacing: 0.5,
-                      height: 1.5,
-                    ),
-                  ),
-                  Text(
-                    event.formattedDate,
-                    style: const TextStyle(
-                      color: Color.fromRGBO(29, 27, 32, 1),
-                      fontFamily: 'Roboto',
-                      fontSize: 16,
+                      fontSize: 18,
                       letterSpacing: 0.5,
                       height: 1.5,
                     ),
@@ -75,7 +58,7 @@ class EventTile extends StatelessWidget {
                     style: const TextStyle(
                       color: Color.fromRGBO(73, 69, 79, 1),
                       fontFamily: 'Roboto',
-                      fontSize: 14,
+                      fontSize: 16,
                       letterSpacing: 0.25,
                       height: 1.43,
                     ),

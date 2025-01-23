@@ -3,7 +3,7 @@ class Report {
   final String title;
   final String author;
   final String description;
-  final String pdfUrl;  // Add pdfUrl to store the PDF link or path
+  final String pdfUrl;
 
   Report({
     required this.id,
@@ -13,14 +13,36 @@ class Report {
     required this.pdfUrl,
   });
 
-  // Możesz dodać metodę do tworzenia instancji z mockowanych danych:
-  factory Report.mock(int id, String title, String author, String description, String pdfUrl) {
+  factory Report.mock(
+      int id, String title, String author, String description, String pdfUrl) {
     return Report(
       id: id,
       title: title,
       author: author,
       description: description,
-      pdfUrl: pdfUrl
+      pdfUrl: pdfUrl,
     );
+  }
+
+  // Add fromJson for deserialization
+  factory Report.fromJson(Map<String, dynamic> json) {
+    return Report(
+      id: json['id'],
+      title: json['title'],
+      author: json['author'],
+      description: json['description'],
+      pdfUrl: json['pdfUrl'],
+    );
+  }
+
+  // Add toJson for serialization
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'author': author,
+      'description': description,
+      'pdfUrl': pdfUrl,
+    };
   }
 }
