@@ -50,33 +50,29 @@ class ReportTile extends StatelessWidget {
                   Text(
                     report.title,
                     style: const TextStyle(
-                      color: Color.fromRGBO(29, 27, 32, 1),
+                      color: AppColors.text_primary,
                       fontFamily: 'Roboto',
-                      fontSize: 16,
-                      letterSpacing: 0.5,
-                      height: 1.5,
+                      fontSize: 18,
                     ),
                   ),
                   Text(
-                    "by ${report.author}",
+                    report.author,
                     style: const TextStyle(
-                      color: Color.fromRGBO(73, 69, 79, 1),
+                      color: AppColors.text_secondary,
                       fontFamily: 'Roboto',
                       fontSize: 14,
-                      letterSpacing: 0.25,
-                      height: 1.43,
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    report.description,
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: Color.fromRGBO(100, 100, 100, 1),
-                      fontSize: 12,
-                    ),
-                  ),
+                  // const SizedBox(height: 8),
+                  // Text(
+                  //   report.description,
+                  //   maxLines: 3,
+                  //   overflow: TextOverflow.ellipsis,
+                  //   style: const TextStyle(
+                  //     color: Color.fromRGBO(100, 100, 100, 1),
+                  //     fontSize: 12,
+                  //   ),
+                  // ),
                 ],
               ),
             ),
