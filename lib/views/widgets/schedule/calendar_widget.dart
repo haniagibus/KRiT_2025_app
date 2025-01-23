@@ -82,7 +82,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 );
               }).toList(),
               labelColor: AppColors.accent,
-              unselectedLabelColor: AppColors.textSecondary,
+              unselectedLabelColor: AppColors.text_secondary,
               onTap: (index) {
                 setState(() {
                   _selectedDate = _availableDates[index];

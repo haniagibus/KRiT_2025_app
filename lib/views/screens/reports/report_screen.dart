@@ -43,7 +43,7 @@ class ReportScreen extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
+                        color: AppColors.text_primary,
                       ),
                     ),
                   ),
@@ -63,7 +63,7 @@ class ReportScreen extends StatelessWidget {
                   const Icon(
                     Icons.account_circle,
                     size: 28,
-                    color: AppColors.textSecondary,
+                    color: AppColors.text_secondary,
                   ),
                   const SizedBox(width: 8),
                   Text(
@@ -71,7 +71,7 @@ class ReportScreen extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.textSecondary,
+                      color: AppColors.text_secondary,
                     ),
                   ),
                 ],
@@ -91,7 +91,7 @@ class ReportScreen extends StatelessWidget {
                 report.description,
                 style: const TextStyle(
                   fontSize: 16,
-                  color: AppColors.textSecondary,
+                  color: AppColors.text_secondary,
                 ),
               ),
             ),

@@ -52,8 +52,6 @@
 
 import 'package:flutter/material.dart';
 
-/// Flutter code sample for [SearchBar].
-
 class SearchBarApp extends StatefulWidget {
   final ValueChanged<String>? onChanged;
   const SearchBarApp({super.key, this.onChanged});

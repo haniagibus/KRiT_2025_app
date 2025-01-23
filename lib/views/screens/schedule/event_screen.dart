@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:krit_app/models/event/event.dart';
 import 'package:krit_app/theme/app_colors.dart';
 
+import '../../widgets/element_icon.dart';
+
 class EventScreen extends StatelessWidget {
   final Event event;
 
@@ -23,18 +25,9 @@ class EventScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Row(
                 children: [
-                  Container(
-                    width: 56,
-                    height: 56,
-                    decoration: BoxDecoration(
-                      color: AppColors.secondary,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: const Icon(
-                      Icons.event,
-                      size: 32,
-                      color: Colors.white,
-                    ),
+                  ElementIcon(
+                      backgroundColor: AppColors.secondary,
+                      icon: Icons.event
                   ),
                   const SizedBox(width: 16),
                   Expanded(
@@ -43,12 +36,18 @@ class EventScreen extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
+                        color: AppColors.text_primary,
                       ),
                     ),
                   ),
                 ],
               ),
+            ),
+            const Divider(
+              color: Colors.grey,
+              thickness: 1,
+              indent: 16,
+              endIndent: 16,
             ),
             const SizedBox(height: 16),
             // Event Details
@@ -68,7 +67,7 @@ class EventScreen extends StatelessWidget {
                             Icon(
                               Icons.calendar_today,
                               size: 28,
-                              color: AppColors.textPrimary,
+                              color: AppColors.text_primary,
                             ),
                             const SizedBox(height: 8),
                             Text(
@@ -76,7 +75,7 @@ class EventScreen extends StatelessWidget {
                               style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
-                                color: AppColors.textPrimary,
+                                color: AppColors.text_primary,
                               ),
                             ),
                           ],
@@ -112,7 +111,6 @@ class EventScreen extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 8),
-                  // Dodanie Dividera pomiędzy godziną a opisem
                   const Divider(
                     color: Colors.grey,
                     thickness: 1,
@@ -124,7 +122,7 @@ class EventScreen extends StatelessWidget {
                       Icon(
                         Icons.room,
                         size: 28, // Zmniejszenie rozmiaru ikony
-                        color: AppColors.textSecondary,
+                        color: AppColors.text_secondary,
                       ),
                       const SizedBox(width: 8),
                       Text(
@@ -132,7 +130,7 @@ class EventScreen extends StatelessWidget {
                         style: const TextStyle(
                           fontSize: 18, // Mniejsza czcionka
                           fontWeight: FontWeight.bold,
-                          color: AppColors.textSecondary,
+                          color: AppColors.text_secondary,
                         ),
                       ),
                     ],
@@ -143,7 +141,7 @@ class EventScreen extends StatelessWidget {
                     event.description,
                     style: const TextStyle(
                         fontSize: 16,
-                        color: AppColors.textSecondary
+                        color: AppColors.text_secondary
                     ),
                   ),
                 ],

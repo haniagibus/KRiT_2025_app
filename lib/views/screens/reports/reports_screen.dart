@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:krit_app/models/report/report.dart';
 import 'package:krit_app/models/report/reports_data_storage.dart';
-import 'package:krit_app/views/widgets/report_tile.dart';
+import 'package:krit_app/views/widgets/reports/report_tile.dart';
 
 import '../../widgets/searchbar_widget.dart'; // Zakładając, że masz ReportTile
 

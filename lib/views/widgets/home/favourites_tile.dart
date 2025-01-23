@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:krit_app/views/widgets/event_tile.dart';
+import 'package:krit_app/views/widgets/schedule/event_tile.dart';
 import 'package:krit_app/theme/app_colors.dart';
 
-import '../../models/event/event.dart';
+import '../../../models/event/event.dart';
 
 class FavoritesTile extends StatelessWidget {
   final List<Event> favoriteEvents;
@@ -26,7 +26,7 @@ class FavoritesTile extends StatelessWidget {
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
+              color: AppColors.text_primary,
             ),
           ),
         ),
