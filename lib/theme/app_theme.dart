@@ -7,8 +7,8 @@ class AppTheme {
     primaryColor: AppColors.primary,
     scaffoldBackgroundColor: AppColors.background,
     textTheme: TextTheme(
-      bodyLarge: TextStyle(color: AppColors.textPrimary),
-      bodyMedium: TextStyle(color: AppColors.textSecondary),
+      bodyLarge: TextStyle(color: AppColors.text_primary),
+      bodyMedium: TextStyle(color: AppColors.text_secondary),
     ),
     appBarTheme: AppBarTheme(
       backgroundColor: AppColors.primary,
@@ -17,7 +17,7 @@ class AppTheme {
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: Colors.white, // Navigation bar background
       selectedItemColor: AppColors.accent, // Selected item color
-      unselectedItemColor: AppColors.textSecondary, // Unselected item color
+      unselectedItemColor: AppColors.text_secondary, // Unselected item color
       selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
       unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal),
       showUnselectedLabels: true, // Show labels for unselected items

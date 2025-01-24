@@ -66,7 +66,12 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('KRiT 2025'),
+        title: const Text(
+          'KRiT 2025',
+          style: const TextStyle(
+            fontWeight: FontWeight.bold
+          ),
+        ),
       ),
       body: SafeArea(
         child: PageView(
@@ -98,7 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.book),
-            label: "Raporty",
+            label: "Referaty",
           ),
         ],
         currentIndex: _selectedIndex,

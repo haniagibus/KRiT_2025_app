@@ -52,8 +52,6 @@
 
 import 'package:flutter/material.dart';
 
-/// Flutter code sample for [SearchBar].
-
 class SearchBarApp extends StatefulWidget {
   final ValueChanged<String>? onChanged;
   const SearchBarApp({super.key, this.onChanged});
@@ -64,7 +62,7 @@ class SearchBarApp extends StatefulWidget {
 
 class _SearchBarAppState extends State<SearchBarApp> {
   final SearchController _controller = SearchController();
-  String _searchQuery = ""; // Zmienna do przechowywania wartości zapytania
+  String _searchQuery = "";
   bool isDark = false;
 
 

@@ -32,20 +32,20 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   }
 
   void _initializeDates() {
-    final now = DateTime.now();
-    _availableDates = List.generate(3, (index) => now.add(Duration(days: index)));
+    final start = DateTime(2024, 9, 11);
+    _availableDates = List.generate(3, (index) => start.add(Duration(days: index)));
   }
 
   void _filterEventsByDate() {
     final events = widget.eventsDataStorage.eventList
-        .where((event) => event.name.toLowerCase().contains(widget.searchQuery.toLowerCase()))
+        .where((event) => event.title.toLowerCase().contains(widget.searchQuery.toLowerCase()))
         .toList();
 
     setState(() {
       _eventsForSelectedDate = events.where((event) {
-        return event.date.year == _selectedDate.year &&
-            event.date.month == _selectedDate.month &&
-            event.date.day == _selectedDate.day;
+        return event.dateTimeStart.year == _selectedDate.year &&
+            event.dateTimeStart.month == _selectedDate.month &&
+            event.dateTimeStart.day == _selectedDate.day;
       }).toList();
     });
   }
@@ -82,7 +82,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 );
               }).toList(),
               labelColor: AppColors.accent,
-              unselectedLabelColor: AppColors.textSecondary,
+              unselectedLabelColor: AppColors.text_secondary,
               onTap: (index) {
                 setState(() {
                   _selectedDate = _availableDates[index];
@@ -104,7 +104,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   },
                 ),
               )
-                  .toList(),
+              .toList(),
             ),
           ),
         ],

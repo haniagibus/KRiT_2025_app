@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:krit_app/models/report/report.dart';
 import 'package:krit_app/models/report/reports_data_storage.dart';
-import 'package:krit_app/views/widgets/report_tile.dart';
+import 'package:krit_app/views/widgets/reports/report_tile.dart';
 
 import '../../widgets/searchbar_widget.dart'; // Zakładając, że masz ReportTile
 
@@ -34,7 +34,6 @@ class _ReportsViewState extends State<ReportsScreen> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Pasek wyszukiwania
         SearchBarApp(
           onChanged: (String value) {
             setState(() {
@@ -42,7 +41,6 @@ class _ReportsViewState extends State<ReportsScreen> {
             });
           },
         ),
-        // Wyświetlanie listy referatów
         Expanded(
           child: ListView.builder(
             itemCount: _filteredReports.length,
@@ -51,7 +49,6 @@ class _ReportsViewState extends State<ReportsScreen> {
               return ReportTile(
                 report: report,
                 onTap: () {
-                  // Przejście do szczegółów referatu
                 },
               );
             },
