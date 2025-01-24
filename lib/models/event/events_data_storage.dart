@@ -1,5 +1,7 @@
 import 'dart:collection';
 import 'package:krit_app/config.dart';
+import '../report/report.dart';
+import '../report/reports_data_storage.dart';
 import 'event.dart';
 import 'mocked_events.dart';
 
@@ -39,6 +41,11 @@ class EventsDataStorage {
       _eventList[index].isFavourite = !event.isFavourite;
       _callback();
     }
+  }
+
+  List<Report> getReportsForEvent(int id) {
+    final reportsDataStorage = ReportsDataStorage(() {});
+    return reportsDataStorage.getReportsForEvent(id);
   }
 
   List<Event> getEventsForDate(DateTime date) {

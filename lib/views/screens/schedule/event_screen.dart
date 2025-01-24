@@ -2,12 +2,39 @@ import 'package:flutter/material.dart';
 import 'package:krit_app/models/event/event.dart';
 import 'package:krit_app/theme/app_colors.dart';
 
+import '../../../models/report/report.dart';
 import '../../widgets/element_icon.dart';
+import '../../widgets/reports/report_tile.dart';
 
-class EventScreen extends StatelessWidget {
+class EventScreen extends StatefulWidget {
   final Event event;
+  final VoidCallback onFavouriteControl;
 
-  const EventScreen({super.key, required this.event});
+  const EventScreen({
+    super.key,
+    required this.event,
+    required this.onFavouriteControl,
+  });
+
+  @override
+  State<EventScreen> createState() => _EventScreenState();
+}
+
+class _EventScreenState extends State<EventScreen> {
+  late bool isFavourite;
+
+  @override
+  void initState() {
+    super.initState();
+    isFavourite = widget.event.isFavourite;
+  }
+
+  void toggleFavourite() {
+    setState(() {
+      isFavourite = !isFavourite;
+    });
+    widget.onFavouriteControl();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,19 +53,26 @@ class EventScreen extends StatelessWidget {
               child: Row(
                 children: [
                   ElementIcon(
-                      backgroundColor: AppColors.plenary_session,
-                      icon: Icons.event
+                    backgroundColor: AppColors.plenary_session,
+                    icon: Icons.event,
                   ),
                   const SizedBox(width: 16),
                   Expanded(
                     child: Text(
-                      event.title,
+                      widget.event.title,
                       style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                         color: AppColors.text_primary,
                       ),
                     ),
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      isFavourite ? Icons.star : Icons.star_border,
+                      color: isFavourite ? AppColors.accent : Colors.grey,
+                    ),
+                    onPressed: toggleFavourite,
                   ),
                 ],
               ),
@@ -54,7 +88,7 @@ class EventScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.end,  // Aligns the children to the right
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Icon(
                         Icons.room,
@@ -63,7 +97,7 @@ class EventScreen extends StatelessWidget {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        event.room,
+                        widget.event.room,
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -101,7 +135,7 @@ class EventScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              event.formattedDate,
+                              widget.event.formattedDate,
                               style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -126,7 +160,7 @@ class EventScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              event.formattedTime,
+                              widget.event.formattedTime,
                               style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -145,18 +179,62 @@ class EventScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    event.description,
+                    widget.event.description,
                     style: const TextStyle(
-                        fontSize: 16,
-                        color: AppColors.text_secondary
+                      fontSize: 16,
+                      color: AppColors.text_secondary,
                     ),
                   ),
+                  const SizedBox(height: 16),
+                  _buildReportsSection(widget.event.reports),
                 ],
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  /// Reports Section
+  Widget _buildReportsSection(List<Report> reports) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "Raporty",
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: AppColors.text_primary,
+          ),
+        ),
+        const SizedBox(height: 8),
+        if (reports.isEmpty)
+          const Text(
+            "Brak raportów dla tego wydarzenia.",
+            style: TextStyle(fontSize: 16, color: AppColors.text_secondary),
+          )
+        else
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: reports.length,
+            itemBuilder: (context, index) {
+              final report = reports[index];
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: ReportTile(
+                  report: report,
+                  onTap: () {
+                    // Additional logic for tapping a report
+                    print("Wybrano raport: ${report.title}");
+                  },
+                ),
+              );
+            },
+          ),
+      ],
     );
   }
 }

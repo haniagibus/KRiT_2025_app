@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:krit_app/models/report/report.dart';
 import 'package:krit_app/models/report/reports_data_storage.dart';
 import 'package:krit_app/views/widgets/reports/report_tile.dart';
-
-import '../../widgets/searchbar_widget.dart'; // Zakładając, że masz ReportTile
+import '../../widgets/searchbar_widget.dart';
 
 class ReportsScreen extends StatefulWidget {
   const ReportsScreen({super.key});
@@ -30,15 +29,23 @@ class _ReportsViewState extends State<ReportsScreen> {
     });
   }
 
+  void _filterReportsByName(String query) {
+    setState(() {
+      _searchQuery = query.toLowerCase();
+      _filteredReports = _reportsDataStorage.reportList.where((report) {
+        return report.title.toLowerCase().contains(_searchQuery) || report.author.toLowerCase().contains(_searchQuery)
+        || report.keywords.any((keyword) => keyword.toLowerCase().contains(_searchQuery));
+      }).toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         SearchBarApp(
           onChanged: (String value) {
-            setState(() {
-              _searchQuery = value;
-            });
+            _filterReportsByName(value); // Wywołanie nowej metody filtrowania
           },
         ),
         Expanded(
