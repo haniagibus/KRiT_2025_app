@@ -202,7 +202,7 @@ class _EventScreenState extends State<EventScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          "Raporty",
+          "Referaty:",
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -212,7 +212,7 @@ class _EventScreenState extends State<EventScreen> {
         const SizedBox(height: 8),
         if (reports.isEmpty)
           const Text(
-            "Brak raportów dla tego wydarzenia.",
+            "Brak referatów dla tego wydarzenia.",
             style: TextStyle(fontSize: 16, color: AppColors.text_secondary),
           )
         else
