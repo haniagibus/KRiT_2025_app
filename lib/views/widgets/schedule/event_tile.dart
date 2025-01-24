@@ -32,7 +32,7 @@ class EventTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ElementIcon(
-                backgroundColor: AppColors.secondary,
+                backgroundColor: AppColors.plenary_session,
                 icon: Icons.event
             ),
             const SizedBox(width: 16),
@@ -47,17 +47,25 @@ class EventTile extends StatelessWidget {
                       color: AppColors.accent,
                       fontFamily: 'Roboto',
                       fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.bold
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    event.name,
-                    textAlign: TextAlign.center,
+                    event.title,
                     style: const TextStyle(
                       color:  AppColors.text_primary,
                       fontFamily: 'Roboto',
                       fontSize: 18,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    event.subtitle,
+                    style: const TextStyle(
+                      color:  AppColors.text_secondary,
+                      fontFamily: 'Roboto',
+                      fontSize: 14,
                     ),
                   ),
                 ],

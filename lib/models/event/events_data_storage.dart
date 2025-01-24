@@ -1,8 +1,7 @@
 import 'dart:collection';
-import 'dart:math';
 import 'package:krit_app/config.dart';
 import 'event.dart';
-import 'event_type.dart';
+import 'mocked_events.dart';
 
 class EventsDataStorage {
   static final EventsDataStorage _singleton = EventsDataStorage._internal();
@@ -19,71 +18,11 @@ class EventsDataStorage {
     return _singleton;
   }
 
-  final random = Random();
-
-  // Mock data helpers
-  String randomTitle() {
-    return titles[random.nextInt(titles.length)];
-  }
-
-  DateTime randomDate() {
-    return dates[random.nextInt(dates.length)];
-  }
-
-  String randomBuilding() {
-    return buildings[random.nextInt(buildings.length)];
-  }
-
-  String randomRoom() {
-    return rooms[random.nextInt(rooms.length)];
-  }
-
-  String randomDescription() {
-    return descriptions[random.nextInt(descriptions.length)];
-  }
-
-  EventType randomEventType() {
-    return EventType.values[random.nextInt(EventType.values.length)];
-  }
-
-  final titles = [
-    "Food Carnival",
-    "Coding Bootcamp",
-    "Movie Night",
-    "Yoga Session"
-  ];
-
-  final dates = [
-    DateTime(2025, 1, 24, 10, 0),
-    DateTime(2025, 1, 25, 14, 30),
-    DateTime(2025, 1, 26, 18, 0),
-  ];
-
-  final buildings = ["Main Hall", "Tech Building", "Library", "Gymnasium"];
-  final rooms = ["Room 101", "Room 202", "Auditorium", "Room 303"];
-  final descriptions = [
-    "A fun-filled event for everyone!",
-    "Learn to code like a pro.",
-    "Enjoy a relaxing evening with a classic movie.",
-    "Stretch and relax with a guided yoga session."
-  ];
 
   EventsDataStorage._internal() {
     if (Config.useMockData) {
-      for (int i = 0; i < 10; i++) {
-        _eventList.add(Event(
-          id: i,
-          name: randomTitle(),
-          type: randomEventType(),
-          dateTimeStart: randomDate(),
-          dateTimeEnd: randomDate().add(Duration(hours: 2)), // Random 2-hour duration
-          description: randomDescription(),
-          building: randomBuilding(),
-          room: randomRoom(),
-          reports: [], // Empty reports for mock data
-          isFavourite: false, // Default value for favourites
-        ));
-      }
+      // Add mocked events
+      _eventList = MockedEvents.getMockedEvents();
     }
   }
 
@@ -91,7 +30,7 @@ class EventsDataStorage {
   List<Event> filterEvents(String query) {
     return _eventList.where((event) {
       // Check if the event name or description matches the query (case-insensitive)
-      bool matchesName = event.name.toLowerCase().contains(query.toLowerCase());
+      bool matchesName = event.title.toLowerCase().contains(query.toLowerCase());
       bool matchesDescription = event.description.toLowerCase().contains(query.toLowerCase());
 
       // Check if the event type matches the query (case-insensitive)

@@ -32,13 +32,14 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   }
 
   void _initializeDates() {
-    final now = DateTime.now();
+    // final now = DateTime.now();
+    final now = DateTime(2024, 9, 11);
     _availableDates = List.generate(3, (index) => now.add(Duration(days: index)));
   }
 
   void _filterEventsByDate() {
     final events = widget.eventsDataStorage.eventList
-        .where((event) => event.name.toLowerCase().contains(widget.searchQuery.toLowerCase()))
+        .where((event) => event.title.toLowerCase().contains(widget.searchQuery.toLowerCase()))
         .toList();
 
     setState(() {
