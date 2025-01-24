@@ -24,7 +24,6 @@ class Report {
     );
   }
 
-  // Add fromJson for deserialization
   factory Report.fromJson(Map<String, dynamic> json) {
     return Report(
       id: json['id'],
@@ -35,7 +34,6 @@ class Report {
     );
   }
 
-  // Add toJson for serialization
   Map<String, dynamic> toJson() {
     return {
       'id': id,
