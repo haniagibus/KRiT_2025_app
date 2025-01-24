@@ -2,12 +2,14 @@ import 'dart:collection';
 import 'dart:math';
 import 'package:krit_app/config.dart';
 
+import '../report/report.dart';
+import '../report/reports_data_storage.dart';
 import 'event.dart';
 
 class EventsDataStorage {
   static final EventsDataStorage _singleton = EventsDataStorage._internal();
 
-  List<Event> _eventList = [];
+  final List<Event> _eventList = [];
   List<Event> get eventList => UnmodifiableListView(_eventList);
   late Function _callback;
   List<Event> get favoriteEvents => _eventList.where((event) => event.isFavourite).toList();
@@ -26,18 +28,25 @@ class EventsDataStorage {
   DateTime randomDate() {
     return dates[random.nextInt(dates.length)];
   }
-  final titles = ["Food Carnival", "Coding Bootcamp", "Movie Night", "Yoga Session"];
+  final titles = [
+    "Sztuczna inteligencja w systemach radiowych – I",
+    "Bezpieczeństwo sieci i systemów teleinformatycznych",
+    "Systemy radionawigacyjne i radiolokalizacyjne – I",
+    "Aspekty sieci rdzeniowych 5G i 6G – I",
+    "Sztuczna inteligencja w systemach radiowych – II",
+    "Kryptografia i mechanizmy cyberbezpieczeństwa"
+  ];
 
   final dates = [
-    DateTime(2025, 1, 19),
-    DateTime(2025, 1, 20),
-    DateTime(2025, 1, 21),
+    DateTime(2025, 1, 23),
+    DateTime(2025, 1, 24),
+    DateTime(2025, 1, 25),
   ];
 
   EventsDataStorage._internal() {
     if (Config.useMockData) {
       for (int i = 0; i < 10; i++) {
-        MockEvent mockEvent = new MockEvent(i, randomTitle(),randomDate());
+        MockEvent mockEvent = new MockEvent(i, randomTitle(),randomDate(),getReportsForEvent(i));
         mockEvent.name = mockEvent.name + i.toString();
         _eventList.add(mockEvent);
       }
@@ -47,13 +56,13 @@ class EventsDataStorage {
     // }
   }
 
-  List<Event> getEventsForDate(DateTime date) {
-    return _eventList.where((event) {
-      DateTime eventDateOnly = DateTime(event.date.year, event.date.month, event.date.day);
-      DateTime inputDateOnly = DateTime(date.year, date.month, date.day);
-      return eventDateOnly.isAtSameMomentAs(inputDateOnly);
-    }).toList();
-  }
+  // List<Event> getEventsForDate(DateTime date) {
+  //   return _eventList.where((event) {
+  //     DateTime eventDateOnly = DateTime(event.date.year, event.date.month, event.date.day);
+  //     DateTime inputDateOnly = DateTime(date.year, date.month, date.day);
+  //     return eventDateOnly.isAtSameMomentAs(inputDateOnly);
+  //   }).toList();
+  // }
 
   void controlFavourite(Event event) {
     final index = _eventList.indexOf(event);
@@ -63,7 +72,13 @@ class EventsDataStorage {
     }
   }
 
-  // Future<void> updateData() async {
+  List<Report> getReportsForEvent(int id) {
+    final reportsDataStorage = ReportsDataStorage(() {});
+    return reportsDataStorage.getReportsForEvent(id);
+  }
+
+
+// Future<void> updateData() async {
   //   if (Config.useMockData) return;
   //   // TODO: Check the status and give information to the user if it failed
   //   var response = await Requests().get(Config.apiUrl + 'partners');

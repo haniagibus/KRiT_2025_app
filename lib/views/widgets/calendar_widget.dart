@@ -38,7 +38,17 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
   void _filterEventsByDate() {
     final events = widget.eventsDataStorage.eventList
-        .where((event) => event.name.toLowerCase().contains(widget.searchQuery.toLowerCase()))
+        .where((event) {
+      bool matchesEvent = event.name.toLowerCase().contains(widget.searchQuery.toLowerCase());
+
+      bool matchesReport = event.reports.any((report) {
+        return report.title.toLowerCase().contains(widget.searchQuery.toLowerCase()) ||
+            report.author.toLowerCase().contains(widget.searchQuery.toLowerCase()) ||
+            report.keywords.any((keyword) => keyword.toLowerCase().contains(widget.searchQuery.toLowerCase()));
+      });
+
+      return matchesEvent || matchesReport;
+    })
         .toList();
 
     setState(() {
@@ -49,6 +59,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       }).toList();
     });
   }
+
 
   @override
   void didUpdateWidget(CalendarWidget oldWidget) {

@@ -1,162 +1,225 @@
 import 'package:flutter/material.dart';
-import 'package:krit_app/models/event/event.dart';
-import 'package:krit_app/theme/app_colors.dart';
 import 'package:intl/intl.dart';
+import 'package:krit_app/models/event/event.dart';
+import 'package:krit_app/models/report/report.dart';
+import 'package:krit_app/theme/app_colors.dart';
+import '../../widgets/star_widget.dart'; // Widget ulubionych
+import '../../widgets/report_tile.dart'; // Importujemy ReportTile
 
-class EventScreen extends StatelessWidget {
+class EventScreen extends StatefulWidget {
   final Event event;
+  final VoidCallback onFavouriteControl;
 
-  const EventScreen({super.key, required this.event});
+  const EventScreen({
+    super.key,
+    required this.event,
+    required this.onFavouriteControl,
+  });
+
+  @override
+  State<EventScreen> createState() => _EventScreenState();
+}
+
+class _EventScreenState extends State<EventScreen> {
+  late bool isFavourite;
+
+  @override
+  void initState() {
+    super.initState();
+    isFavourite = widget.event.isFavourite;
+  }
+
+  void toggleFavourite() {
+    setState(() {
+      isFavourite = !isFavourite;
+    });
+    widget.onFavouriteControl();
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Formatowanie daty na polski sposób (np. 18 stycznia 2025)
-    String formattedDate = DateFormat('d MMM', 'pl_PL').format(event.date);
-
-    // Formatowanie godziny, np. 12:00 - 14:00
-    String timeRange = "${event.timeBegin} - ${event.timeEnd}";
+    final String formattedDate = DateFormat('d MMM', 'pl_PL').format(widget.event.date);
+    final String timeRange = "${widget.event.timeBegin} - ${widget.event.timeEnd}";
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(event.name),
+        title: Text(widget.event.name),
         backgroundColor: AppBarTheme().backgroundColor,
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Cover Image
-            Image.network(
-              event.coverImageUrl,
-              width: double.infinity,
-              height: 200,
-              fit: BoxFit.cover,
-            ),
+            _buildEventImage(widget.event.coverImageUrl),
             const SizedBox(height: 10),
-            // Logo and Name
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    backgroundImage: NetworkImage(event.logoUrl),
-                    radius: 30,
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Text(
-                      event.name,
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            _buildHeader(widget.event),
             const SizedBox(height: 16),
-            // Event Details
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Data i godzina w dwóch kolumnach, przedzielone widocznym Dividerem
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center, // Wyśrodkowanie kolumn
-                    children: [
-                      // Kolumna dla daty
-                      Expanded(
-                        child: Column(
-                          children: [
-                            Icon(
-                              Icons.calendar_today,
-                              size: 28,
-                              color: AppColors.textPrimary,
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              formattedDate, // Zmieniona data na polski format
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.textPrimary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      // Divider pomiędzy datą a godziną
-                      const VerticalDivider(
-                        color: AppColors.primary,
-                        thickness: 2, // Grubość dividera
-                        width: 20,
-                      ),
-                      // Kolumna dla godziny
-                      Expanded(
-                        child: Column(
-                          children: [
-                            Icon(
-                              Icons.access_time,
-                              size: 28,
-                              color: AppColors.accent,
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              timeRange, // Wyświetlanie godzin
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.accent,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  // Dodanie Dividera pomiędzy godziną a opisem
-                  const Divider(
-                    color: Colors.grey,
-                    thickness: 1,
-                  ),
-                  const SizedBox(height: 8),
-                  // Sala - umieszczona pod spodem, niewyśrodkowana
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.room,
-                        size: 28, // Zmniejszenie rozmiaru ikony
-                        color: AppColors.textSecondary,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        event.room, // Zmieniamy na nazwę sali
-                        style: const TextStyle(
-                          fontSize: 18, // Mniejsza czcionka
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  // Opis wydarzenia
-                  Text(
-                    event.description,
-                    style: const TextStyle(
-                        fontSize: 16,
-                        color: AppColors.textSecondary
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            _buildDetailsSection(formattedDate, timeRange),
+            const SizedBox(height: 16),
+            _buildDescription(widget.event.description),
+            const SizedBox(height: 16),
+            _buildReportsSection(widget.event.reports), // Użycie ReportTile
           ],
         ),
+      ),
+    );
+  }
+
+  /// Sekcja: Obraz wydarzenia
+  Widget _buildEventImage(String imageUrl) {
+    return Image.network(
+      imageUrl,
+      width: double.infinity,
+      height: 200,
+      fit: BoxFit.cover,
+    );
+  }
+
+  /// Sekcja: Nagłówek z logo i nazwą wydarzenia
+  Widget _buildHeader(Event event) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Row(
+        children: [
+          CircleAvatar(
+            backgroundImage: NetworkImage(event.logoUrl),
+            radius: 30,
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Text(
+              event.name,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Sekcja: Szczegóły wydarzenia (data, czas, pokój, ulubione)
+  Widget _buildDetailsSection(String formattedDate, String timeRange) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildIconDetail(Icons.calendar_today, formattedDate, AppColors.textPrimary),
+              const VerticalDivider(color: AppColors.primary, thickness: 2, width: 20),
+              _buildIconDetail(Icons.access_time, timeRange, AppColors.accent),
+            ],
+          ),
+          const SizedBox(height: 8),
+          const Divider(color: Colors.grey, thickness: 1),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              StarWidget(
+                isFavourite: isFavourite,
+                onTap: toggleFavourite,
+              ),
+              const SizedBox(width: 8),
+              Icon(Icons.room, size: 28, color: AppColors.textSecondary),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  widget.event.room,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Pomocnicza metoda: Ikona z tekstem (detale)
+  Widget _buildIconDetail(IconData icon, String text, Color color) {
+    return Expanded(
+      child: Column(
+        children: [
+          Icon(icon, size: 28, color: color),
+          const SizedBox(height: 8),
+          Text(
+            text,
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Sekcja: Opis wydarzenia
+  Widget _buildDescription(String description) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Text(
+        description,
+        style: const TextStyle(
+          fontSize: 16,
+          color: AppColors.textSecondary,
+        ),
+      ),
+    );
+  }
+
+  /// Sekcja: Raporty wydarzenia
+  Widget _buildReportsSection(List<Report> reports) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "Raporty",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 8),
+          if (reports.isEmpty)
+            const Text(
+              "Brak raportów dla tego wydarzenia.",
+              style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
+            )
+          else
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: reports.length,
+              itemBuilder: (context, index) {
+                final report = reports[index];
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: ReportTile(
+                    report: report,
+                    onTap: () {
+                      // Można dodać dodatkową logikę na tap
+                      print("Wybrano raport: ${report.title}");
+                    },
+                  ),
+                );
+              },
+            ),
+        ],
       ),
     );
   }

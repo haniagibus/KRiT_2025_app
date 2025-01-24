@@ -25,12 +25,13 @@ class SideMenu extends StatelessWidget {
             decoration: BoxDecoration(
               color: theme.appBarTheme.backgroundColor,
             ),
-            child: Text(
-              'KRiT Menu',
-              style: theme.textTheme.bodyLarge!.copyWith(
-                color: theme.appBarTheme.foregroundColor,
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
+            child: Center(
+              child: ClipRRect(
+                child: Image.asset(
+                  'assets/images/KRiT2025_logo.png',
+                  height: 100,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),

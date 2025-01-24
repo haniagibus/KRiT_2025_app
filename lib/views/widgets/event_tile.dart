@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:krit_app/models/event/event.dart';
 import 'package:krit_app/views/screens/schedule/event_screen.dart';
 import 'package:krit_app/theme/app_colors.dart';
+import 'package:krit_app/views/widgets/star_widget.dart';
 
 class EventTile extends StatelessWidget {
   final Event event;
@@ -13,11 +14,10 @@ class EventTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navigate to the EventScreen when the tile is tapped
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => EventScreen(event: event),
+            builder: (context) => EventScreen(event: event, onFavouriteControl: () {  },),
           ),
         );
       },
@@ -85,14 +85,9 @@ class EventTile extends StatelessWidget {
             Center(
               child: Row(
                 children: [
-                  IconButton(
-                    icon: Icon(
-                      event.isFavourite ? Icons.star : Icons.star_border,
-                      color: event.isFavourite
-                          ? AppColors.accent
-                          : Colors.grey,
-                    ),
-                    onPressed: onFavouriteControl,
+                  StarWidget(
+                    isFavourite: event.isFavourite,
+                    onTap: onFavouriteControl,
                   ),
                   Icon(
                     Icons.arrow_forward_ios,
