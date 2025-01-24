@@ -11,13 +11,13 @@ class ElementIcon extends StatelessWidget {
 
   const ElementIcon({
     Key? key,
-    required this.backgroundColor, // Required parameter for background color
-    required this.icon,            // Required parameter for icon
-    this.iconSize = 32.0,          // Default size for the icon
-    this.iconColor = Colors.white, // Default color for the icon
-    this.width = 56.0,             // Default width of the container
-    this.height = 56.0,            // Default height of the container
-    this.borderRadius = 16.0,      // Default border radius
+    required this.backgroundColor,
+    required this.icon,
+    this.iconSize = 32.0,
+    this.iconColor = Colors.white,
+    this.width = 56.0,
+    this.height = 56.0,
+    this.borderRadius = 16.0,
   }) : super(key: key);
 
   @override

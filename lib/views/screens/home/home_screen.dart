@@ -18,14 +18,12 @@ class _HomeScreenState extends State<HomeScreen> {
     _eventsDataStorage = EventsDataStorage(_refresh);
   }
 
-  // Funkcja odświeżająca widok
   void _refresh() {
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    // Pobieramy listę ulubionych wydarzeń
     final favoriteEvents = _eventsDataStorage.favoriteEvents;
 
     return Scaffold(
@@ -33,10 +31,6 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
         child: Column(
           children: [
-            // Padding(
-            //   padding: const EdgeInsets.only(bottom: 16.0),
-            //   child: SearchBarApp(),
-            // ),
             ClipRRect(
               borderRadius: BorderRadius.circular(12.0),
               child: Image.asset(

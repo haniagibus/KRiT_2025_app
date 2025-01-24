@@ -26,7 +26,7 @@ class EventScreen extends StatelessWidget {
               child: Row(
                 children: [
                   ElementIcon(
-                      backgroundColor: AppColors.secondary,
+                      backgroundColor: AppColors.plenary_session,
                       icon: Icons.event
                   ),
                   const SizedBox(width: 16),
@@ -43,92 +43,29 @@ class EventScreen extends StatelessWidget {
                 ],
               ),
             ),
-            // const Divider(
-            //   color: Colors.grey,
-            //   thickness: 1,
-            //   indent: 16,
-            //   endIndent: 16,
-            // ),
-            // const SizedBox(height: 16),
-            // Event Details
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // // Data i godzina w dwóch kolumnach, przedzielone widocznym Dividerem
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.center, // Wyśrodkowanie kolumn
-                  //   children: [
-                  //     // Kolumna dla daty
-                  //     Expanded(
-                  //       child: Column(
-                  //         children: [
-                  //           Icon(
-                  //             Icons.calendar_today,
-                  //             size: 28,
-                  //             color: AppColors.text_primary,
-                  //           ),
-                  //           const SizedBox(height: 8),
-                  //           Text(
-                  //             event.formattedDate, // Zmieniona data na polski format
-                  //             style: const TextStyle(
-                  //               fontSize: 20,
-                  //               fontWeight: FontWeight.bold,
-                  //               color: AppColors.text_primary,
-                  //             ),
-                  //           ),
-                  //         ],
-                  //       ),
-                  //     ),
-                  //     // Divider pomiędzy datą a godziną
-                  //     const VerticalDivider(
-                  //       color: AppColors.primary,
-                  //       thickness: 2, // Grubość dividera
-                  //       width: 20,
-                  //     ),
-                  //     // Kolumna dla godziny
-                  //     Expanded(
-                  //       child: Column(
-                  //         children: [
-                  //           Icon(
-                  //             Icons.access_time,
-                  //             size: 28,
-                  //             color: AppColors.accent,
-                  //           ),
-                  //           const SizedBox(height: 8),
-                  //           Text(
-                  //             event.formattedTime, // Wyświetlanie godzin
-                  //             style: const TextStyle(
-                  //               fontSize: 20,
-                  //               fontWeight: FontWeight.bold,
-                  //               color: AppColors.accent,
-                  //             ),
-                  //           ),
-                  //         ],
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
                   const Divider(
                     color: Colors.grey,
                     thickness: 1,
                   ),
                   const SizedBox(height: 8),
-                  // Sala - umieszczona pod spodem, niewyśrodkowana
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,  // Aligns the children to the right
                     children: [
                       Icon(
                         Icons.room,
-                        size: 28, // Zmniejszenie rozmiaru ikony
+                        size: 28,
                         color: AppColors.text_secondary,
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        event.room, // Zmieniamy na nazwę sali
+                        event.room,
                         style: const TextStyle(
-                          fontSize: 18, // Mniejsza czcionka
+                          fontSize: 18,
                           fontWeight: FontWeight.bold,
                           color: AppColors.text_secondary,
                         ),
@@ -151,11 +88,9 @@ class EventScreen extends StatelessWidget {
                     thickness: 1,
                   ),
                   const SizedBox(height: 8),
-                  // Data i godzina w dwóch kolumnach, przedzielone widocznym Dividerem
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.center, // Wyśrodkowanie kolumn
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // Kolumna dla daty
                       Expanded(
                         child: Column(
                           children: [
@@ -166,7 +101,7 @@ class EventScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              event.formattedDate, // Zmieniona data na polski format
+                              event.formattedDate,
                               style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -176,13 +111,11 @@ class EventScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-                      // Divider pomiędzy datą a godziną
                       const VerticalDivider(
                         color: AppColors.primary,
-                        thickness: 2, // Grubość dividera
+                        thickness: 2,
                         width: 20,
                       ),
-                      // Kolumna dla godziny
                       Expanded(
                         child: Column(
                           children: [
@@ -193,7 +126,7 @@ class EventScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              event.formattedTime, // Wyświetlanie godzin
+                              event.formattedTime,
                               style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -211,7 +144,6 @@ class EventScreen extends StatelessWidget {
                     thickness: 1,
                   ),
                   const SizedBox(height: 16),
-                  // Opis wydarzenia
                   Text(
                     event.description,
                     style: const TextStyle(

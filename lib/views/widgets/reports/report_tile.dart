@@ -18,7 +18,6 @@ class ReportTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Otwieramy ekran raportu, przekazując raport
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -33,18 +32,17 @@ class ReportTile extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(8)),
         ),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center, // Align the items in the center
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             ElementIcon(
                 backgroundColor: AppColors.secondary,
                 icon: Icons.article
             ),
             const SizedBox(width: 16),
-            // Using Column to group text elements, ensuring it aligns with the icon
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center, // Center content vertically
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const SizedBox(height: 4),
                   Text(
@@ -63,20 +61,9 @@ class ReportTile extends StatelessWidget {
                       fontSize: 14,
                     ),
                   ),
-                  // const SizedBox(height: 8),
-                  // Text(
-                  //   report.description,
-                  //   maxLines: 3,
-                  //   overflow: TextOverflow.ellipsis,
-                  //   style: const TextStyle(
-                  //     color: Color.fromRGBO(100, 100, 100, 1),
-                  //     fontSize: 12,
-                  //   ),
-                  // ),
                 ],
               ),
             ),
-            // Center the arrow by using mainAxisAlignment
             Padding(
               padding: const EdgeInsets.only(left: 8.0),
               child: Icon(

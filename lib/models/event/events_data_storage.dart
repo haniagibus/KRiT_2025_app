@@ -18,36 +18,26 @@ class EventsDataStorage {
     return _singleton;
   }
 
-
   EventsDataStorage._internal() {
     if (Config.useMockData) {
-      // Add mocked events
       _eventList = MockedEvents.getMockedEvents();
     }
   }
 
-  // Similar to the ReportsDataStorage's filtering, implement a filtering method
   List<Event> filterEvents(String query) {
     return _eventList.where((event) {
-      // Check if the event name or description matches the query (case-insensitive)
       bool matchesName = event.title.toLowerCase().contains(query.toLowerCase());
       bool matchesDescription = event.description.toLowerCase().contains(query.toLowerCase());
-
-      // Check if the event type matches the query (case-insensitive)
       bool matchesType = event.type.toString().toLowerCase().contains(query.toLowerCase());
-
       return matchesName || matchesDescription || matchesType;
     }).toList();
   }
 
-
-  // Control favourite status for an event (similar to ReportsDataStorage)
   void controlFavourite(Event event) {
     final index = _eventList.indexOf(event);
     if (index != -1) {
-      // Toggle favourite state
       _eventList[index].isFavourite = !event.isFavourite;
-      _callback(); // Refresh view
+      _callback();
     }
   }
 

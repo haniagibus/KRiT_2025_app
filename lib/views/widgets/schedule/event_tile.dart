@@ -15,7 +15,6 @@ class EventTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navigate to the EventScreen when the tile is tapped
         Navigator.push(
           context,
           MaterialPageRoute(

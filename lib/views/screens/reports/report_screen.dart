@@ -60,7 +60,7 @@ class ReportScreen extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    "by ${report.author}",
+                    report.author,
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
