@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:krit_app/views/screens/home_screen.dart';
-import 'package:krit_app/views/screens/schedule_screen.dart';
-import 'package:krit_app/views/screens/reports_screen.dart';
-import 'package:krit_app/theme/app_theme.dart'; // Import theme
+import 'package:krit_app/views/screens/home/home_screen.dart';
+import 'package:krit_app/views/screens/schedule/schedule_screen.dart';
+import 'package:krit_app/views/screens/reports/reports_screen.dart';
+import 'package:krit_app/theme/app_theme.dart';
+import 'package:krit_app/views/widgets/side_menu.dart';
 import 'package:krit_app/generated/l10n.dart';
 
 void main() {
@@ -23,31 +24,22 @@ class MyApp extends StatelessWidget {
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
       ],
-      supportedLocales: [
+      supportedLocales: const [
         Locale('en', ''),
         Locale('pl', ''),
       ],
-      home: MyHomePage(title: 'Flutter Demo Home Page')
+      home: const MyHomePage(title: 'KRiT 2025'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
+  const MyHomePage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -56,8 +48,11 @@ class _MyHomePageState extends State<MyHomePage> {
   final PageController controller = PageController(initialPage: 0);
 
   void _onItemTapped(int index) {
-    controller.animateToPage(index,
-        duration: Duration(milliseconds: 500), curve: Curves.ease);
+    controller.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.ease,
+    );
     _onPageChanged(index);
   }
 
@@ -71,11 +66,11 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('KRiT 2025'),
-        leading: IconButton(
-          icon: const Icon(Icons.menu),
-          tooltip: 'Menu',
-          onPressed: () {},
+        title: const Text(
+          'KRiT 2025',
+          style: const TextStyle(
+            fontWeight: FontWeight.bold
+          ),
         ),
       ),
       body: SafeArea(
@@ -89,8 +84,15 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
+      drawer: SideMenu(
+        selectedIndex: _selectedIndex,
+        onItemSelected: (int index) {
+          Navigator.pop(context);
+          _onItemTapped(index);
+        },
+      ),
       bottomNavigationBar: BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: "Start",
@@ -101,7 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.book),
-            label: "Raporty",
+            label: "Referaty",
           ),
         ],
         currentIndex: _selectedIndex,

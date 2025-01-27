@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:krit_app/models/event.dart';
-import 'package:krit_app/views/screens/event_screen.dart';
+import 'package:krit_app/models/event/event.dart';
+import 'package:krit_app/views/screens/schedule/event_screen.dart';
 import 'package:krit_app/theme/app_colors.dart';
+import 'package:krit_app/views/widgets/star_widget.dart';
+
+import '../element_icon.dart';
 
 class EventTile extends StatelessWidget {
   final Event event;
@@ -13,11 +16,10 @@ class EventTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navigate to the EventScreen when the tile is tapped
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => EventScreen(event: event),
+            builder: (context) => EventScreen(event: event, onFavouriteControl: () {  },),
           ),
         );
       },
@@ -29,17 +31,9 @@ class EventTile extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: 56,
-              height: 56,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                image: DecorationImage(
-                  image: NetworkImage(
-                    event.logoUrl,
-                  ),
-                ),
-              ),
+            ElementIcon(
+                backgroundColor: AppColors.plenary_session,
+                icon: Icons.event
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -48,35 +42,30 @@ class EventTile extends StatelessWidget {
                 children: [
                   const SizedBox(height: 4),
                   Text(
-                    "${event.timeBegin} - ${event.timeEnd}",
+                    event.formattedTime,
                     style: const TextStyle(
-                      color: Color.fromRGBO(29, 27, 32, 1),
+                      color: AppColors.accent,
                       fontFamily: 'Roboto',
                       fontSize: 16,
-                      letterSpacing: 0.5,
-                      height: 1.5,
-                    ),
-                  ),
-                  Text(
-                    event.date.toLocal().toString().split(' ')[0],
-                    style: const TextStyle(
-                      color: Color.fromRGBO(29, 27, 32, 1),
-                      fontFamily: 'Roboto',
-                      fontSize: 16,
-                      letterSpacing: 0.5,
-                      height: 1.5,
+                      fontWeight: FontWeight.bold
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    event.name,
-                    textAlign: TextAlign.center,
+                    event.title,
                     style: const TextStyle(
-                      color: Color.fromRGBO(73, 69, 79, 1),
+                      color:  AppColors.text_primary,
+                      fontFamily: 'Roboto',
+                      fontSize: 18,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    event.subtitle,
+                    style: const TextStyle(
+                      color:  AppColors.text_secondary,
                       fontFamily: 'Roboto',
                       fontSize: 14,
-                      letterSpacing: 0.25,
-                      height: 1.43,
                     ),
                   ),
                 ],
@@ -85,14 +74,9 @@ class EventTile extends StatelessWidget {
             Center(
               child: Row(
                 children: [
-                  IconButton(
-                    icon: Icon(
-                      event.isFavourite ? Icons.star : Icons.star_border,
-                      color: event.isFavourite
-                          ? AppColors.accent
-                          : Colors.grey,
-                    ),
-                    onPressed: onFavouriteControl,
+                  StarWidget(
+                    isFavourite: event.isFavourite,
+                    onTap: onFavouriteControl,
                   ),
                   Icon(
                     Icons.arrow_forward_ios,
