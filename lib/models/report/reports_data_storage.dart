@@ -41,7 +41,7 @@ class ReportsDataStorage {
     }
   }
 
-  int randomEventId() {
+  int randomEventId() {//??????
     return random.nextInt(10) + 1; // Zakres od 1 do 10
   }
 
