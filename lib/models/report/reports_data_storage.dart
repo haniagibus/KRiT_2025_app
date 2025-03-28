@@ -55,7 +55,7 @@ class ReportsDataStorage {
   ];
 
   final authors = [
-    "Dr. John Smith",
+    "Dr. John Smith",   
     "Prof. Jane Doe",
     "Dr. Richard Roe",
     "Dr. Emily White",

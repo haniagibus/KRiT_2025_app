@@ -1,6 +1,5 @@
 import 'package:krit_app/models/event/event.dart';
 import 'package:krit_app/models/event/event_type.dart';
-import 'package:krit_app/models/event/events_data_storage.dart';
 
 class MockedEvents {
   static List<Event> getMockedEvents() {
