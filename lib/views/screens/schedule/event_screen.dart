@@ -43,6 +43,12 @@ class _EventScreenState extends State<EventScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppBarTheme().backgroundColor,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context, isFavourite);
+          },
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(

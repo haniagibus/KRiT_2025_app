@@ -22,12 +22,6 @@ class _EventViewState extends State<ScheduleScreen> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    setState(() {});
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Column(
       children: [

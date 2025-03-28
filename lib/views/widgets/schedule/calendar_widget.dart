@@ -31,6 +31,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     _filterEventsByDate();
   }
 
+
+
   void _initializeDates() {
     final start = DateTime(2024, 9, 11);
     _availableDates = List.generate(3, (index) => start.add(Duration(days: index)));
