@@ -2,7 +2,6 @@ import 'dart:collection';
 import 'dart:math';
 import 'package:krit_app/config.dart';
 import 'package:krit_app/models/event/event.dart';
-import 'package:uuid/uuid.dart';
 import 'report.dart';
 
 class ReportsDataStorage {
@@ -34,7 +33,6 @@ class ReportsDataStorage {
     }
   }
 
-  /// Funkcja zwracająca ID istniejącego eventu
   String randomEventId(List<Event> existingEvents) {
     if (existingEvents.isEmpty) {
       throw Exception("Brak eventów do przypisania raportów!");
@@ -65,19 +63,26 @@ class ReportsDataStorage {
 
   ReportsDataStorage._internal();
 
-  /// Generowanie raportów na podstawie istniejących eventów
   void generateMockReports(List<Event> existingEvents) {
     if (Config.useMockData) {
       _reportList.clear();
       for (int i = 0; i < 15; i++) {
-        _reportList.add(Report.mock(
+        String eventId = randomEventId(existingEvents);
+        Report newReport = Report.mock(
           randomTitle(),
           randomAuthor(),
           randomDescription(),
-          "C:\\Users\\hania\\Downloads\\Laboratory6.pdf",
+          "/sdcard/Documents/organizacja_i_struktura_projektu_v1.0 (2).pdf",
           randomKeywords(),
-          randomEventId(existingEvents),
-        ));
+          eventId,
+        );
+
+        _reportList.add(newReport);
+
+        Event? event = existingEvents.firstWhere((e) => e.id == eventId, orElse: () => null as Event);
+        if (event != null) {
+          event.reports.add(newReport);
+        }
       }
     }
   }
