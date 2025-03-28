@@ -1,6 +1,8 @@
 import 'dart:collection';
 import 'dart:math';
 import 'package:krit_app/config.dart';
+import 'package:krit_app/models/event/event.dart';
+import 'package:uuid/uuid.dart';
 import 'report.dart';
 
 class ReportsDataStorage {
@@ -9,27 +11,18 @@ class ReportsDataStorage {
   final List<Report> _reportList = [];
   List<Report> get reportList => UnmodifiableListView(_reportList);
   late Function _callback;
+  final Random random = Random();
 
   factory ReportsDataStorage(Function callback) {
     _singleton._callback = callback;
     return _singleton;
   }
 
-  final random = Random();
+  String randomTitle() => titles[random.nextInt(titles.length)];
+  String randomAuthor() => authors[random.nextInt(authors.length)];
+  String randomDescription() => descriptions[random.nextInt(descriptions.length)];
 
-  String randomTitle() {
-    return titles[random.nextInt(titles.length)];
-  }
-
-  String randomAuthor() {
-    return authors[random.nextInt(authors.length)];
-  }
-
-  String randomDescription() {
-    return descriptions[random.nextInt(descriptions.length)];
-  }
-
-  List<String> randomKeyWords() {
+  List<String> randomKeywords() {
     if (keywords.length >= 2) {
       Set<int> indices = {};
       while (indices.length < 2) {
@@ -41,8 +34,12 @@ class ReportsDataStorage {
     }
   }
 
-  int randomEventId() {
-    return random.nextInt(10) + 1; // Zakres od 1 do 10
+  /// Funkcja zwracająca ID istniejącego eventu
+  String randomEventId(List<Event> existingEvents) {
+    if (existingEvents.isEmpty) {
+      throw Exception("Brak eventów do przypisania raportów!");
+    }
+    return existingEvents[random.nextInt(existingEvents.length)].id;
   }
 
   final titles = [
@@ -54,13 +51,7 @@ class ReportsDataStorage {
     "Algorytmy sztucznej inteligencji w przetwarzaniu danych rozpoznania radioelektronicznego ELINT"
   ];
 
-  final authors = [
-    "Dr. John Smith",   
-    "Prof. Jane Doe",
-    "Dr. Richard Roe",
-    "Dr. Emily White",
-    "Prof. Michael Brown"
-  ];
+  final authors = ["Dr. John Smith", "Prof. Jane Doe", "Dr. Richard Roe", "Dr. Emily White", "Prof. Michael Brown"];
 
   final descriptions = [
     "An in-depth exploration of machine learning algorithms.",
@@ -72,23 +63,26 @@ class ReportsDataStorage {
 
   final keywords = ["NLP", "LLM", "testowanie oprogramowania", "testy regresyjne"];
 
-  ReportsDataStorage._internal() {
+  ReportsDataStorage._internal();
+
+  /// Generowanie raportów na podstawie istniejących eventów
+  void generateMockReports(List<Event> existingEvents) {
     if (Config.useMockData) {
+      _reportList.clear();
       for (int i = 0; i < 15; i++) {
         _reportList.add(Report.mock(
-          i,
           randomTitle(),
           randomAuthor(),
           randomDescription(),
           "C:\\Users\\hania\\Downloads\\Laboratory6.pdf",
-          randomKeyWords(),
-          randomEventId(),
+          randomKeywords(),
+          randomEventId(existingEvents),
         ));
       }
     }
   }
 
-  List<Report> getReportsForEvent(int eventId) {
+  List<Report> getReportsForEvent(String eventId) {
     return _reportList.where((report) => report.eventId == eventId).toList();
   }
 
