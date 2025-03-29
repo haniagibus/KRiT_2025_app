@@ -76,6 +76,25 @@ class ReportScreen extends StatelessWidget {
               indent: 16,
               endIndent: 16,
             ),
+            // Keywords
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Wrap(
+                spacing: 8.0,
+                runSpacing: 4.0,
+                children: report.keywords.map((keyword) {
+                  return Chip(
+                    label: Text(keyword),
+                    backgroundColor: AppColors.primary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      side: BorderSide.none,
+                    ),
+                    labelStyle: const TextStyle(color: Colors.white),
+                  );
+                }).toList(),
+              ),
+            ),
             const SizedBox(height: 8),
             // Description
             Padding(
