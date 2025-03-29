@@ -34,7 +34,7 @@ class ReportScreen extends StatelessWidget {
                     child: Text(
                       report.title,
                       style: const TextStyle(
-                        fontSize: 24,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: AppColors.text_primary,
                       ),
