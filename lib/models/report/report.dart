@@ -1,11 +1,13 @@
+import 'package:uuid/uuid.dart';
+
 class Report {
-  final int id;
+  final String id;
   final String title;
   final String author;
   final String description;
   final String pdfUrl;
   final List<String> keywords;
-  final int eventId;
+  final String eventId;
 
   Report({
     required this.id,
@@ -18,16 +20,14 @@ class Report {
   });
 
   factory Report.mock(
-      int id,
       String title,
       String author,
       String description,
       String pdfUrl,
       List<String> keywords,
-      int eventId,
-      ) {
+      String eventId) {
     return Report(
-      id: id,
+      id: Uuid().v4(),
       title: title,
       author: author,
       description: description,
@@ -39,7 +39,7 @@ class Report {
 
   factory Report.fromJson(Map<String, dynamic> json) {
     return Report(
-      id: json['id'],
+      id: json['id'] ?? Uuid().v4(),
       title: json['title'],
       author: json['author'],
       description: json['description'],
