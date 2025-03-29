@@ -15,13 +15,19 @@ class EventTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
+      onTap: () async {
+        final updatedFavourite = await Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => EventScreen(event: event, onFavouriteControl: () {  },),
+            builder: (context) => EventScreen(
+              event: event,
+              onFavouriteControl: onFavouriteControl,
+            ),
           ),
         );
+        if (updatedFavourite != null) {
+          onFavouriteControl();
+        }
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
