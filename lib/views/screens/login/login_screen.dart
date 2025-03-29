@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:krit_app/services/auth_service.dart';
+
+import '../admin/admin_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -11,11 +14,16 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
 
   void _login() {
-    if (_formKey.currentState!.validate()) {
-      final email = _emailController.text;
-      //final password = _passwordController.text;
-    }
+    // Ustawiamy rolę na 'admin' po zalogowaniu
+    //Provider.of<AuthProvider>(context, listen: false).setAdminRole();
+
+    // Przechodzimy do ekranu administratora
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => AdminScreen()),
+    );
   }
+
 
   @override
   Widget build(BuildContext context) {
