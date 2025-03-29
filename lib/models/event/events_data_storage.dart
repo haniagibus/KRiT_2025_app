@@ -12,6 +12,8 @@ class EventsDataStorage {
   List<Event> get eventList => UnmodifiableListView(_eventList);
   late Function _callback;
 
+  final ReportsDataStorage _reportsStorage = ReportsDataStorage(() {});
+
   List<Event> get favoriteEvents =>
       _eventList.where((event) => event.isFavourite).toList();
 
@@ -23,6 +25,9 @@ class EventsDataStorage {
   EventsDataStorage._internal() {
     if (Config.useMockData) {
       _eventList = MockedEvents.getMockedEvents();
+
+      // Tworzymy raporty dla eventów
+      _reportsStorage.generateMockReports(_eventList);
     }
   }
 
@@ -45,18 +50,15 @@ class EventsDataStorage {
     }
   }
 
-
-  List<Report> getReportsForEvent(int id) {
-    final reportsDataStorage = ReportsDataStorage(() {});
-    return reportsDataStorage.getReportsForEvent(id);
+  List<Report> getReportsForEvent(String id) {
+    return _reportsStorage.getReportsForEvent(id);
   }
 
   List<Event> getEventsForDate(DateTime date) {
     return _eventList.where((event) {
       DateTime eventDateOnly = DateTime(
           event.dateTimeStart.year, event.dateTimeStart.month, event.dateTimeStart.day);
-      DateTime inputDateOnly =
-      DateTime(date.year, date.month, date.day);
+      DateTime inputDateOnly = DateTime(date.year, date.month, date.day);
       return eventDateOnly.isAtSameMomentAs(inputDateOnly);
     }).toList();
   }
