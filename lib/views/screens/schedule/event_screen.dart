@@ -5,6 +5,7 @@ import 'package:krit_app/theme/app_colors.dart';
 import '../../../models/report/report.dart';
 import '../../widgets/element_icon.dart';
 import '../../widgets/reports/report_tile.dart';
+import '../../widgets/star_widget.dart';
 
 class EventScreen extends StatefulWidget {
   final Event event;
@@ -32,6 +33,7 @@ class _EventScreenState extends State<EventScreen> {
   void toggleFavourite() {
     setState(() {
       isFavourite = !isFavourite;
+      widget.event.isFavourite = isFavourite;
     });
     widget.onFavouriteControl();
   }
@@ -41,6 +43,12 @@ class _EventScreenState extends State<EventScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppBarTheme().backgroundColor,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context, isFavourite);
+          },
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -67,13 +75,10 @@ class _EventScreenState extends State<EventScreen> {
                       ),
                     ),
                   ),
-                  IconButton(
-                    icon: Icon(
-                      isFavourite ? Icons.star : Icons.star_border,
-                      color: isFavourite ? AppColors.accent : Colors.grey,
-                    ),
-                    onPressed: toggleFavourite,
-                  ),
+                  StarWidget(
+                    isFavourite: isFavourite,
+                    onTap: toggleFavourite,
+                  )
                 ],
               ),
             ),

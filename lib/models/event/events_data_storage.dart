@@ -43,8 +43,10 @@ class EventsDataStorage {
   void controlFavourite(Event event) {
     final index = _eventList.indexOf(event);
     if (index != -1) {
-      _eventList[index].isFavourite = !event.isFavourite;
+      _eventList[index].isFavourite = !_eventList[index].isFavourite;
       _callback();
+    } else {
+      print("Nie znaleziono wydarzenia w liście!");
     }
   }
 

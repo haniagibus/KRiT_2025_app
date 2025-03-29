@@ -3,7 +3,7 @@ import 'package:krit_app/models/report/report.dart';
 import 'package:krit_app/theme/app_colors.dart';
 import 'package:krit_app/views/screens/reports/report_screen.dart';
 
-import '../element_icon.dart'; // Importujemy nasz ekran raportu
+import '../element_icon.dart';
 
 class ReportTile extends StatelessWidget {
   final Report report;
