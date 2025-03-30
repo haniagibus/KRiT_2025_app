@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:krit_app/services/auth_service.dart';
-
 import '../admin/admin_screen.dart';
+import 'package:provider/provider.dart';
 import 'package:krit_app/theme/app_colors.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -15,10 +15,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
 
   void _login() {
-    // Ustawiamy rolę na 'admin' po zalogowaniu
-    //Provider.of<AuthProvider>(context, listen: false).setAdminRole();
-
-    // Przechodzimy do ekranu administratora
+    Provider.of<AuthProvider>(context, listen: false).setAdminRole();
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => AdminScreen()),

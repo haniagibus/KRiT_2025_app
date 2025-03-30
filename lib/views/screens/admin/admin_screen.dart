@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:krit_app/views/screens/home/home_screen.dart';
 
 class AdminScreen extends StatelessWidget {
+  const AdminScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,9 +20,3 @@ class AdminScreen extends StatelessWidget {
   }
 }
 
-void _goToHomePage(BuildContext context) {
-  Navigator.pushReplacement(
-    context,
-    MaterialPageRoute(builder: (context) => HomeScreen()),
-  );
-}
