@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:krit_app/services/auth_service.dart';
-
 import '../admin/admin_screen.dart';
 import 'package:krit_app/theme/app_colors.dart';
 
@@ -29,7 +28,6 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Logowanie"),
         backgroundColor: AppBarTheme().backgroundColor,
       ),
       backgroundColor: Colors.white,
