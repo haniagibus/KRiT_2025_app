@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../../../main.dart';
 
 class AdminScreen extends StatelessWidget {
+
+  const AdminScreen({super.key});
   void _goToHomePage(BuildContext context) {
     Navigator.pushReplacement(
       context,
