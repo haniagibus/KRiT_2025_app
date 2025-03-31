@@ -15,11 +15,23 @@ class _EventViewState extends State<ScheduleScreen> {
   late final EventsDataStorage _eventsDataStorage;
   String _searchQuery = '';
 
+  // @override
+  // void initState() {
+  //   _eventsDataStorage = EventsDataStorage(() => setState(() {}));
+  //   super.initState();
+  // }
+
   @override
   void initState() {
-    _eventsDataStorage = EventsDataStorage(() => setState(() {}));
     super.initState();
+    _eventsDataStorage = EventsDataStorage(() => setState(() {}));
+    _loadEvents(); // Pobierz eventy
   }
+
+  Future<void> _loadEvents() async {
+    await _eventsDataStorage.initializeEvents();
+  }
+
 
   @override
   Widget build(BuildContext context) {

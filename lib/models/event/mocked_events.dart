@@ -6,6 +6,7 @@ class MockedEvents {
     return [
       // Day 1: 11 September
       Event(
+
         title: "Referat plenarny nr 1",
         subtitle: "Sławomir Hausman",
         type: EventType.PlenarySession,

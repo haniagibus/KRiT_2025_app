@@ -1,5 +1,6 @@
 import 'dart:collection';
 import 'package:krit_app/config.dart';
+import 'package:krit_app/models/ApiService.dart';
 import '../report/report.dart';
 import '../report/reports_data_storage.dart';
 import 'event.dart';
@@ -22,14 +23,35 @@ class EventsDataStorage {
     return _singleton;
   }
 
-  EventsDataStorage._internal() {
-    if (Config.useMockData) {
-      _eventList = MockedEvents.getMockedEvents();
+  // EventsDataStorage._internal() {
+  //   if (Config.useMockData) {
+  //     _eventList = MockedEvents.getMockedEvents();
+  //     // Tworzymy raporty dla eventów
+  //     _reportsStorage.generateMockReports(_eventList);
+  //   }
+  // }
 
-      // Tworzymy raporty dla eventów
-      _reportsStorage.generateMockReports(_eventList);
-    }
+
+
+
+  EventsDataStorage._internal(){}
+  //asynchronicznie pobieranie danych
+  Future<void> initializeEvents() async {
+    print("🟡 Start pobierania eventów");
+
+   // if (!Config.useMockData) {  // Upewnij się, że nie korzystasz z mockowanych danych
+      _eventList = await ApiService().fetchEvents();
+      print("✅ Pobranie zakończone, liczba eventów: ${_eventList.length}");
+
+      for (var event in _eventList) {
+        print("📅 Event w storage: ${event.title} - ${event.dateTimeStart}");
+      }
+
+      _callback();
+    //}
   }
+
+
 
   List<Event> filterEvents(String query) {
     return _eventList.where((event) {

@@ -6,6 +6,7 @@ import 'package:krit_app/views/screens/reports/reports_screen.dart';
 import 'package:krit_app/theme/app_theme.dart';
 import 'package:krit_app/views/widgets/side_menu.dart';
 import 'package:krit_app/generated/l10n.dart';
+//import 'package:krit_app/api_service.dart';  // Dodaj ApiService
 
 void main() {
   runApp(const MyApp());
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'KRiT 2025',
-      theme: AppTheme.lightTheme, // Apply the custom theme
+      theme: AppTheme.lightTheme,
       debugShowCheckedModeBanner: false,
       localizationsDelegates: [
         S.delegate,
@@ -45,7 +46,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
-
   final PageController controller = PageController(initialPage: 0);
 
   void _onItemTapped(int index) {
@@ -69,9 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: const Text(
           'KRiT 2025',
-          style: const TextStyle(
-            fontWeight: FontWeight.bold
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
       body: SafeArea(
@@ -80,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
           onPageChanged: _onPageChanged,
           children: [
             HomeScreen(),
-            ScheduleScreen(),
+            ScheduleScreen(),  // <-- Harmonogram będzie pobierał eventy
             ReportsScreen()
           ],
         ),
@@ -113,3 +111,23 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+// import 'dart:convert';
+// import 'package:http/http.dart' as http;
+//
+// void main() async {
+//   const String baseUrl = "http://10.0.2.2:8080/api/events";
+//
+//   try {
+//     final response = await http.get(Uri.parse(baseUrl));
+//
+//     if (response.statusCode == 200) {
+//       List jsonResponse = json.decode(response.body);
+//       print("✅ Sukces! Otrzymane eventy:");
+//       print(jsonResponse);
+//     } else {
+//       print("❌ Błąd: ${response.statusCode}");
+//     }
+//   } catch (e) {
+//     print("⚠️ Wystąpił błąd: $e");
+//   }
+// }
