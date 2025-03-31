@@ -25,7 +25,7 @@ class EventTile extends StatelessWidget {
             ),
           ),
         );
-        if (updatedFavourite != null) {
+        if (updatedFavourite != null && updatedFavourite != event.isFavourite) {
           onFavouriteControl();
         }
       },
