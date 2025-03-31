@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:krit_app/views/screens/admin/event_form.dart';
+import 'package:krit_app/views/screens/admin/event_manager_screen.dart';
+import 'package:provider/provider.dart';
 import '../../../main.dart';
+import '../../../models/event/events_data_storage.dart';
+import '../../../services/auth_service.dart';
 
 class AdminScreen extends StatelessWidget {
+  late final EventsDataStorage _eventsDataStorage;
 
-  const AdminScreen({super.key});
-  void _goToHomePage(BuildContext context) {
+
+
+  void _logout(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    authProvider.setUserRole(); // Resetujemy rolę na "user"
+
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => MyApp()),
@@ -25,10 +35,17 @@ class AdminScreen extends StatelessWidget {
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
           children: [
-            _buildCard(Icons.person, "Użytkownicy", () {}),
-            _buildCard(Icons.event, "Wydarzenia", () {}),
-            _buildCard(Icons.article, "Raporty", () {}),
-            _buildCard(Icons.logout, "Wyloguj", () => _goToHomePage(context)),
+            _buildCard(Icons.event, "dodaj Wydarzenia", () {Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => EventForm()),
+            );}),
+            _buildCard(Icons.event, "edytuj Wydarzenia", () {Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => EventManagerScreen(eventsDataStorage: _eventsDataStorage)),
+            );}),
+            _buildCard(Icons.article, "dodaj Raporty", () {}),
+            _buildCard(Icons.article, "edytuj Raporty", () {}),
+            _buildCard(Icons.logout, "Wyloguj", () => _logout(context)),
           ],
         ),
       ),
