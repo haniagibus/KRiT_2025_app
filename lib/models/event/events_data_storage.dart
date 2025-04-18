@@ -1,40 +1,33 @@
 import 'dart:collection';
+import 'package:flutter/cupertino.dart';
 import 'package:krit_app/config.dart';
 import '../report/report.dart';
 import '../report/reports_data_storage.dart';
 import 'event.dart';
 import 'mocked_events.dart';
 
-class EventsDataStorage {
-  static final EventsDataStorage _singleton = EventsDataStorage._internal();
+class EventsDataStorage extends ChangeNotifier {
 
   List<Event> _eventList = [];
   List<Event> get eventList => UnmodifiableListView(_eventList);
-  late Function _callback;
 
   final ReportsDataStorage _reportsStorage = ReportsDataStorage(() {});
 
-  List<Event> get favoriteEvents =>
-      _eventList.where((event) => event.isFavourite).toList();
-
-  factory EventsDataStorage(Function callback) {
-    _singleton._callback = callback;
-    return _singleton;
-  }
-
-  EventsDataStorage._internal() {
+  EventsDataStorage() {
     if (Config.useMockData) {
       _eventList = MockedEvents.getMockedEvents();
-
-      // Tworzymy raporty dla eventów
+      print("Załadowano ${_eventList.length} wydarzeń");
       _reportsStorage.generateMockReports(_eventList);
     }
   }
 
+  List<Event> get favoriteEvents =>
+      _eventList.where((event) => event.isFavourite).toList();
+
   List<Event> filterEvents(String query) {
     return _eventList.where((event) {
       bool matchesName = event.title.toLowerCase().contains(query.toLowerCase());
-      bool matchesDescription = event.description.toLowerCase().contains(query.toLowerCase());
+      bool matchesDescription = event.subtitle.toLowerCase().contains(query.toLowerCase());
       bool matchesType = event.type.toString().toLowerCase().contains(query.toLowerCase());
       return matchesName || matchesDescription || matchesType;
     }).toList();
@@ -44,7 +37,7 @@ class EventsDataStorage {
     final index = _eventList.indexOf(event);
     if (index != -1) {
       _eventList[index].isFavourite = !_eventList[index].isFavourite;
-      _callback();
+      notifyListeners();
     } else {
       print("Nie znaleziono wydarzenia w liście!");
     }
@@ -62,4 +55,21 @@ class EventsDataStorage {
       return eventDateOnly.isAtSameMomentAs(inputDateOnly);
     }).toList();
   }
+
+  void addEvent(Event event) {
+    _eventList.add(event);
+    notifyListeners();
+  }
+
+  void editEvent(Event updatedEvent) {
+    final index = _eventList.indexWhere((e) => e.id == updatedEvent.id);
+    if (index != -1) {
+      _eventList[index] = updatedEvent;
+      notifyListeners();
+      print("Zaktualizowano wydarzenie: ${updatedEvent.title}");
+    } else {
+      print("Nie znaleziono wydarzenia do edycji: ${updatedEvent.id}");
+    }
+  }
+
 }

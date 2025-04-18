@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:krit_app/views/screens/admin/event_form.dart';
+import 'package:krit_app/views/screens/admin/event_manager_screen.dart';
+import 'package:krit_app/views/screens/admin/report_form.dart';
+import 'package:provider/provider.dart';
 import '../../../main.dart';
+import '../../../services/auth_service.dart';
 
 class AdminScreen extends StatelessWidget {
 
-  const AdminScreen({super.key});
-  void _goToHomePage(BuildContext context) {
+  void _logout(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    authProvider.setUserRole();
+
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => MyApp()),
@@ -15,20 +22,38 @@ class AdminScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Admin Panel"),
+        title: Text("Panel Administracyjny"),
         centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: GridView.count(
-          crossAxisCount: 2, // Układ 2x2
+          crossAxisCount: 2,
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
           children: [
-            _buildCard(Icons.person, "Użytkownicy", () {}),
-            _buildCard(Icons.event, "Wydarzenia", () {}),
-            _buildCard(Icons.article, "Raporty", () {}),
-            _buildCard(Icons.logout, "Wyloguj", () => _goToHomePage(context)),
+            _buildCard(Icons.event, "Dodaj Wydarzenie", () {
+              Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => EventForm()),
+              );
+            }),
+            _buildCard(Icons.event, "Edytuj Wydarzenia", () {
+              Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => EventManagerScreen()),
+              );
+            }),
+            _buildCard(Icons.article, "Dodaj Referat", () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => EventManagerScreen()),
+              );
+            }),
+            _buildCard(Icons.article, "Edytuj Referaty", () {
+
+            }),
+            _buildCard(Icons.logout, "Wyloguj", () => _logout(context)),
           ],
         ),
       ),

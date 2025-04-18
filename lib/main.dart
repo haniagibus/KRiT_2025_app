@@ -9,10 +9,15 @@ import 'package:krit_app/generated/l10n.dart';
 import 'package:provider/provider.dart';
 import 'package:krit_app/services/auth_service.dart';
 
+import 'models/event/events_data_storage.dart';
+
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => AuthProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => AuthProvider()),
+        ChangeNotifierProvider(create: (context) => EventsDataStorage()),
+      ],
       child: const MyApp(),
     ),
   );
