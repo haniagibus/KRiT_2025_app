@@ -22,7 +22,7 @@ class AdminScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Admin Panel"),
+        title: Text("Panel Administracyjny"),
         centerTitle: true,
       ),
       body: Padding(
@@ -32,25 +32,25 @@ class AdminScreen extends StatelessWidget {
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
           children: [
-            _buildCard(Icons.event, "dodaj Wydarzenia", () {
+            _buildCard(Icons.event, "Dodaj Wydarzenie", () {
               Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => EventForm()),
               );
             }),
-            _buildCard(Icons.event, "edytuj Wydarzenia", () {
+            _buildCard(Icons.event, "Edytuj Wydarzenia", () {
               Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => EventManagerScreen()),
               );
             }),
-            _buildCard(Icons.article, "dodaj Raporty", () {
+            _buildCard(Icons.article, "Dodaj Referat", () {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => EventManagerScreen()),
               );
             }),
-            _buildCard(Icons.article, "edytuj Raporty", () {
+            _buildCard(Icons.article, "Edytuj Referaty", () {
 
             }),
             _buildCard(Icons.logout, "Wyloguj", () => _logout(context)),

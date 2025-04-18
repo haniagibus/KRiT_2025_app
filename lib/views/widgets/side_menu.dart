@@ -45,7 +45,7 @@ class SideMenu extends StatelessWidget {
                       ListTile(
                         leading: Icon(Icons.admin_panel_settings, color: theme.iconTheme.color),
                         title: Text(
-                          'Panel Administratora',
+                          'Panel Administracyjny',
                           style: theme.textTheme.bodyMedium,
                         ),
                         onTap: () {
