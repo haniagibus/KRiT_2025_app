@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:krit_app/models/event/events_data_storage.dart';
 import '../../widgets/home/favourites_tile.dart';
 
@@ -10,21 +11,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late final EventsDataStorage _eventsDataStorage;
-
-  @override
-  void initState() {
-    super.initState();
-    _eventsDataStorage = EventsDataStorage(_refresh);
-  }
-
-  void _refresh() {
-    setState(() {});
-  }
 
   @override
   Widget build(BuildContext context) {
-    final favoriteEvents = _eventsDataStorage.favoriteEvents;
+    final eventsDataStorage = Provider.of<EventsDataStorage>(context);
+    final favoriteEvents = eventsDataStorage.favoriteEvents;
 
     return Scaffold(
       body: Padding(
@@ -51,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 favoriteEvents: favoriteEvents,
                 onFavouriteControl: (event) {
                   setState(() {
-                    _eventsDataStorage.controlFavourite(event);
+                    eventsDataStorage.controlFavourite(event);
                   });
                 },
               ),
