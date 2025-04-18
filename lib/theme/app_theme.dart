@@ -10,6 +10,17 @@ class AppTheme {
       bodyLarge: TextStyle(color: AppColors.text_primary),
       bodyMedium: TextStyle(color: AppColors.text_secondary),
     ),
+    inputDecorationTheme: InputDecorationTheme(
+      floatingLabelStyle: TextStyle(color: AppColors.secondary),
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: AppColors.primary),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: AppColors.secondary, width: 2),
+        borderRadius: BorderRadius.circular(12),
+      ),
+    ),
     appBarTheme: AppBarTheme(
       backgroundColor: AppColors.primary,
       foregroundColor: Colors.white,
