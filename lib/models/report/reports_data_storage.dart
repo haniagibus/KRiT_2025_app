@@ -72,7 +72,7 @@ class ReportsDataStorage {
           randomTitle(),
           randomAuthor(),
           randomDescription(),
-          "/sdcard/Documents/organizacja_i_struktura_projektu_v1.0 (2).pdf",
+          "/sdcard/Documents/organizacja_i_struktura_projektu_v1.0.pdf",
           randomKeywords(),
           eventId,
         );

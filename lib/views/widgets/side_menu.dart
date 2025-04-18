@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:krit_app/theme/app_colors.dart';
-
+import 'package:provider/provider.dart';
+import 'package:krit_app/services/auth_service.dart';
 import '../screens/login/login_screen.dart';
+import '../screens/admin/admin_screen.dart';
 
 class SideMenu extends StatelessWidget {
   final int selectedIndex;
@@ -36,23 +37,55 @@ class SideMenu extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: ListView(
-              children: [
-                ListTile(
-                  leading: Icon(Icons.login, color: theme.iconTheme.color),
-                  title: Text(
-                    'Logowanie',
-                    style: theme.textTheme.bodyMedium,
-                  ),
-                  onTap: () {
-                    Navigator.pop(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => LoginScreen()),
-                    );
-                  },
-                ),
-              ],
+            child: Consumer<AuthProvider>(
+              builder: (context, authProvider, child) {
+                return ListView(
+                  children: [
+                    if (authProvider.role == 'admin') ...[
+                      ListTile(
+                        leading: Icon(Icons.admin_panel_settings, color: theme.iconTheme.color),
+                        title: Text(
+                          'Panel Administracyjny',
+                          style: theme.textTheme.bodyMedium,
+                        ),
+                        onTap: () {
+                          Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => AdminScreen()),
+                          );
+                        },
+                      ),
+                      ListTile(
+                        leading: Icon(Icons.logout, color: theme.iconTheme.color),
+                        title: Text(
+                          'Wyloguj',
+                          style: theme.textTheme.bodyMedium,
+                        ),
+                        onTap: () {
+                          authProvider.setUserRole();
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ] else ...[
+                      ListTile(
+                        leading: Icon(Icons.login, color: theme.iconTheme.color),
+                        title: Text(
+                          'Logowanie',
+                          style: theme.textTheme.bodyMedium,
+                        ),
+                        onTap: () {
+                          Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => LoginScreen()),
+                          );
+                        },
+                      ),
+                    ],
+                  ],
+                );
+              },
             ),
           ),
         ],
