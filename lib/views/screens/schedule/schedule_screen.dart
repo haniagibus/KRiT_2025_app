@@ -31,7 +31,6 @@ class _EventViewState extends State<ScheduleScreen> {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: CalendarWidget(
-              eventsDataStorage: eventsDataStorage,
               searchQuery: _searchQuery,
             ),
           ),

@@ -30,7 +30,7 @@ class Event {
     required this.building,
     required this.room,
     required this.reports,
-    this.isFavourite = false,
+    this.isFavourite = false
   }) : id = Uuid().v4();
 
   factory Event.fromJson(Map<String, dynamic> json) {
@@ -47,7 +47,7 @@ class Event {
       reports: (json['reports'] as List<dynamic>)
           .map((reportJson) => Report.fromJson(reportJson))
           .toList(),
-      isFavourite: json['isFavourite'] ?? false,
+      isFavourite: json['isFavourite'] ?? false
     );
   }
 
