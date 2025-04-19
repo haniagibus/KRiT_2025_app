@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:uuid/uuid.dart';
+import '../../../models/event/event_type.dart';
 import '../../../theme/app_colors.dart';
+import 'package:provider/provider.dart';
+import 'package:krit_app/models/event/event.dart';
+import 'package:krit_app/models/event/events_data_storage.dart';
+
 
 class EventForm extends StatefulWidget {
   @override
@@ -105,21 +111,52 @@ class _EventFormState extends State<EventForm> {
   }
 
   void _submitForm() {
-    if (_formKey.currentState!.validate() && _selectedReports.isNotEmpty) {
-      String formattedDate = _selectedDate != null
-          ? DateFormat('yyyy-MM-dd').format(_selectedDate!)
-          : 'Nie wybrano';
-      String formattedTime = _selectedStartTime != null
-          ? _selectedStartTime!.format(context)
-          : 'Nie wybrano';
+    if (_formKey.currentState!.validate() &&
+        _selectedDate != null &&
+        _selectedStartTime != null &&
+        _selectedEndTime != null &&
+        _selectedReports.isNotEmpty) {
 
-      print("Tytuł: ${_titleController.text}");
-      print("Data: $formattedDate");
-      print("Godzina: $formattedTime");
-      print("Sala: ${_locationController.text}");
-      print("Referaty: ${_selectedReports.join(", ")}");
+      final date = _selectedDate!;
+      final startDateTime = DateTime(
+        date.year,
+        date.month,
+        date.day,
+        _selectedStartTime!.hour,
+        _selectedStartTime!.minute,
+      );
+      final endDateTime = DateTime(
+        date.year,
+        date.month,
+        date.day,
+        _selectedEndTime!.hour,
+        _selectedEndTime!.minute,
+      );
+
+      final newEvent = Event(
+        title: _titleController.text.trim(),
+        subtitle: _subtitleController.text.trim(),
+        description: _descriptionController.text.trim(),
+        type: EventType.Other,
+        dateTimeStart: startDateTime,
+        dateTimeEnd: endDateTime,
+        building: "Budynek A",
+        room: _locationController.text.trim(),
+        reports: [],
+        isFavourite: false,
+      );
+      Provider.of<EventsDataStorage>(context, listen: false).addEvent(newEvent);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Wydarzenie dodane pomyślnie!")),
+      );
+      Navigator.pop(context);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Uzupełnij wszystkie pola i wybierz datę oraz godzinę")),
+      );
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:krit_app/models/event/event.dart';
 import 'package:krit_app/models/event/events_data_storage.dart';
 import 'package:krit_app/theme/app_colors.dart';
 import 'event_tile.dart';
 
 class CalendarWidget extends StatefulWidget {
-  final EventsDataStorage eventsDataStorage;
   final String searchQuery;
 
   const CalendarWidget({
     super.key,
-    required this.eventsDataStorage,
     required this.searchQuery,
   });
 
@@ -31,16 +30,19 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     _filterEventsByDate();
   }
 
-
-
+  // Funkcja do zaktualizowania dostępnych dat
   void _initializeDates() {
-    final start = DateTime(2024, 9, 11);
-    _availableDates = List.generate(3, (index) => start.add(Duration(days: index)));
+    final events = context.read<EventsDataStorage>().eventList;
+    // Zbieramy wszystkie daty z wydarzeń
+    _availableDates = events
+        .map((event) => DateTime(event.dateTimeStart.year, event.dateTimeStart.month, event.dateTimeStart.day))
+        .toSet() // Usuwamy duplikaty
+        .toList();
+    _availableDates.sort((a, b) => a.compareTo(b)); // Sortujemy po dacie
   }
 
   void _filterEventsByDate() {
-    final events = widget.eventsDataStorage.eventList
-        .where((event) {
+    final events = context.read<EventsDataStorage>().eventList.where((event) {
       bool matchesEvent = event.title.toLowerCase().contains(widget.searchQuery.toLowerCase());
 
       bool matchesReport = event.reports.any((report) {
@@ -50,8 +52,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       });
 
       return matchesEvent || matchesReport;
-    })
-        .toList();
+    }).toList();
 
     setState(() {
       _eventsForSelectedDate = events.where((event) {
@@ -72,6 +73,12 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
   @override
   Widget build(BuildContext context) {
+    // Nasłuchujemy na zmiany w EventsDataStorage
+    final eventsDataStorage = context.watch<EventsDataStorage>(); // listen: true
+
+    // Uaktualniamy daty, kiedy zmieniają się wydarzenia
+    _initializeDates();
+
     return DefaultTabController(
       length: _availableDates.length,
       child: Column(
@@ -111,7 +118,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   event,
                   onFavouriteControl: () {
                     setState(() {
-                      widget.eventsDataStorage.controlFavourite(event);
+                      eventsDataStorage.controlFavourite(event);
                     });
                   },
                 ),
