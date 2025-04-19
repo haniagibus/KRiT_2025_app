@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:krit_app/models/event/event.dart';
-import 'package:krit_app/views/screens/admin/event_form.dart';
+import 'package:krit_app/views/screens/admin/events/event_form.dart';
 import 'package:krit_app/theme/app_colors.dart';
-import '../../widgets/element_icon.dart';
+import '../../../widgets/element_icon.dart';
 
 class EventTileAdmin extends StatelessWidget {
   final Event event;

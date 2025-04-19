@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:krit_app/views/screens/admin/event_tile_admin.dart';
+import 'package:krit_app/views/screens/admin/events/event_tile_admin.dart';
 import 'package:provider/provider.dart';
 import 'package:krit_app/models/event/events_data_storage.dart';
 
-import '../../widgets/searchbar_widget.dart';
+import '../../../widgets/searchbar_widget.dart';
 
 class EventManagerScreen extends StatefulWidget {
   const EventManagerScreen({super.key});

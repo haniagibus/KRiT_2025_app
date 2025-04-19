@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import '../../../models/event/event.dart';
-import '../../../models/event/event_type.dart';
-import '../../../models/event/events_data_storage.dart';
-import '../../../models/report/report.dart';
-import '../../../models/report/reports_data_storage.dart';
-import '../../../theme/app_colors.dart';
+import '../../../../models/event/event.dart';
+import '../../../../models/event/event_type.dart';
+import '../../../../models/event/events_data_storage.dart';
+import '../../../../models/report/report.dart';
+import '../../../../models/report/reports_data_storage.dart';
+import '../../../../theme/app_colors.dart';
+import '../../../widgets/searchbar_widget.dart';
 
 class EventForm extends StatefulWidget {
   final Event? event; // null = tryb dodawania, nie-null = tryb edycji
@@ -22,7 +23,7 @@ class _EventFormState extends State<EventForm> {
   final _titleController = TextEditingController();
   final _subtitleController = TextEditingController();
   final _descriptionController = TextEditingController();
-  final _locationController = TextEditingController();
+  final _roomController = TextEditingController();
 
   bool isSubmitted = false;
 
@@ -30,6 +31,8 @@ class _EventFormState extends State<EventForm> {
   TimeOfDay? _selectedStartTime;
   TimeOfDay? _selectedEndTime;
   List<Report> _selectedReports = [];
+
+  String _searchQuery = '';
 
   @override
   void initState() {
@@ -40,7 +43,7 @@ class _EventFormState extends State<EventForm> {
       _titleController.text = event.title;
       _subtitleController.text = event.subtitle;
       _descriptionController.text = event.description;
-      _locationController.text = event.room;
+      _roomController.text = event.room;
       _selectedDate = event.dateTimeStart;
       _selectedStartTime = TimeOfDay.fromDateTime(event.dateTimeStart);
       _selectedEndTime = TimeOfDay.fromDateTime(event.dateTimeEnd);
@@ -50,6 +53,10 @@ class _EventFormState extends State<EventForm> {
 
   @override
   void dispose() {
+    _titleController.dispose();
+    _subtitleController.dispose();
+    _descriptionController.dispose();
+    _roomController.dispose();
     super.dispose();
   }
 
@@ -94,34 +101,70 @@ class _EventFormState extends State<EventForm> {
 
         return StatefulBuilder(
           builder: (context, setStateDialog) {
+            final filteredReports = allReports
+                .where((report) =>
+                    report.title
+                        .toLowerCase()
+                        .contains(_searchQuery.toLowerCase()) ||
+                    report.author
+                        .toLowerCase()
+                        .contains(_searchQuery.toLowerCase()))
+                .toList();
+
             return AlertDialog(
               title: const Text("Wybierz referaty"),
-              content: SingleChildScrollView(
-                child: Column(
-                  children: allReports.map((report) {
-                    final isSelected = tempSelected.any((r) => r.id == report.id);
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SearchBarApp(
+                    onChanged: (String value) {
+                      setStateDialog(() {
+                        _searchQuery = value;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: filteredReports.map((report) {
+                          final isSelected =
+                              tempSelected.any((r) => r.id == report.id);
 
-                    return CheckboxListTile(
-                      value: isSelected,
-                      title: Text(report.title),
-                      subtitle: Text(report.author),
-                      onChanged: (checked) {
-                        setStateDialog(() {
-                          if (checked == true) {
-                            tempSelected.add(report);
-                          } else {
-                            tempSelected.removeWhere((r) => r.id == report.id);
-                          }
-                        });
-                      },
-                    );
-                  }).toList(),
-                ),
+                          return CheckboxListTile(
+                            value: isSelected,
+                            title: Text(
+                              report.title,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            subtitle: Text(
+                              report.author,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            onChanged: (checked) {
+                              setStateDialog(() {
+                                if (checked == true) {
+                                  tempSelected.add(report);
+                                } else {
+                                  tempSelected
+                                      .removeWhere((r) => r.id == report.id);
+                                }
+                              });
+                            },
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+                ],
               ),
               actions: [
                 TextButton(
+                  style:
+                      TextButton.styleFrom(foregroundColor: AppColors.primary),
                   child: const Text("Anuluj"),
-                  style: TextButton.styleFrom(foregroundColor: AppColors.primary),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
                 ElevatedButton(
@@ -175,7 +218,7 @@ class _EventFormState extends State<EventForm> {
         dateTimeStart: startDateTime,
         dateTimeEnd: endDateTime,
         building: "Budynek A",
-        room: _locationController.text.trim(),
+        room: _roomController.text.trim(),
         reports: _selectedReports,
         isFavourite: widget.event?.isFavourite ?? false,
       );
@@ -216,7 +259,8 @@ class _EventFormState extends State<EventForm> {
           padding: const EdgeInsets.all(16.0),
           child: Card(
             elevation: 6,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             child: Padding(
               padding: const EdgeInsets.all(20),
               child: Form(
@@ -224,69 +268,11 @@ class _EventFormState extends State<EventForm> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    TextFormField(
-                      controller: _titleController,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                        labelText: 'Tytuł',
-                        labelStyle: TextStyle(
-                          color: isSubmitted && _titleController.text.trim().isEmpty
-                              ? null
-                              : AppColors.primary,
-                        ),
-                        floatingLabelStyle: TextStyle(
-                          color: isSubmitted && _titleController.text.trim().isEmpty
-                              ? null
-                              : AppColors.secondary,
-                        ),
-                      ),
-                      validator: (value) =>
-                          value!.isEmpty ? 'Podaj tytuł' : null,
-                    ),
+                    _buildTextField(_titleController, "Tytuł"),
                     const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _subtitleController,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                        labelText: 'Podtytuł',
-                        labelStyle: TextStyle(
-                          color: isSubmitted && _titleController.text.trim().isEmpty
-                              ? null
-                              : AppColors.primary,
-                        ),
-                        floatingLabelStyle: TextStyle(
-                          color: isSubmitted && _titleController.text.isEmpty
-                              ? null
-                              : AppColors.secondary,
-                        ),
-                      ),
-                      validator: (value) =>
-                          value!.isEmpty ? 'Podaj podtytuł' : null,
-                    ),
+                    _buildTextField(_subtitleController, "Podtytuł"),
                     const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _descriptionController,
-                      maxLines: 3,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                        labelText: 'Opis',
-                        labelStyle: TextStyle(
-                          color: isSubmitted && _titleController.text.trim().isEmpty
-                              ? null
-                              : AppColors.primary,
-                        ),
-                        floatingLabelStyle: TextStyle(
-                          color: isSubmitted && _titleController.text.isEmpty
-                              ? null
-                              : AppColors.secondary,
-                        ),
-                      ),
-                      validator: (value) =>
-                          value!.isEmpty ? 'Podaj opis wydarzenia' : null,
-                    ),
+                    _buildTextField(_descriptionController, "Opis"),
                     const SizedBox(height: 16),
                     Row(
                       children: [
@@ -296,8 +282,12 @@ class _EventFormState extends State<EventForm> {
                                 ? "Data: ${DateFormat('dd.MM.yyyy').format(_selectedDate!)}"
                                 : "Wybierz datę",
                             style: TextStyle(
-                              color: isSubmitted && _selectedDate == null ? Theme.of(context).colorScheme.error : null,
-                              fontWeight: isSubmitted && _selectedDate == null ? FontWeight.bold : FontWeight.normal,
+                              color: isSubmitted && _selectedDate == null
+                                  ? Theme.of(context).colorScheme.error
+                                  : null,
+                              fontWeight: isSubmitted && _selectedDate == null
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
                               fontSize: 16,
                             ),
                           ),
@@ -317,8 +307,13 @@ class _EventFormState extends State<EventForm> {
                                 ? "Godzina rozpoczęcia: ${_selectedStartTime!.format(context)}"
                                 : "Wybierz godzinę rozpoczęcia",
                             style: TextStyle(
-                              color: isSubmitted && _selectedStartTime == null ? Theme.of(context).colorScheme.error : null,
-                              fontWeight: isSubmitted && _selectedStartTime == null ? FontWeight.bold : FontWeight.normal,
+                              color: isSubmitted && _selectedStartTime == null
+                                  ? Theme.of(context).colorScheme.error
+                                  : null,
+                              fontWeight:
+                                  isSubmitted && _selectedStartTime == null
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
                               fontSize: 16,
                             ),
                           ),
@@ -338,8 +333,13 @@ class _EventFormState extends State<EventForm> {
                                 ? "Godzina zakończenia: ${_selectedEndTime!.format(context)}"
                                 : "Wybierz godzinę zakończenia",
                             style: TextStyle(
-                              color: isSubmitted && _selectedEndTime == null ? Theme.of(context).colorScheme.error : null,
-                              fontWeight: isSubmitted && _selectedEndTime == null ? FontWeight.bold : FontWeight.normal,
+                              color: isSubmitted && _selectedEndTime == null
+                                  ? Theme.of(context).colorScheme.error
+                                  : null,
+                              fontWeight:
+                                  isSubmitted && _selectedEndTime == null
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
                               fontSize: 16,
                             ),
                           ),
@@ -351,43 +351,28 @@ class _EventFormState extends State<EventForm> {
                       ],
                     ),
                     const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _locationController,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                        labelText: 'Sala',
-                        labelStyle: TextStyle(
-                          color: isSubmitted && _titleController.text.trim().isEmpty
-                              ? null
-                              : AppColors.primary,
-                        ),
-                        floatingLabelStyle: TextStyle(
-                          color: isSubmitted && _titleController.text.isEmpty
-                              ? null
-                              : AppColors.secondary,
-                        ),
-                      ),
-                      validator: (value) =>
-                          value!.isEmpty ? 'Podaj salę' : null,
-                    ),
+                    _buildTextField(_roomController, "Sala"),
                     const SizedBox(height: 16),
                     GestureDetector(
                       onTap: _showMultiSelectDialog,
                       child: AbsorbPointer(
                         child: TextFormField(
+                          readOnly: true,
+                          controller: TextEditingController(
+                            text:
+                                _selectedReports.map((r) => r.title).join(', '),
+                          ),
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12)),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                             labelText: 'Referaty',
+                            suffixIcon: const Icon(Icons.arrow_drop_down),
                             labelStyle: TextStyle(
-                              color: isSubmitted && _titleController.text.trim().isEmpty
-                                  ? null
+                              color: isSubmitted && _selectedReports.isEmpty
+                                  ? Theme.of(context).colorScheme.error
                                   : AppColors.primary,
                             ),
-                          ),
-                          controller: TextEditingController(
-                            text: _selectedReports.map((r) => r.title).join(', '),
                           ),
                           validator: (_) => _selectedReports.isEmpty
                               ? 'Wybierz referaty'
@@ -418,6 +403,31 @@ class _EventFormState extends State<EventForm> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTextField(TextEditingController controller, String label,
+      {int maxLines = 1}) {
+    return TextFormField(
+      controller: controller,
+      maxLines: maxLines,
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: TextStyle(
+          color: isSubmitted &&
+              _titleController.text.trim().isEmpty
+              ? null
+              : AppColors.primary,
+        ),
+        floatingLabelStyle: TextStyle(
+          color: isSubmitted && _titleController.text.isEmpty
+              ? null
+              : AppColors.secondary,
+        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+      validator: (value) =>
+      value == null || value.trim().isEmpty ? 'Uzupełnij pole' : null,
     );
   }
 }

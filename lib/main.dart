@@ -13,6 +13,7 @@ import 'package:krit_app/services/auth_service.dart';
 import 'models/event/events_data_storage.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(
     MultiProvider(
       providers: [

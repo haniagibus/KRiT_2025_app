@@ -21,6 +21,10 @@ class AppTheme {
         borderSide: BorderSide(color: AppColors.secondary, width: 2),
         borderRadius: BorderRadius.circular(12),
       ),
+      errorBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Color(0xFFB00020)),
+        borderRadius: BorderRadius.circular(12),
+      ),
     ),
     appBarTheme: AppBarTheme(
       backgroundColor: AppColors.primary,
