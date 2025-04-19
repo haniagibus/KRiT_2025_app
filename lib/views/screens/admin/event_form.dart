@@ -80,54 +80,61 @@ class _EventFormState extends State<EventForm> {
   void _showMultiSelectDialog() {
     final reportsData = Provider.of<ReportsDataStorage>(context, listen: false);
     final allReports = reportsData.reportList;
-    List<Report> tempSelected = [..._selectedReports];
 
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: const Text("Wybierz referaty"),
-          content: SingleChildScrollView(
-            child: Column(
-              children: allReports.map((report) {
-                final isSelected = tempSelected.any((r) => r.id == report.id);
-                return CheckboxListTile(
-                  value: isSelected,
-                  title: Text(report.title),
-                  subtitle: Text(report.author),
-                  onChanged: (checked) {
+        List<Report> tempSelected = [..._selectedReports];
+
+        return StatefulBuilder(
+          builder: (context, setStateDialog) {
+            return AlertDialog(
+              title: const Text("Wybierz referaty"),
+              content: SingleChildScrollView(
+                child: Column(
+                  children: allReports.map((report) {
+                    final isSelected = tempSelected.any((r) => r.id == report.id);
+
+                    return CheckboxListTile(
+                      value: isSelected,
+                      title: Text(report.title),
+                      subtitle: Text(report.author),
+                      onChanged: (checked) {
+                        setStateDialog(() {
+                          if (checked == true) {
+                            tempSelected.add(report);
+                          } else {
+                            tempSelected.removeWhere((r) => r.id == report.id);
+                          }
+                        });
+                      },
+                    );
+                  }).toList(),
+                ),
+              ),
+              actions: [
+                TextButton(
+                  child: const Text("Anuluj"),
+                  style: TextButton.styleFrom(foregroundColor: AppColors.primary),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                ElevatedButton(
+                  child: const Text("Zatwierdź"),
+                  onPressed: () {
                     setState(() {
-                      if (checked == true) {
-                        tempSelected.add(report);
-                      } else {
-                        tempSelected.removeWhere((r) => r.id == report.id);
-                      }
+                      _selectedReports = tempSelected;
                     });
+                    Navigator.of(context).pop();
                   },
-                );
-              }).toList(),
-            ),
-          ),
-          actions: [
-            TextButton(
-              child: const Text("Anuluj"),
-              style: TextButton.styleFrom(foregroundColor: AppColors.primary),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            ElevatedButton(
-              child: const Text("Zatwierdź"),
-              onPressed: () {
-                setState(() {
-                  _selectedReports = tempSelected;
-                });
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
+                ),
+              ],
+            );
+          },
         );
       },
     );
   }
+
 
 
   void _submitForm() {

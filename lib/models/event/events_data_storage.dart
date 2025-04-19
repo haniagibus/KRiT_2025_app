@@ -25,9 +25,8 @@ class EventsDataStorage extends ChangeNotifier {
   List<Event> filterEvents(String query) {
     return _eventList.where((event) {
       bool matchesName = event.title.toLowerCase().contains(query.toLowerCase());
-      bool matchesDescription = event.subtitle.toLowerCase().contains(query.toLowerCase());
-      bool matchesType = event.type.toString().toLowerCase().contains(query.toLowerCase());
-      return matchesName || matchesDescription || matchesType;
+      bool matchesSubtitle = event.subtitle.toLowerCase().contains(query.toLowerCase());
+      return matchesName || matchesSubtitle;
     }).toList();
   }
 
