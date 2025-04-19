@@ -190,7 +190,7 @@ class _EventFormState extends State<EventForm> {
                         Expanded(
                           child: Text(
                             _selectedDate != null
-                                ? "Data: ${DateFormat('yyyy-MM-dd').format(_selectedDate!)}"
+                                ? "Data: ${DateFormat('dd.MM.yyyy').format(_selectedDate!)}"
                                 : "Wybierz datę",
                           ),
                         ),
@@ -221,8 +221,8 @@ class _EventFormState extends State<EventForm> {
                       children: [
                         Expanded(
                           child: Text(
-                            _selectedStartTime != null
-                                ? "Godzina: ${_selectedStartTime!.format(context)}"
+                            _selectedEndTime != null
+                                ? "Godzina: ${_selectedEndTime!.format(context)}"
                                 : "Wybierz godzinę zakończenia",
                           ),
                         ),
