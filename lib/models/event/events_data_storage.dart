@@ -61,14 +61,11 @@ class EventsDataStorage extends ChangeNotifier {
     notifyListeners();
   }
 
-  void editEvent(Event updatedEvent) {
-    final index = _eventList.indexWhere((e) => e.id == updatedEvent.id);
+  void updateEvent(Event oldEvent, Event updatedEvent) {
+    final index = _eventList.indexOf(oldEvent);
     if (index != -1) {
       _eventList[index] = updatedEvent;
       notifyListeners();
-      print("Zaktualizowano wydarzenie: ${updatedEvent.title}");
-    } else {
-      print("Nie znaleziono wydarzenia do edycji: ${updatedEvent.id}");
     }
   }
 

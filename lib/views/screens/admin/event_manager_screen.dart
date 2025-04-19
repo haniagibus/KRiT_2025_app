@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:krit_app/views/screens/admin/event_tile_admin.dart';
 import 'package:provider/provider.dart';
 import 'package:krit_app/models/event/events_data_storage.dart';
 import '../../widgets/schedule/event_tile.dart';
@@ -22,13 +23,8 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
           : ListView.builder(
         itemCount: eventsDataStorage.eventList.length,
         itemBuilder: (context, index) {
-          return EventTile(
-            eventsDataStorage.eventList[index],
-            onFavouriteControl: () {
-              eventsDataStorage.controlFavourite(
-                eventsDataStorage.eventList[index],
-              );
-            },
+          return EventTileAdmin(
+            eventsDataStorage.eventList[index]
           );
         },
       ),

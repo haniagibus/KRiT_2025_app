@@ -1,24 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:uuid/uuid.dart';
-import '../../../models/event/event_type.dart';
-import '../../../theme/app_colors.dart';
 import 'package:provider/provider.dart';
-import 'package:krit_app/models/event/event.dart';
-import 'package:krit_app/models/event/events_data_storage.dart';
-
+import '../../../models/event/event.dart';
+import '../../../models/event/event_type.dart';
+import '../../../models/event/events_data_storage.dart';
+import '../../../theme/app_colors.dart';
 
 class EventForm extends StatefulWidget {
+  final Event? event; // null = tryb dodawania, nie-null = tryb edycji
+
+  const EventForm({super.key, this.event});
+
   @override
   _EventFormState createState() => _EventFormState();
 }
 
 class _EventFormState extends State<EventForm> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _subtitleController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _locationController = TextEditingController();
+  final _titleController = TextEditingController();
+  final _subtitleController = TextEditingController();
+  final _descriptionController = TextEditingController();
+  final _locationController = TextEditingController();
+
   DateTime? _selectedDate;
   TimeOfDay? _selectedStartTime;
   TimeOfDay? _selectedEndTime;
@@ -31,24 +34,41 @@ class _EventFormState extends State<EventForm> {
     'Referat 4: Technologie Web3',
   ];
 
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.event != null) {
+      final event = widget.event!;
+      _titleController.text = event.title;
+      _subtitleController.text = event.subtitle;
+      _descriptionController.text = event.description;
+      _locationController.text = event.room;
+      _selectedDate = event.dateTimeStart;
+      _selectedStartTime = TimeOfDay.fromDateTime(event.dateTimeStart);
+      _selectedEndTime = TimeOfDay.fromDateTime(event.dateTimeEnd);
+      _selectedReports = event.reports.map((r) => r.title).toList();
+    }
+  }
+
   void _pickDate() async {
     DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: _selectedDate ?? DateTime.now(),
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
     );
     if (pickedDate != null) {
-      setState(() {
-        _selectedDate = pickedDate;
-      });
+      setState(() => _selectedDate = pickedDate);
     }
   }
 
   void _pickTime({required bool isStart}) async {
     TimeOfDay? pickedTime = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.now(),
+      initialTime: isStart
+          ? _selectedStartTime ?? TimeOfDay.now()
+          : _selectedEndTime ?? TimeOfDay.now(),
     );
     if (pickedTime != null) {
       setState(() {
@@ -69,7 +89,7 @@ class _EventFormState extends State<EventForm> {
         List<String> tempSelected = [..._selectedReports];
 
         return AlertDialog(
-          title: Text("Wybierz referaty"),
+          title: const Text("Wybierz referaty"),
           content: SingleChildScrollView(
             child: Column(
               children: _reports.map((presentation) {
@@ -91,12 +111,12 @@ class _EventFormState extends State<EventForm> {
           ),
           actions: [
             TextButton(
-              child: Text("Anuluj"),
+              child: const Text("Anuluj"),
               style: TextButton.styleFrom(foregroundColor: AppColors.primary),
               onPressed: () => Navigator.of(context).pop(),
             ),
             ElevatedButton(
-              child: Text("Zatwierdź"),
+              child: const Text("Zatwierdź"),
               onPressed: () {
                 setState(() {
                   _selectedReports = tempSelected;
@@ -116,7 +136,6 @@ class _EventFormState extends State<EventForm> {
         _selectedStartTime != null &&
         _selectedEndTime != null &&
         _selectedReports.isNotEmpty) {
-
       final date = _selectedDate!;
       final startDateTime = DateTime(
         date.year,
@@ -142,13 +161,24 @@ class _EventFormState extends State<EventForm> {
         dateTimeEnd: endDateTime,
         building: "Budynek A",
         room: _locationController.text.trim(),
-        reports: [],
-        isFavourite: false,
+        reports: [], // <- można później przypisać referaty jako obiekty
+        isFavourite: widget.event?.isFavourite ?? false,
       );
-      Provider.of<EventsDataStorage>(context, listen: false).addEvent(newEvent);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Wydarzenie dodane pomyślnie!")),
-      );
+
+      final storage = Provider.of<EventsDataStorage>(context, listen: false);
+
+      if (widget.event == null) {
+        storage.addEvent(newEvent);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Wydarzenie dodane pomyślnie!")),
+        );
+      } else {
+        storage.updateEvent(widget.event!, newEvent);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Wydarzenie zaktualizowane!")),
+        );
+      }
+
       Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -160,45 +190,38 @@ class _EventFormState extends State<EventForm> {
 
   @override
   Widget build(BuildContext context) {
+    final isEditing = widget.event != null;
+
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text(isEditing ? "Edytuj Wydarzenie" : "Dodaj Wydarzenie"),
+      ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Card(
             elevation: 6,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             child: Padding(
-              padding: EdgeInsets.all(20),
+              padding: const EdgeInsets.all(20),
               child: Form(
                 key: _formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text("Dodaj Wydarzenie",
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)
-                    ),
-                    SizedBox(height: 20),
                     TextFormField(
                       controller: _titleController,
                       decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                         labelText: 'Tytuł',
-                        floatingLabelStyle: TextStyle(
-                          color: _formKey.currentState?.validate() == false ? Colors.red : AppColors.secondary,
-                        ),
                       ),
                       validator: (value) => value!.isEmpty ? 'Podaj tytuł' : null,
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     TextFormField(
                       controller: _subtitleController,
                       decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                         labelText: 'Podtytuł',
                         floatingLabelStyle: TextStyle(
                           color: _formKey.currentState?.validate() == false ? Colors.red : AppColors.secondary,
@@ -206,49 +229,43 @@ class _EventFormState extends State<EventForm> {
                       ),
                       validator: (value) => value!.isEmpty ? 'Podaj podtytuł' : null,
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     TextFormField(
                       controller: _descriptionController,
                       maxLines: 3,
                       decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                         labelText: 'Opis',
-                        floatingLabelStyle: TextStyle(
-                          color: _formKey.currentState?.validate() == false ? Colors.red : AppColors.secondary,
-                        ),
                       ),
                       validator: (value) => value!.isEmpty ? 'Podaj opis wydarzenia' : null,
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     Row(
                       children: [
                         Expanded(
                           child: Text(
                             _selectedDate != null
-                                ? "Data: ${DateFormat('dd.MM.yyyy').format(_selectedDate!)}"
+                                ? "Data: ${DateFormat('yyyy-MM-dd').format(_selectedDate!)}"
                                 : "Wybierz datę",
                           ),
                         ),
                         IconButton(
-                          icon: Icon(Icons.calendar_today),
+                          icon: const Icon(Icons.calendar_today),
                           onPressed: _pickDate,
                         ),
                       ],
                     ),
-                    SizedBox(height: 8),
                     Row(
                       children: [
                         Expanded(
                           child: Text(
                             _selectedStartTime != null
-                                ? "Godzina: ${_selectedStartTime!.format(context)}"
+                                ? "Start: ${_selectedStartTime!.format(context)}"
                                 : "Wybierz godzinę rozpoczęcia",
                           ),
                         ),
                         IconButton(
-                          icon: Icon(Icons.access_time),
+                          icon: const Icon(Icons.access_time),
                           onPressed: () => _pickTime(isStart: true),
                         ),
                       ],
@@ -259,39 +276,32 @@ class _EventFormState extends State<EventForm> {
                         Expanded(
                           child: Text(
                             _selectedEndTime != null
-                                ? "Godzina: ${_selectedEndTime!.format(context)}"
+                                ? "Koniec: ${_selectedEndTime!.format(context)}"
                                 : "Wybierz godzinę zakończenia",
                           ),
                         ),
                         IconButton(
-                          icon: Icon(Icons.access_time),
+                          icon: const Icon(Icons.access_time),
                           onPressed: () => _pickTime(isStart: false),
                         ),
                       ],
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     TextFormField(
                       controller: _locationController,
                       decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                         labelText: 'Sala',
-                        floatingLabelStyle: TextStyle(
-                          color: _formKey.currentState?.validate() == false ? Colors.red : AppColors.secondary,
-                        ),
                       ),
                       validator: (value) => value!.isEmpty ? 'Podaj salę' : null,
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     GestureDetector(
                       onTap: _showMultiSelectDialog,
                       child: AbsorbPointer(
                         child: TextFormField(
                           decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                             labelText: 'Referaty',
                           ),
                           controller: TextEditingController(
@@ -299,18 +309,20 @@ class _EventFormState extends State<EventForm> {
                                 ? ''
                                 : _selectedReports.join(', '),
                           ),
-                          validator: (_) =>
-                          _selectedReports.isEmpty ? 'Wybierz referaty' : null,
+                          validator: (_) => _selectedReports.isEmpty ? 'Wybierz referaty' : null,
                         ),
                       ),
                     ),
-                    SizedBox(height: 30),
+                    const SizedBox(height: 30),
                     ElevatedButton.icon(
-                      icon: Icon(Icons.add, color: AppColors.primary),
-                      label: Text("Dodaj"),
+                      icon: Icon(
+                        isEditing ? Icons.check : Icons.add,
+                        color: AppColors.primary,
+                      ),
+                      label: Text(isEditing ? "Zatwierdź zmiany" : "Dodaj"),
                       onPressed: _submitForm,
                       style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(vertical: 14, horizontal: 32),
+                        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 32),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
