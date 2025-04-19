@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import '../../../models/event/event.dart';
 import '../../../models/event/event_type.dart';
 import '../../../models/event/events_data_storage.dart';
+import '../../../models/report/report.dart';
+import '../../../models/report/reports_data_storage.dart';
 import '../../../theme/app_colors.dart';
 
 class EventForm extends StatefulWidget {
@@ -25,14 +27,7 @@ class _EventFormState extends State<EventForm> {
   DateTime? _selectedDate;
   TimeOfDay? _selectedStartTime;
   TimeOfDay? _selectedEndTime;
-  List<String> _selectedReports = [];
-
-  final List<String> _reports = [
-    'Referat 1: AI i przyszłość',
-    'Referat 2: Flutter w praktyce',
-    'Referat 3: Cyberbezpieczeństwo',
-    'Referat 4: Technologie Web3',
-  ];
+  List<Report> _selectedReports = [];
 
   @override
   void initState() {
@@ -47,7 +42,7 @@ class _EventFormState extends State<EventForm> {
       _selectedDate = event.dateTimeStart;
       _selectedStartTime = TimeOfDay.fromDateTime(event.dateTimeStart);
       _selectedEndTime = TimeOfDay.fromDateTime(event.dateTimeEnd);
-      _selectedReports = event.reports.map((r) => r.title).toList();
+      _selectedReports = event.reports;
     }
   }
 
@@ -83,25 +78,29 @@ class _EventFormState extends State<EventForm> {
 
 
   void _showMultiSelectDialog() {
+    final reportsData = Provider.of<ReportsDataStorage>(context, listen: false);
+    final allReports = reportsData.reportList;
+    List<Report> tempSelected = [..._selectedReports];
+
     showDialog(
       context: context,
       builder: (context) {
-        List<String> tempSelected = [..._selectedReports];
-
         return AlertDialog(
           title: const Text("Wybierz referaty"),
           content: SingleChildScrollView(
             child: Column(
-              children: _reports.map((presentation) {
+              children: allReports.map((report) {
+                final isSelected = tempSelected.any((r) => r.id == report.id);
                 return CheckboxListTile(
-                  value: tempSelected.contains(presentation),
-                  title: Text(presentation),
+                  value: isSelected,
+                  title: Text(report.title),
+                  subtitle: Text(report.author),
                   onChanged: (checked) {
                     setState(() {
                       if (checked == true) {
-                        tempSelected.add(presentation);
+                        tempSelected.add(report);
                       } else {
-                        tempSelected.remove(presentation);
+                        tempSelected.removeWhere((r) => r.id == report.id);
                       }
                     });
                   },
@@ -129,6 +128,7 @@ class _EventFormState extends State<EventForm> {
       },
     );
   }
+
 
   void _submitForm() {
     if (_formKey.currentState!.validate() &&
@@ -161,7 +161,7 @@ class _EventFormState extends State<EventForm> {
         dateTimeEnd: endDateTime,
         building: "Budynek A",
         room: _locationController.text.trim(),
-        reports: [], // <- można później przypisać referaty jako obiekty
+        reports: _selectedReports,
         isFavourite: widget.event?.isFavourite ?? false,
       );
 
@@ -305,9 +305,7 @@ class _EventFormState extends State<EventForm> {
                             labelText: 'Referaty',
                           ),
                           controller: TextEditingController(
-                            text: _selectedReports.isEmpty
-                                ? ''
-                                : _selectedReports.join(', '),
+                            text: _selectedReports.map((r) => r.title).join(', '),
                           ),
                           validator: (_) => _selectedReports.isEmpty ? 'Wybierz referaty' : null,
                         ),

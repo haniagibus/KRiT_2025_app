@@ -7,17 +7,15 @@ import 'event.dart';
 import 'mocked_events.dart';
 
 class EventsDataStorage extends ChangeNotifier {
-
+  ReportsDataStorage _reportsStorage;
   List<Event> _eventList = [];
   List<Event> get eventList => UnmodifiableListView(_eventList);
 
-  final ReportsDataStorage _reportsStorage = ReportsDataStorage(() {});
-
-  EventsDataStorage() {
+  EventsDataStorage(this._reportsStorage) {
     if (Config.useMockData) {
-      _eventList = MockedEvents.getMockedEvents();
+      _eventList.addAll(MockedEvents.getMockedEvents());
       print("Załadowano ${_eventList.length} wydarzeń");
-      _reportsStorage.generateMockReports(_eventList);
+      _reportsStorage.generateMockReports(_eventList); // używamy przekazanej instancji
     }
   }
 
