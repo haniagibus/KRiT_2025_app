@@ -21,7 +21,7 @@ class _ReportManagerScreenState extends State<ReportManagerScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Lista Reportów"),
+        title: const Text("Lista Referatów"),
         centerTitle: true,
       ),
       body: Column(
