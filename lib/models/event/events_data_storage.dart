@@ -5,6 +5,7 @@ import '../report/report.dart';
 import '../report/reports_data_storage.dart';
 import 'event.dart';
 import 'mocked_events.dart';
+import 'package:provider/provider.dart';
 
 class EventsDataStorage extends ChangeNotifier {
   ReportsDataStorage _reportsStorage;
@@ -22,13 +23,19 @@ class EventsDataStorage extends ChangeNotifier {
   List<Event> get favoriteEvents =>
       _eventList.where((event) => event.isFavourite).toList();
 
-  List<Event> filterEvents(String query) {
-    return _eventList.where((event) {
-      bool matchesName = event.title.toLowerCase().contains(query.toLowerCase());
-      bool matchesSubtitle = event.subtitle.toLowerCase().contains(query.toLowerCase());
-      return matchesName || matchesSubtitle;
+  List<Event> filterEventsByQuery(String query) {
+    final lowerQuery = query.toLowerCase();
+    return eventList.where((event) {
+      final matchesEvent = event.title.toLowerCase().contains(lowerQuery) ||
+          event.subtitle.toLowerCase().contains(lowerQuery);
+
+      final matchingReports = _reportsStorage.filterReportsByQuery(query);
+      final matchesReport = matchingReports.any((report) => event.reports.contains(report));
+
+      return matchesEvent || matchesReport;
     }).toList();
   }
+
 
   void controlFavourite(Event event) {
     final index = _eventList.indexOf(event);

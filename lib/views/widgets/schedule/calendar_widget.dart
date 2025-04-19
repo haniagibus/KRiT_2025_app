@@ -30,36 +30,27 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     _filterEventsByDate();
   }
 
-  // Funkcja do zaktualizowania dostępnych dat
   void _initializeDates() {
     final events = context.read<EventsDataStorage>().eventList;
-    // Zbieramy wszystkie daty z wydarzeń
     _availableDates = events
         .map((event) => DateTime(event.dateTimeStart.year, event.dateTimeStart.month, event.dateTimeStart.day))
-        .toSet() // Usuwamy duplikaty
+        .toSet()
         .toList();
-    _availableDates.sort((a, b) => a.compareTo(b)); // Sortujemy po dacie
+    _availableDates.sort((a, b) => a.compareTo(b));
   }
 
   void _filterEventsByDate() {
-    final events = context.read<EventsDataStorage>().eventList.where((event) {
-      bool matchesEvent = event.title.toLowerCase().contains(widget.searchQuery.toLowerCase());
+    final dataStorage = context.read<EventsDataStorage>();
+    final events = dataStorage.filterEventsByQuery(widget.searchQuery);
 
-      bool matchesReport = event.reports.any((report) {
-        return report.title.toLowerCase().contains(widget.searchQuery.toLowerCase()) ||
-            report.author.toLowerCase().contains(widget.searchQuery.toLowerCase()) ||
-            report.keywords.any((keyword) => keyword.toLowerCase().contains(widget.searchQuery.toLowerCase()));
-      });
-
-      return matchesEvent || matchesReport;
+    final filteredByDate = events.where((event) {
+      return event.dateTimeStart.year == _selectedDate.year &&
+          event.dateTimeStart.month == _selectedDate.month &&
+          event.dateTimeStart.day == _selectedDate.day;
     }).toList();
 
     setState(() {
-      _eventsForSelectedDate = events.where((event) {
-        return event.dateTimeStart.year == _selectedDate.year &&
-            event.dateTimeStart.month == _selectedDate.month &&
-            event.dateTimeStart.day == _selectedDate.day;
-      }).toList();
+      _eventsForSelectedDate = filteredByDate;
     });
   }
 
@@ -73,10 +64,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
   @override
   Widget build(BuildContext context) {
-    // Nasłuchujemy na zmiany w EventsDataStorage
-    final eventsDataStorage = context.watch<EventsDataStorage>(); // listen: true
+    final eventsDataStorage = context.watch<EventsDataStorage>();
 
-    // Uaktualniamy daty, kiedy zmieniają się wydarzenia
     _initializeDates();
 
     return DefaultTabController(

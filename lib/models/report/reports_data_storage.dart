@@ -35,7 +35,6 @@ class ReportsDataStorage extends ChangeNotifier {
 
   final keywords = ["NLP", "LLM", "testowanie oprogramowania", "testy regresyjne"];
 
-  // Generatory losowych danych
   String randomTitle() => titles[random.nextInt(titles.length)];
   String randomAuthor() => authors[random.nextInt(authors.length)];
   String randomDescription() => descriptions[random.nextInt(descriptions.length)];
@@ -74,13 +73,12 @@ class ReportsDataStorage extends ChangeNotifier {
         );
         _reportList.add(newReport);
 
-        // Dodanie do eventu
         Event? event = existingEvents.firstWhere((e) => e.id == eventId, orElse: () => null as Event);
         if (event != null) {
           event.reports.add(newReport);
         }
       }
-      notifyListeners(); // 🔥 Ważne
+      notifyListeners();
     }
   }
 
@@ -88,10 +86,12 @@ class ReportsDataStorage extends ChangeNotifier {
     return _reportList.where((report) => report.eventId == eventId).toList();
   }
 
-  List<Report> filterReports(String query) {
-    return _reportList.where((report) {
-      return report.title.toLowerCase().contains(query.toLowerCase()) ||
-          report.author.toLowerCase().contains(query.toLowerCase());
+  List<Report> filterReportsByQuery(String query) {
+    final lowerQuery = query.toLowerCase();
+    return reportList.where((report) {
+      return report.title.toLowerCase().contains(lowerQuery) ||
+          report.author.toLowerCase().contains(lowerQuery) ||
+          report.keywords.any((keyword) => keyword.toLowerCase().contains(lowerQuery));
     }).toList();
   }
 

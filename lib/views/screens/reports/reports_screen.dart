@@ -31,11 +31,7 @@ class _ReportsViewState extends State<ReportsScreen> {
         Expanded(
           child: Consumer<ReportsDataStorage>(
             builder: (context, reportsData, _) {
-              final reports = reportsData.reportList.where((report) {
-                return report.title.toLowerCase().contains(_searchQuery) ||
-                    report.author.toLowerCase().contains(_searchQuery) ||
-                    report.keywords.any((keyword) => keyword.toLowerCase().contains(_searchQuery));
-              }).toList();
+              final reports = reportsData.filterReportsByQuery(_searchQuery);
 
               if (reports.isEmpty) {
                 return const Center(child: Text("Brak wyników."));
