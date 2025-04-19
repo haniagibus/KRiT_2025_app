@@ -5,7 +5,6 @@ import '../report/report.dart';
 import '../report/reports_data_storage.dart';
 import 'event.dart';
 import 'mocked_events.dart';
-import 'package:provider/provider.dart';
 
 class EventsDataStorage extends ChangeNotifier {
   ReportsDataStorage _reportsStorage;
@@ -15,8 +14,7 @@ class EventsDataStorage extends ChangeNotifier {
   EventsDataStorage(this._reportsStorage) {
     if (Config.useMockData) {
       _eventList.addAll(MockedEvents.getMockedEvents());
-      print("Załadowano ${_eventList.length} wydarzeń");
-      _reportsStorage.generateMockReports(_eventList); // używamy przekazanej instancji
+      _reportsStorage.generateMockReports(_eventList);
     }
   }
 

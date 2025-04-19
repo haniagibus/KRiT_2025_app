@@ -17,7 +17,8 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final eventsDataStorage = Provider.of<EventsDataStorage>(context);
+    final eventsDataStorage = context.watch<EventsDataStorage>();
+    final filteredEvents = eventsDataStorage.filterEventsByQuery(_searchQuery);
 
     return Scaffold(
       appBar: AppBar(
@@ -37,32 +38,15 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
             child: eventsDataStorage.eventList.isEmpty
                 ? const Center(child: Text("Brak wydarzeń"))
                 : ListView.builder(
-              itemCount: eventsDataStorage.eventList.length,
+              itemCount: filteredEvents.length,
               itemBuilder: (context, index) {
-                final event = eventsDataStorage.eventList[index];
-
-                // // Jeśli chcesz filtrować po tytule:
-                // if (_searchQuery.isNotEmpty &&
-                //     !event.title.toLowerCase().contains(_searchQuery.toLowerCase())) {
-                //   return const SizedBox.shrink(); // pomiń niewpasowane
-                // }
-
+                final event = filteredEvents[index];
                 return EventTileAdmin(event);
               },
             ),
           ),
         ],
       ),
-
-
-      // body: eventsDataStorage.eventList.isEmpty
-      //     ? const Center(child: Text("Brak wydarzeń"))
-      //     : ListView.builder(
-      //         itemCount: eventsDataStorage.eventList.length,
-      //         itemBuilder: (context, index) {
-      //           return EventTileAdmin(eventsDataStorage.eventList[index]);
-      //         },
-      //       ),
     );
   }
 }
