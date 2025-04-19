@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:krit_app/views/screens/admin/event_form.dart';
-import 'package:krit_app/views/screens/admin/event_manager_screen.dart';
+import 'package:krit_app/views/screens/admin/events/event_form.dart';
+import 'package:krit_app/views/screens/admin/events/event_manager_screen.dart';
+import 'package:krit_app/views/screens/admin/reports/report_form.dart';
+import 'package:krit_app/views/screens/admin/reports/report_manager_screen.dart';
 import 'package:provider/provider.dart';
 import '../../../main.dart';
 import '../../../services/auth_service.dart';
-import 'new_edition_form.dart';
+import 'editions/new_edition_form.dart';
 
 class AdminScreen extends StatelessWidget {
-
   void _logout(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     authProvider.setUserRole();
@@ -51,17 +52,22 @@ class AdminScreen extends StatelessWidget {
                   _buildBCard(Icons.event, "Edytuj Wydarzenia", () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => EventManagerScreen()),
+                      MaterialPageRoute(
+                          builder: (context) => EventManagerScreen()),
                     );
                   }),
                   _buildBCard(Icons.article, "Dodaj Referat", () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => EventManagerScreen()),
+                      MaterialPageRoute(builder: (context) => ReportForm()),
                     );
                   }),
                   _buildBCard(Icons.article, "Edytuj Referaty", () {
-                    // TODO: Dodaj ekran edycji referatów
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ReportManagerScreen()),
+                    );
                   }),
                   _buildBCard(Icons.logout, "Wyloguj", () => _logout(context)),
                 ],

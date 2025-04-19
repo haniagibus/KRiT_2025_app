@@ -11,6 +11,7 @@ class AppTheme {
       bodyMedium: TextStyle(color: AppColors.text_secondary),
     ),
     inputDecorationTheme: InputDecorationTheme(
+      labelStyle: TextStyle(color: AppColors.primary),
       floatingLabelStyle: TextStyle(color: AppColors.secondary),
       enabledBorder: OutlineInputBorder(
         borderSide: BorderSide(color: AppColors.primary),
@@ -18,6 +19,10 @@ class AppTheme {
       ),
       focusedBorder: OutlineInputBorder(
         borderSide: BorderSide(color: AppColors.secondary, width: 2),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Color(0xFFB00020)),
         borderRadius: BorderRadius.circular(12),
       ),
     ),

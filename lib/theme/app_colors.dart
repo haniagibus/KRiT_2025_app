@@ -15,6 +15,5 @@ class AppColors {
   static const plenary_session = Color(0xFFE86F4A);
   static const technical_session = Color(0xFFFFCF70);
   static const other = Color(0xFFCCCCCC);
-  static const event_break = Color(0xFFFFE4AD);
   static const report = Color(0xFF92B4F4);
 }

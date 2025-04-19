@@ -7,16 +7,13 @@ import 'event.dart';
 import 'mocked_events.dart';
 
 class EventsDataStorage extends ChangeNotifier {
-
+  ReportsDataStorage _reportsStorage;
   List<Event> _eventList = [];
   List<Event> get eventList => UnmodifiableListView(_eventList);
 
-  final ReportsDataStorage _reportsStorage = ReportsDataStorage(() {});
-
-  EventsDataStorage() {
+  EventsDataStorage(this._reportsStorage) {
     if (Config.useMockData) {
-      _eventList = MockedEvents.getMockedEvents();
-      print("Załadowano ${_eventList.length} wydarzeń");
+      _eventList.addAll(MockedEvents.getMockedEvents());
       _reportsStorage.generateMockReports(_eventList);
     }
   }
@@ -24,14 +21,19 @@ class EventsDataStorage extends ChangeNotifier {
   List<Event> get favoriteEvents =>
       _eventList.where((event) => event.isFavourite).toList();
 
-  List<Event> filterEvents(String query) {
-    return _eventList.where((event) {
-      bool matchesName = event.title.toLowerCase().contains(query.toLowerCase());
-      bool matchesDescription = event.subtitle.toLowerCase().contains(query.toLowerCase());
-      bool matchesType = event.type.toString().toLowerCase().contains(query.toLowerCase());
-      return matchesName || matchesDescription || matchesType;
+  List<Event> filterEventsByQuery(String query) {
+    final lowerQuery = query.toLowerCase();
+    return eventList.where((event) {
+      final matchesEvent = event.title.toLowerCase().contains(lowerQuery) ||
+          event.subtitle.toLowerCase().contains(lowerQuery);
+
+      final matchingReports = _reportsStorage.filterReportsByQuery(query);
+      final matchesReport = matchingReports.any((report) => event.reports.contains(report));
+
+      return matchesEvent || matchesReport;
     }).toList();
   }
+
 
   void controlFavourite(Event event) {
     final index = _eventList.indexOf(event);
@@ -61,14 +63,11 @@ class EventsDataStorage extends ChangeNotifier {
     notifyListeners();
   }
 
-  void editEvent(Event updatedEvent) {
-    final index = _eventList.indexWhere((e) => e.id == updatedEvent.id);
+  void updateEvent(Event oldEvent, Event updatedEvent) {
+    final index = _eventList.indexOf(oldEvent);
     if (index != -1) {
       _eventList[index] = updatedEvent;
       notifyListeners();
-      print("Zaktualizowano wydarzenie: ${updatedEvent.title}");
-    } else {
-      print("Nie znaleziono wydarzenia do edycji: ${updatedEvent.id}");
     }
   }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:krit_app/models/report/reports_data_storage.dart';
 import 'package:krit_app/views/screens/home/home_screen.dart';
 import 'package:krit_app/views/screens/schedule/schedule_screen.dart';
 import 'package:krit_app/views/screens/reports/reports_screen.dart';
@@ -12,11 +13,19 @@ import 'package:krit_app/services/auth_service.dart';
 import 'models/event/events_data_storage.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => AuthProvider()),
-        ChangeNotifierProvider(create: (context) => EventsDataStorage()),
+        ChangeNotifierProvider(create: (context) => ReportsDataStorage()),
+        ChangeNotifierProvider<ReportsDataStorage>(
+          create: (_) => ReportsDataStorage(),
+        ),
+        ChangeNotifierProxyProvider<ReportsDataStorage, EventsDataStorage>(
+          create: (context) => EventsDataStorage(Provider.of<ReportsDataStorage>(context, listen: false)),
+          update: (_, reportsStorage, previous) => EventsDataStorage(reportsStorage),
+          ),
       ],
       child: const MyApp(),
     ),
