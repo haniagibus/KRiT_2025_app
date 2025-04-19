@@ -24,6 +24,8 @@ class _EventFormState extends State<EventForm> {
   final _descriptionController = TextEditingController();
   final _locationController = TextEditingController();
 
+  bool isSubmitted = false;
+
   DateTime? _selectedDate;
   TimeOfDay? _selectedStartTime;
   TimeOfDay? _selectedEndTime;
@@ -44,6 +46,11 @@ class _EventFormState extends State<EventForm> {
       _selectedEndTime = TimeOfDay.fromDateTime(event.dateTimeEnd);
       _selectedReports = event.reports;
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   void _pickDate() async {
@@ -75,7 +82,6 @@ class _EventFormState extends State<EventForm> {
       });
     }
   }
-
 
   void _showMultiSelectDialog() {
     final reportsData = Provider.of<ReportsDataStorage>(context, listen: false);
@@ -135,9 +141,11 @@ class _EventFormState extends State<EventForm> {
     );
   }
 
-
-
   void _submitForm() {
+    setState(() {
+      isSubmitted = true;
+    });
+
     if (_formKey.currentState!.validate() &&
         _selectedDate != null &&
         _selectedStartTime != null &&
@@ -189,11 +197,10 @@ class _EventFormState extends State<EventForm> {
       Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Uzupełnij wszystkie pola i wybierz datę oraz godzinę")),
+        SnackBar(content: Text("Uzupełnij wszystkie wymagane pola")),
       );
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -202,6 +209,7 @@ class _EventFormState extends State<EventForm> {
     return Scaffold(
       appBar: AppBar(
         title: Text(isEditing ? "Edytuj Wydarzenie" : "Dodaj Wydarzenie"),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -219,32 +227,65 @@ class _EventFormState extends State<EventForm> {
                     TextFormField(
                       controller: _titleController,
                       decoration: InputDecoration(
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12)),
                         labelText: 'Tytuł',
+                        labelStyle: TextStyle(
+                          color: isSubmitted && _titleController.text.trim().isEmpty
+                              ? null
+                              : AppColors.primary,
+                        ),
+                        floatingLabelStyle: TextStyle(
+                          color: isSubmitted && _titleController.text.trim().isEmpty
+                              ? null
+                              : AppColors.secondary,
+                        ),
                       ),
-                      validator: (value) => value!.isEmpty ? 'Podaj tytuł' : null,
+                      validator: (value) =>
+                          value!.isEmpty ? 'Podaj tytuł' : null,
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _subtitleController,
                       decoration: InputDecoration(
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12)),
                         labelText: 'Podtytuł',
+                        labelStyle: TextStyle(
+                          color: isSubmitted && _titleController.text.trim().isEmpty
+                              ? null
+                              : AppColors.primary,
+                        ),
                         floatingLabelStyle: TextStyle(
-                          color: _formKey.currentState?.validate() == false ? Colors.red : AppColors.secondary,
+                          color: isSubmitted && _titleController.text.isEmpty
+                              ? null
+                              : AppColors.secondary,
                         ),
                       ),
-                      validator: (value) => value!.isEmpty ? 'Podaj podtytuł' : null,
+                      validator: (value) =>
+                          value!.isEmpty ? 'Podaj podtytuł' : null,
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _descriptionController,
                       maxLines: 3,
                       decoration: InputDecoration(
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12)),
                         labelText: 'Opis',
+                        labelStyle: TextStyle(
+                          color: isSubmitted && _titleController.text.trim().isEmpty
+                              ? null
+                              : AppColors.primary,
+                        ),
+                        floatingLabelStyle: TextStyle(
+                          color: isSubmitted && _titleController.text.isEmpty
+                              ? null
+                              : AppColors.secondary,
+                        ),
                       ),
-                      validator: (value) => value!.isEmpty ? 'Podaj opis wydarzenia' : null,
+                      validator: (value) =>
+                          value!.isEmpty ? 'Podaj opis wydarzenia' : null,
                     ),
                     const SizedBox(height: 16),
                     Row(
@@ -252,8 +293,13 @@ class _EventFormState extends State<EventForm> {
                         Expanded(
                           child: Text(
                             _selectedDate != null
-                                ? "Data: ${DateFormat('yyyy-MM-dd').format(_selectedDate!)}"
+                                ? "Data: ${DateFormat('dd.MM.yyyy').format(_selectedDate!)}"
                                 : "Wybierz datę",
+                            style: TextStyle(
+                              color: isSubmitted && _selectedDate == null ? Theme.of(context).colorScheme.error : null,
+                              fontWeight: isSubmitted && _selectedDate == null ? FontWeight.bold : FontWeight.normal,
+                              fontSize: 16,
+                            ),
                           ),
                         ),
                         IconButton(
@@ -262,13 +308,19 @@ class _EventFormState extends State<EventForm> {
                         ),
                       ],
                     ),
+                    SizedBox(height: 8),
                     Row(
                       children: [
                         Expanded(
                           child: Text(
                             _selectedStartTime != null
-                                ? "Start: ${_selectedStartTime!.format(context)}"
+                                ? "Godzina rozpoczęcia: ${_selectedStartTime!.format(context)}"
                                 : "Wybierz godzinę rozpoczęcia",
+                            style: TextStyle(
+                              color: isSubmitted && _selectedStartTime == null ? Theme.of(context).colorScheme.error : null,
+                              fontWeight: isSubmitted && _selectedStartTime == null ? FontWeight.bold : FontWeight.normal,
+                              fontSize: 16,
+                            ),
                           ),
                         ),
                         IconButton(
@@ -283,8 +335,13 @@ class _EventFormState extends State<EventForm> {
                         Expanded(
                           child: Text(
                             _selectedEndTime != null
-                                ? "Koniec: ${_selectedEndTime!.format(context)}"
+                                ? "Godzina zakończenia: ${_selectedEndTime!.format(context)}"
                                 : "Wybierz godzinę zakończenia",
+                            style: TextStyle(
+                              color: isSubmitted && _selectedEndTime == null ? Theme.of(context).colorScheme.error : null,
+                              fontWeight: isSubmitted && _selectedEndTime == null ? FontWeight.bold : FontWeight.normal,
+                              fontSize: 16,
+                            ),
                           ),
                         ),
                         IconButton(
@@ -297,10 +354,22 @@ class _EventFormState extends State<EventForm> {
                     TextFormField(
                       controller: _locationController,
                       decoration: InputDecoration(
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12)),
                         labelText: 'Sala',
+                        labelStyle: TextStyle(
+                          color: isSubmitted && _titleController.text.trim().isEmpty
+                              ? null
+                              : AppColors.primary,
+                        ),
+                        floatingLabelStyle: TextStyle(
+                          color: isSubmitted && _titleController.text.isEmpty
+                              ? null
+                              : AppColors.secondary,
+                        ),
                       ),
-                      validator: (value) => value!.isEmpty ? 'Podaj salę' : null,
+                      validator: (value) =>
+                          value!.isEmpty ? 'Podaj salę' : null,
                     ),
                     const SizedBox(height: 16),
                     GestureDetector(
@@ -308,13 +377,21 @@ class _EventFormState extends State<EventForm> {
                       child: AbsorbPointer(
                         child: TextFormField(
                           decoration: InputDecoration(
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12)),
                             labelText: 'Referaty',
+                            labelStyle: TextStyle(
+                              color: isSubmitted && _titleController.text.trim().isEmpty
+                                  ? null
+                                  : AppColors.primary,
+                            ),
                           ),
                           controller: TextEditingController(
                             text: _selectedReports.map((r) => r.title).join(', '),
                           ),
-                          validator: (_) => _selectedReports.isEmpty ? 'Wybierz referaty' : null,
+                          validator: (_) => _selectedReports.isEmpty
+                              ? 'Wybierz referaty'
+                              : null,
                         ),
                       ),
                     ),
@@ -324,10 +401,11 @@ class _EventFormState extends State<EventForm> {
                         isEditing ? Icons.check : Icons.add,
                         color: AppColors.primary,
                       ),
-                      label: Text(isEditing ? "Zatwierdź zmiany" : "Dodaj"),
+                      label: Text(isEditing ? "Zapisz zmiany" : "Dodaj"),
                       onPressed: _submitForm,
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 32),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 14, horizontal: 32),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),

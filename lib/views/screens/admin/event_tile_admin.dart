@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:krit_app/models/event/event.dart';
 import 'package:krit_app/views/screens/admin/event_form.dart';
-import 'package:krit_app/views/screens/schedule/event_screen.dart';
 import 'package:krit_app/theme/app_colors.dart';
 import '../../widgets/element_icon.dart';
 
@@ -12,70 +11,79 @@ class EventTileAdmin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => EventForm(event: event),
-          ),
-        );
+    return Dismissible(
+      key: Key(event.id),
+      background: Container(
+        color: AppColors.secondary,
+        alignment: Alignment.centerLeft,
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        child: Icon(Icons.edit, color: Colors.white),
+      ),
+      secondaryBackground: Container(
+        color: Colors.red,
+        alignment: Alignment.centerRight,
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        child: Icon(Icons.delete, color: Colors.white),
+      ),
+      confirmDismiss: (direction) async {
+        if (direction == DismissDirection.startToEnd) {
+          // Edycja
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => EventForm(event: event),
+            ),
+          );
+          return false;
+        } else if (direction == DismissDirection.endToStart) {
+          // Usuwanie
+          final confirm = await showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: Text("Potwierdź usunięcie"),
+              content: Text("Czy na pewno chcesz usunąć to wydarzenie?"),
+              actions: [
+                TextButton(
+                  style:
+                      TextButton.styleFrom(foregroundColor: AppColors.primary),
+                  child: Text("Anuluj"),
+                  onPressed: () => Navigator.of(ctx).pop(false),
+                ),
+                ElevatedButton(
+                  child: Text("Usuń"),
+                  onPressed: () => Navigator.of(ctx).pop(true),
+                ),
+              ],
+            ),
+          );
+          if (confirm == true) {
+            // eventsData.deleteEvent(event.id);
+            return true;
+          }
+        }
+        return false;
       },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: const BoxDecoration(
-          color: Colors.white,
+      child: ListTile(
+        leading: ElementIcon(
+          backgroundColor: AppColors.plenary_session,
+          icon: Icons.event,
         ),
-        child: Row(
+        title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ElementIcon(
-              backgroundColor: AppColors.plenary_session,
-              icon: Icons.event,
+            Text(
+              event.formattedTime,
+              style: TextStyle(
+                  color: AppColors.accent, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 4),
-                  Text(
-                    event.formattedTime,
-                    style: const TextStyle(
-                      color: AppColors.accent,
-                      fontFamily: 'Roboto',
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    event.title,
-                    style: const TextStyle(
-                      color: AppColors.text_primary,
-                      fontFamily: 'Roboto',
-                      fontSize: 18,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    event.subtitle,
-                    style: const TextStyle(
-                      color: AppColors.text_secondary,
-                      fontFamily: 'Roboto',
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Icon(
-              Icons.arrow_forward_ios,
-              color: Colors.grey[700],
-              size: 24,
+            Text(
+              event.title,
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ],
         ),
+        subtitle: Text(event.subtitle),
+        trailing: Icon(Icons.drag_handle),
       ),
     );
   }

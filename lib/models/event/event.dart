@@ -60,7 +60,7 @@ class Event {
     'dateTimeEnd': dateTimeEnd.toIso8601String(),
     'description': description,
     'building': building,
-    'room': room,
+    'room': "Sala $room",
     'reports': reports.map((report) => report.toJson()).toList(),
     'isFavourite': isFavourite,
   };

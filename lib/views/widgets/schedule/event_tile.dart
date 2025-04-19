@@ -30,69 +30,48 @@ class EventTile extends StatelessWidget {
         }
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(vertical: 2),
         decoration: const BoxDecoration(
           color: Colors.white,
         ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ElementIcon(
-                backgroundColor: AppColors.plenary_session,
-                icon: Icons.event
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 4),
-                  Text(
-                    event.formattedTime,
-                    style: const TextStyle(
-                      color: AppColors.accent,
-                      fontFamily: 'Roboto',
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    event.title,
-                    style: const TextStyle(
-                      color:  AppColors.text_primary,
-                      fontFamily: 'Roboto',
-                      fontSize: 18,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    event.subtitle,
-                    style: const TextStyle(
-                      color:  AppColors.text_secondary,
-                      fontFamily: 'Roboto',
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
+        child: ListTile(
+          leading: ElementIcon(
+            backgroundColor: AppColors.plenary_session,
+            icon: Icons.event,
+          ),
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                event.formattedTime,
+                style: TextStyle(
+                    color: AppColors.accent, fontWeight: FontWeight.bold),
               ),
-            ),
-            Center(
-              child: Row(
-                children: [
-                  StarWidget(
-                    isFavourite: event.isFavourite,
-                    onTap: onFavouriteControl,
-                  ),
-                  Icon(
-                    Icons.arrow_forward_ios,
-                    color: Colors.grey[700],
-                    size: 24,
-                  ),
-                ],
+              Text(
+                event.title,
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
-            ),
-          ],
+            ],
+          ),
+          subtitle: Text(
+            event.subtitle,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              StarWidget(
+                isFavourite: event.isFavourite,
+                onTap: onFavouriteControl,
+              ),
+              Icon(
+                Icons.arrow_forward_ios,
+                color: Colors.grey[700],
+                size: 24,
+              ),
+            ],
+          ),
         ),
       ),
     );

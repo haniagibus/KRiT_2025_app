@@ -11,12 +11,15 @@ class _NewEditionFormState extends State<NewEditionForm> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+
+  bool isSubmitted = false;
+
   DateTime? _selectedStartDate;
   DateTime? _selectedEndDate;
   List<String> _selectedReports = [];
 
   void _pickDate({required bool isStart}) async {
-      DateTime? pickedDate = await showDatePicker(
+    DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(2000),
@@ -34,6 +37,10 @@ class _NewEditionFormState extends State<NewEditionForm> {
   }
 
   void _submitForm() {
+    setState(() {
+      isSubmitted = true;
+    });
+
     if (_formKey.currentState!.validate() && _selectedReports.isNotEmpty) {
       String formattedStartDate = _selectedStartDate != null
           ? DateFormat('yyyy-MM-dd').format(_selectedStartDate!)
@@ -51,13 +58,17 @@ class _NewEditionFormState extends State<NewEditionForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text("Stwórz Nową Edycję"),
+        centerTitle: true,
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(16.0),
           child: Card(
             elevation: 6,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             child: Padding(
               padding: EdgeInsets.all(20),
               child: Form(
@@ -65,10 +76,6 @@ class _NewEditionFormState extends State<NewEditionForm> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text("Stwórz Nową Edycję",
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)
-                    ),
-                    SizedBox(height: 20),
                     TextFormField(
                       controller: _titleController,
                       decoration: InputDecoration(
@@ -76,11 +83,20 @@ class _NewEditionFormState extends State<NewEditionForm> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         labelText: 'Tytuł',
+                        labelStyle: TextStyle(
+                          color: isSubmitted &&
+                                  _titleController.text.trim().isEmpty
+                              ? null
+                              : AppColors.primary,
+                        ),
                         floatingLabelStyle: TextStyle(
-                          color: _formKey.currentState?.validate() == false ? Colors.red : AppColors.secondary,
+                          color: isSubmitted && _titleController.text.isEmpty
+                              ? null
+                              : AppColors.secondary,
                         ),
                       ),
-                      validator: (value) => value!.isEmpty ? 'Podaj tytuł' : null,
+                      validator: (value) =>
+                          value!.isEmpty ? 'Podaj tytuł' : null,
                     ),
                     SizedBox(height: 16),
                     TextFormField(
@@ -90,11 +106,20 @@ class _NewEditionFormState extends State<NewEditionForm> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         labelText: 'Opis',
+                        labelStyle: TextStyle(
+                          color: isSubmitted &&
+                                  _titleController.text.trim().isEmpty
+                              ? null
+                              : AppColors.primary,
+                        ),
                         floatingLabelStyle: TextStyle(
-                          color: _formKey.currentState?.validate() == false ? Colors.red : AppColors.secondary,
+                          color: isSubmitted && _titleController.text.isEmpty
+                              ? null
+                              : AppColors.secondary,
                         ),
                       ),
-                      validator: (value) => value!.isEmpty ? 'Podaj opis' : null,
+                      validator: (value) =>
+                          value!.isEmpty ? 'Podaj opis' : null,
                     ),
                     SizedBox(height: 16),
                     Row(
@@ -104,6 +129,16 @@ class _NewEditionFormState extends State<NewEditionForm> {
                             _selectedStartDate != null
                                 ? "Data: ${DateFormat('dd.MM.yyyy').format(_selectedStartDate!)}"
                                 : "Wybierz datę rozpoczęcia",
+                            style: TextStyle(
+                              color: isSubmitted && _selectedStartDate == null
+                                  ? Theme.of(context).colorScheme.error
+                                  : null,
+                              fontWeight:
+                                  isSubmitted && _selectedStartDate == null
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
+                              fontSize: 16,
+                            ),
                           ),
                         ),
                         IconButton(
@@ -119,6 +154,16 @@ class _NewEditionFormState extends State<NewEditionForm> {
                             _selectedEndDate != null
                                 ? "Data: ${DateFormat('dd.MM.yyyy').format(_selectedEndDate!)}"
                                 : "Wybierz datę zakończenia",
+                            style: TextStyle(
+                              color: isSubmitted && _selectedEndDate == null
+                                  ? Theme.of(context).colorScheme.error
+                                  : null,
+                              fontWeight:
+                                  isSubmitted && _selectedEndDate == null
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
+                              fontSize: 16,
+                            ),
                           ),
                         ),
                         IconButton(
@@ -133,7 +178,8 @@ class _NewEditionFormState extends State<NewEditionForm> {
                       label: Text("Dodaj"),
                       onPressed: _submitForm,
                       style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(vertical: 14, horizontal: 32),
+                        padding:
+                            EdgeInsets.symmetric(vertical: 14, horizontal: 32),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),

@@ -11,6 +11,7 @@ class AppTheme {
       bodyMedium: TextStyle(color: AppColors.text_secondary),
     ),
     inputDecorationTheme: InputDecorationTheme(
+      labelStyle: TextStyle(color: AppColors.primary),
       floatingLabelStyle: TextStyle(color: AppColors.secondary),
       enabledBorder: OutlineInputBorder(
         borderSide: BorderSide(color: AppColors.primary),

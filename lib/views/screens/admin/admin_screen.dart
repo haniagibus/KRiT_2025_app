@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:krit_app/views/screens/admin/event_form.dart';
 import 'package:krit_app/views/screens/admin/event_manager_screen.dart';
+import 'package:krit_app/views/screens/admin/report_form.dart';
 import 'package:provider/provider.dart';
 import '../../../main.dart';
 import '../../../services/auth_service.dart';
@@ -20,6 +21,7 @@ class AdminScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Panel Administracyjny"),
@@ -57,7 +59,7 @@ class AdminScreen extends StatelessWidget {
                   _buildBCard(Icons.article, "Dodaj Referat", () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => EventManagerScreen()),
+                      MaterialPageRoute(builder: (context) => ReportForm()),
                     );
                   }),
                   _buildBCard(Icons.article, "Edytuj Referaty", () {
