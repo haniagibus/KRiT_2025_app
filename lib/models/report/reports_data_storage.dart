@@ -100,13 +100,16 @@ class ReportsDataStorage extends ChangeNotifier {
     notifyListeners();
   }
 
-  void removeReport(Report report) {
-    _reportList.remove(report);
-    notifyListeners();
+  void updateEvent(Report oldReport, Report updatedReport) {
+    final index = _reportList.indexOf(oldReport);
+    if (index != -1) {
+      _reportList[index] = updatedReport;
+      notifyListeners();
+    }
   }
 
-  void clearReports() {
-    _reportList.clear();
+  void removeReport(Report report) {
+    _reportList.remove(report);
     notifyListeners();
   }
 }

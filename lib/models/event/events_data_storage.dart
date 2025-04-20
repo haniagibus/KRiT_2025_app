@@ -71,4 +71,9 @@ class EventsDataStorage extends ChangeNotifier {
     }
   }
 
+  void removeEvent(Event event) {
+    _eventList.remove(event);
+    notifyListeners();
+  }
+
 }
