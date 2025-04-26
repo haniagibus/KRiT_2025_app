@@ -8,10 +8,8 @@ import 'report.dart';
 class ReportsDataStorage extends ChangeNotifier {
   final List<Report> _reportList = [];
   final Random random = Random();
+  List<Report> get reportList => UnmodifiableListView(_reportList);
 
-  UnmodifiableListView<Report> get reportList => UnmodifiableListView(_reportList);
-
-  // Losowe dane
   final titles = [
     "Enhancing Software Testing of 5G Base Stations with LLM-driven Analysis",
     "Praktyczna realizacja ataków omijania systemów wykrywania włamań w sieciach",
@@ -100,7 +98,7 @@ class ReportsDataStorage extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateEvent(Report oldReport, Report updatedReport) {
+  void updateReport(Report oldReport, Report updatedReport) {
     final index = _reportList.indexOf(oldReport);
     if (index != -1) {
       _reportList[index] = updatedReport;

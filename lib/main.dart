@@ -9,27 +9,31 @@ import 'package:krit_app/views/widgets/side_menu.dart';
 import 'package:krit_app/generated/l10n.dart';
 import 'package:provider/provider.dart';
 import 'package:krit_app/services/auth_service.dart';
+import 'package:syncfusion_flutter_core/core.dart';
 
 import 'models/event/events_data_storage.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  SyncfusionLicense.registerLicense('TWÓJ_KLUCZ_TUTAJ');
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => AuthProvider()),
-        ChangeNotifierProvider(create: (context) => ReportsDataStorage()),
-        ChangeNotifierProvider<ReportsDataStorage>(
-          create: (_) => ReportsDataStorage(),
-        ),
+        ChangeNotifierProvider(create: (_) => ReportsDataStorage()), // <-- tylko jeden
         ChangeNotifierProxyProvider<ReportsDataStorage, EventsDataStorage>(
-          create: (context) => EventsDataStorage(Provider.of<ReportsDataStorage>(context, listen: false)),
-          update: (_, reportsStorage, previous) => EventsDataStorage(reportsStorage),
+          create: (context) => EventsDataStorage(
+            Provider.of<ReportsDataStorage>(context, listen: false),
           ),
+          update: (_, reportsStorage, previous) {
+            return previous!..updateReportsStorage(reportsStorage);
+          },
+        ),
       ],
       child: const MyApp(),
     ),
   );
+
 }
 
 class MyApp extends StatelessWidget {

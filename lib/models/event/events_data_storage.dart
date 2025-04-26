@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'package:flutter/cupertino.dart';
 import 'package:krit_app/config.dart';
+import 'package:flutter/scheduler.dart';
 import '../report/report.dart';
 import '../report/reports_data_storage.dart';
 import 'event.dart';
@@ -10,11 +11,17 @@ class EventsDataStorage extends ChangeNotifier {
   ReportsDataStorage _reportsStorage;
   List<Event> _eventList = [];
   List<Event> get eventList => UnmodifiableListView(_eventList);
+  bool _mockGenerated = false;
 
   EventsDataStorage(this._reportsStorage) {
     if (Config.useMockData) {
       _eventList.addAll(MockedEvents.getMockedEvents());
-      _reportsStorage.generateMockReports(_eventList);
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        if (!_mockGenerated) {
+          _reportsStorage.generateMockReports(_eventList);
+          _mockGenerated = true;
+        }
+      });
     }
   }
 
@@ -74,6 +81,17 @@ class EventsDataStorage extends ChangeNotifier {
   void removeEvent(Event event) {
     _eventList.remove(event);
     notifyListeners();
+  }
+
+
+  void addReportToEvent(String eventId, Report report) {
+    final event = _eventList.firstWhere((e) => e.id == eventId, orElse: () => throw Exception('Event not found'));
+    event.reports.add(report);
+    notifyListeners();
+  }
+
+  void updateReportsStorage(ReportsDataStorage newStorage) {
+    _reportsStorage = newStorage;
   }
 
 }
