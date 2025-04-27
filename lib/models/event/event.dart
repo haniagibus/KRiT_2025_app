@@ -21,6 +21,7 @@ class Event {
       "${DateFormat('HH:mm', 'pl_PL').format(dateTimeStart)} - ${DateFormat('HH:mm', 'pl_PL').format(dateTimeEnd)}";
 
   Event({
+    String? id,
     required this.title,
     required this.subtitle,
     required this.type,
@@ -30,17 +31,25 @@ class Event {
     required this.building,
     required this.room,
     required this.reports,
+
     this.isFavourite = false
   }) : id = Uuid().v4();
 
+//     this.isFavourite = false,
+//   }) : id = id ?? Uuid().v4();
+
+
   factory Event.fromJson(Map<String, dynamic> json) {
     return Event(
-      title: json['title'],
-      subtitle: json['subtitle'],
+      title: json['title'] ?? 'Brak tytułu',
+      subtitle: json['subtitle'] ?? '',
       type: EventType.values.firstWhere(
-              (e) => e.toString() == 'EventType.${json['type']}'),
+            (e) => e.toString() == 'EventType.${json['type']}',
+        orElse: () => EventType.PlenarySession, // Domyślny typ eventu
+      ),
       dateTimeStart: DateTime.parse(json['dateTimeStart']),
       dateTimeEnd: DateTime.parse(json['dateTimeEnd']),
+
       description: json['description'],
       building: json['building'],
       room: json['room'],
@@ -48,6 +57,15 @@ class Event {
           .map((reportJson) => Report.fromJson(reportJson))
           .toList(),
       isFavourite: json['isFavourite'] ?? false
+
+//       description: json['description'] ?? '',
+//       building: json['building'] ?? '',
+//       room: json['room'] ?? '',
+//       reports: (json['reports'] as List<dynamic>?)
+//           ?.map((reportJson) => Report.fromJson(reportJson))
+//           .toList() ?? [], // Jeśli `reports` brak → zwraca pustą listę
+//       isFavourite: json['isFavourite'] ?? false,
+
     );
   }
 
@@ -60,8 +78,12 @@ class Event {
     'dateTimeEnd': dateTimeEnd.toIso8601String(),
     'description': description,
     'building': building,
+
     'room': "Sala $room",
     'reports': reports.map((report) => report.toJson()).toList(),
+
+//     'room': room,
+//     'reports': reports.map((report) => report.toJson()).toList(), // Poprawione
     'isFavourite': isFavourite,
   };
 }

@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'package:flutter/cupertino.dart';
 import 'package:krit_app/config.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:krit_app/models/ApiService.dart';
 import '../report/report.dart';
 import '../report/reports_data_storage.dart';
 import 'event.dart';
@@ -28,6 +29,7 @@ class EventsDataStorage extends ChangeNotifier {
   List<Event> get favoriteEvents =>
       _eventList.where((event) => event.isFavourite).toList();
 
+//<<<<<<< admin_events_backend
   List<Event> filterEventsByQuery(String query) {
     final lowerQuery = query.toLowerCase();
     return eventList.where((event) {
@@ -38,8 +40,42 @@ class EventsDataStorage extends ChangeNotifier {
       final matchesReport = matchingReports.any((report) => event.reports.contains(report));
 
       return matchesEvent || matchesReport;
-    }).toList();
+     }).toList();
+  }//to z admina
+
+//======= tego nie bylo w adminie
+  factory EventsDataStorage(Function callback) {
+    _singleton._callback = callback;
+    return _singleton;
   }
+
+  EventsDataStorage._internal(){}
+  //asynchronicznie pobieranie danych
+  Future<void> initializeEvents() async {
+    print("🟡 Start pobierania eventów");
+
+   // if (!Config.useMockData) {  // Upewnij się, że nie korzystasz z mockowanych danych
+      _eventList = await ApiService().fetchEvents();
+      print("✅ Pobranie zakończone, liczba eventów: ${_eventList.length}");
+
+      for (var event in _eventList) {
+        print("📅 Event w storage: ${event.title} - ${event.dateTimeStart}");
+      }
+
+      _callback();
+    //}
+  }
+//koniec tego co w backu
+
+//   List<Event> filterEvents(String query) {
+//     return _eventList.where((event) {
+//       bool matchesName = event.title.toLowerCase().contains(query.toLowerCase());
+//       bool matchesDescription = event.description.toLowerCase().contains(query.toLowerCase());
+//       bool matchesType = event.type.toString().toLowerCase().contains(query.toLowerCase());
+//       return matchesName || matchesDescription || matchesType;
+// >>>>>>> backend-connection
+//     }).toList();
+//   }
 
 
   void controlFavourite(Event event) {
