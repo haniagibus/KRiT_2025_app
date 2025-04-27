@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:krit_app/models/event/event.dart';
 import 'package:krit_app/models/event/events_data_storage.dart';
 import 'package:krit_app/theme/app_colors.dart';
 import 'event_tile.dart';
 
 class CalendarWidget extends StatefulWidget {
-  final EventsDataStorage eventsDataStorage;
   final String searchQuery;
 
   const CalendarWidget({
     super.key,
-    required this.eventsDataStorage,
     required this.searchQuery,
   });
 
@@ -28,19 +27,38 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     super.initState();
     _initializeDates();
     _selectedDate = _availableDates[0];
-
-    // ⏳ Poczekaj, aż widget się załaduje, a potem przefiltruj eventy
+//admin_events_backend
+ //   _filterEventsByDate();
+    
+    //Poczekaj, aż widget się załaduje, a potem przefiltruj eventy
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _filterEventsByDate();
     });
   }
 
   void _initializeDates() {
-    final start = DateTime(2024, 9, 11);
-    _availableDates = List.generate(3, (index) => start.add(Duration(days: index)));
+    final events = context.read<EventsDataStorage>().eventList;
+    _availableDates = events
+        .map((event) => DateTime(event.dateTimeStart.year, event.dateTimeStart.month, event.dateTimeStart.day))
+        .toSet()
+        .toList();
+    _availableDates.sort((a, b) => a.compareTo(b));
   }
 
   void _filterEventsByDate() {
+//admin_events_backend
+//     final dataStorage = context.read<EventsDataStorage>();
+//     final events = dataStorage.filterEventsByQuery(widget.searchQuery);
+
+//     final filteredByDate = events.where((event) {
+//       return event.dateTimeStart.year == _selectedDate.year &&
+//           event.dateTimeStart.month == _selectedDate.month &&
+//           event.dateTimeStart.day == _selectedDate.day;
+//     }).toList();
+
+//     setState(() {
+//       _eventsForSelectedDate = filteredByDate;
+
     final events = widget.eventsDataStorage.eventList;
 
     print("📢 Liczba eventów: ${events.length}"); // 🔍 Debugging
@@ -65,6 +83,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       }).toList();
 
       print("📆 Eventy na ${_selectedDate}: ${_eventsForSelectedDate.length}"); // 🔍 Debugging
+
     });
   }
 
@@ -78,6 +97,10 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final eventsDataStorage = context.watch<EventsDataStorage>();
+
+    _initializeDates();
+
     return DefaultTabController(
       length: _availableDates.length,
       child: Column(
@@ -119,7 +142,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   event,
                   onFavouriteControl: () {
                     setState(() {
-                      widget.eventsDataStorage.controlFavourite(event);
+                      eventsDataStorage.controlFavourite(event);
                     });
                   },
                 ),

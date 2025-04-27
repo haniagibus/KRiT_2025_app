@@ -1,15 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:krit_app/models/report/reports_data_storage.dart';
 import 'package:krit_app/views/screens/home/home_screen.dart';
 import 'package:krit_app/views/screens/schedule/schedule_screen.dart';
 import 'package:krit_app/views/screens/reports/reports_screen.dart';
 import 'package:krit_app/theme/app_theme.dart';
 import 'package:krit_app/views/widgets/side_menu.dart';
 import 'package:krit_app/generated/l10n.dart';
+import 'package:provider/provider.dart';
+import 'package:krit_app/services/auth_service.dart';
+import 'package:syncfusion_flutter_core/core.dart';
+import 'models/event/events_data_storage.dart';
 //import 'package:krit_app/api_service.dart';  // Dodaj ApiService
 
+
 void main() {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  SyncfusionLicense.registerLicense('TWÓJ_KLUCZ_TUTAJ');
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => ReportsDataStorage()), // <-- tylko jeden
+        ChangeNotifierProxyProvider<ReportsDataStorage, EventsDataStorage>(
+          create: (context) => EventsDataStorage(
+            Provider.of<ReportsDataStorage>(context, listen: false),
+          ),
+          update: (_, reportsStorage, previous) {
+            return previous!..updateReportsStorage(reportsStorage);
+          },
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
+
 }
 
 class MyApp extends StatelessWidget {
@@ -18,8 +43,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'KRiT 2025',
-      theme: AppTheme.lightTheme,
+      title: 'KRiT App',
+      theme: AppTheme.lightTheme, // Apply the custom theme
       debugShowCheckedModeBanner: false,
       localizationsDelegates: [
         S.delegate,
@@ -30,15 +55,13 @@ class MyApp extends StatelessWidget {
         Locale('en', ''),
         Locale('pl', ''),
       ],
-      home: const MyHomePage(title: 'KRiT 2025'),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
+  const MyHomePage({Key? key}) : super(key: key);
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -65,12 +88,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    int currentYear = DateTime.now().year;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'KRiT 2025',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Text(
+          'KRiT $currentYear',
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
+        centerTitle: true,
       ),
       body: SafeArea(
         child: PageView(
@@ -78,8 +104,8 @@ class _MyHomePageState extends State<MyHomePage> {
           onPageChanged: _onPageChanged,
           children: [
             HomeScreen(),
-            ScheduleScreen(),  // <-- Harmonogram będzie pobierał eventy
-            ReportsScreen()
+            ScheduleScreen(),
+            ReportsScreen(),
           ],
         ),
       ),

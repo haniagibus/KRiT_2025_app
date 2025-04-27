@@ -1,37 +1,53 @@
 import 'dart:collection';
+import 'package:flutter/cupertino.dart';
 import 'package:krit_app/config.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:krit_app/models/ApiService.dart';
 import '../report/report.dart';
 import '../report/reports_data_storage.dart';
 import 'event.dart';
 import 'mocked_events.dart';
 
-class EventsDataStorage {
-  static final EventsDataStorage _singleton = EventsDataStorage._internal();
-
+class EventsDataStorage extends ChangeNotifier {
+  ReportsDataStorage _reportsStorage;
   List<Event> _eventList = [];
   List<Event> get eventList => UnmodifiableListView(_eventList);
-  late Function _callback;
+  bool _mockGenerated = false;
 
-  final ReportsDataStorage _reportsStorage = ReportsDataStorage(() {});
+  EventsDataStorage(this._reportsStorage) {
+    if (Config.useMockData) {
+      _eventList.addAll(MockedEvents.getMockedEvents());
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        if (!_mockGenerated) {
+          _reportsStorage.generateMockReports(_eventList);
+          _mockGenerated = true;
+        }
+      });
+    }
+  }
 
   List<Event> get favoriteEvents =>
       _eventList.where((event) => event.isFavourite).toList();
 
+//<<<<<<< admin_events_backend
+  List<Event> filterEventsByQuery(String query) {
+    final lowerQuery = query.toLowerCase();
+    return eventList.where((event) {
+      final matchesEvent = event.title.toLowerCase().contains(lowerQuery) ||
+          event.subtitle.toLowerCase().contains(lowerQuery);
+
+      final matchingReports = _reportsStorage.filterReportsByQuery(query);
+      final matchesReport = matchingReports.any((report) => event.reports.contains(report));
+
+      return matchesEvent || matchesReport;
+     }).toList();
+  }//to z admina
+
+//======= tego nie bylo w adminie
   factory EventsDataStorage(Function callback) {
     _singleton._callback = callback;
     return _singleton;
   }
-
-  // EventsDataStorage._internal() {
-  //   if (Config.useMockData) {
-  //     _eventList = MockedEvents.getMockedEvents();
-  //     // Tworzymy raporty dla eventów
-  //     _reportsStorage.generateMockReports(_eventList);
-  //   }
-  // }
-
-
 
   EventsDataStorage._internal(){}
   //asynchronicznie pobieranie danych
@@ -49,23 +65,24 @@ class EventsDataStorage {
       _callback();
     //}
   }
+//koniec tego co w backu
 
+//   List<Event> filterEvents(String query) {
+//     return _eventList.where((event) {
+//       bool matchesName = event.title.toLowerCase().contains(query.toLowerCase());
+//       bool matchesDescription = event.description.toLowerCase().contains(query.toLowerCase());
+//       bool matchesType = event.type.toString().toLowerCase().contains(query.toLowerCase());
+//       return matchesName || matchesDescription || matchesType;
+// >>>>>>> backend-connection
+//     }).toList();
+//   }
 
-
-  List<Event> filterEvents(String query) {
-    return _eventList.where((event) {
-      bool matchesName = event.title.toLowerCase().contains(query.toLowerCase());
-      bool matchesDescription = event.description.toLowerCase().contains(query.toLowerCase());
-      bool matchesType = event.type.toString().toLowerCase().contains(query.toLowerCase());
-      return matchesName || matchesDescription || matchesType;
-    }).toList();
-  }
 
   void controlFavourite(Event event) {
     final index = _eventList.indexOf(event);
     if (index != -1) {
       _eventList[index].isFavourite = !_eventList[index].isFavourite;
-      _callback();
+      notifyListeners();
     } else {
       print("Nie znaleziono wydarzenia w liście!");
     }
@@ -83,4 +100,41 @@ class EventsDataStorage {
       return eventDateOnly.isAtSameMomentAs(inputDateOnly);
     }).toList();
   }
+
+  void addEvent(Event event) {
+    _eventList.add(event);
+    notifyListeners();
+  }
+
+  void updateEvent(Event oldEvent, Event updatedEvent) {
+    final index = _eventList.indexOf(oldEvent);
+    if (index != -1) {
+      _eventList[index] = updatedEvent;
+      notifyListeners();
+    }
+  }
+
+  void removeEvent(Event event) {
+    _eventList.remove(event);
+    notifyListeners();
+  }
+
+
+  void addReportToEvent(Report report) {
+    final event = _eventList.firstWhere((e) => e.id == report.eventId, orElse: () => throw Exception('Event not found'));
+    event.reports.add(report);
+    notifyListeners();
+  }
+
+  void removeReportFromEvent(Report report){
+    final event = _eventList.firstWhere((e) => e.id == report.eventId, orElse: () => throw Exception('Event not found'));
+    event.reports.remove(report);
+    _reportsStorage.removeReport(report);
+    notifyListeners();
+  }
+
+  void updateReportsStorage(ReportsDataStorage newStorage) {
+    _reportsStorage = newStorage;
+  }
+
 }
