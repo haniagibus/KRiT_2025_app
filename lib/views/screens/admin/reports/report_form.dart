@@ -80,7 +80,7 @@ class _ReportFormState extends State<ReportForm> {
       if (widget.report == null) {
         storage.addReport(report);
         Provider.of<EventsDataStorage>(context, listen: false)
-            .addReportToEvent(report.eventId, report);
+            .addReportToEvent(report);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Referta dodany pomyślnie!")),
         );
@@ -104,39 +104,59 @@ class _ReportFormState extends State<ReportForm> {
       allowedExtensions: ['pdf'],
     );
 
-    if (result != null && result.files.isNotEmpty) {
-      final path = result.files.single.path;
-      if (path != null) {
+    if (result == null || result.files.isEmpty) {
+      return; // użytkownik anulował wybór
+    }
+
+    final path = result.files.single.path;
+    if (path == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Błąd podczas wybierania pliku PDF.")),
+      );
+      return;
+    }
+
+    setState(() {
+      isLoadingPdf = true;
+      _selectedPdfPath = path;
+    });
+
+    try {
+      final file = File(path);
+
+      if (!await file.exists()) {
+        throw Exception("Wybrany plik nie istnieje.");
+      }
+
+      final pdfReader = PdfReader();
+      final extractedData = await pdfReader.extractDataFromPdf(file);
+
+      setState(() {
+        _descriptionController.text = extractedData['abstract'] ?? '';
+        _keywordsController.text = extractedData['keywords'] ?? '';
+        _titleController.text = extractedData['title'] ?? '';
+      });
+
+      if ((_descriptionController.text).isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Nie znaleziono streszczenia w pliku PDF.")),
+        );
+      }
+
+    } catch (e, stackTrace) {
+      print('Błąd przy czytaniu PDF: $e');
+      print('StackTrace: $stackTrace');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Nie udało się odczytać danych z PDF.")),
+      );
+    } finally {
+      if (mounted) {
         setState(() {
-          isLoadingPdf = true;
-          _selectedPdfPath = path;
+          isLoadingPdf = false;
         });
-
-        try {
-          final pdfReader = PdfReader();
-          final extractedData = await pdfReader.extractDataFromPdf(File(path));
-
-          setState(() {
-            _titleController.text = extractedData['title'] ?? '';
-            _authorController.text = extractedData['authors'] ?? '';
-            _keywordsController.text = extractedData['keywords'] ?? '';
-            _descriptionController.text = extractedData['abstract'] ?? '';
-          });
-        } catch (e, stackTrace) {
-          print('Błąd przy czytaniu PDF: $e');
-          print('StackTrace: $stackTrace');
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Nie udało się odczytać danych z PDF: $e")),
-          );
-        } finally {
-          setState(() {
-            isLoadingPdf = false; // <- Schowaj spinner
-          });
-        }
       }
     }
   }
-
 
 
   @override

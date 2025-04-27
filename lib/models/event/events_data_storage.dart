@@ -84,9 +84,16 @@ class EventsDataStorage extends ChangeNotifier {
   }
 
 
-  void addReportToEvent(String eventId, Report report) {
-    final event = _eventList.firstWhere((e) => e.id == eventId, orElse: () => throw Exception('Event not found'));
+  void addReportToEvent(Report report) {
+    final event = _eventList.firstWhere((e) => e.id == report.eventId, orElse: () => throw Exception('Event not found'));
     event.reports.add(report);
+    notifyListeners();
+  }
+
+  void removeReportFromEvent(Report report){
+    final event = _eventList.firstWhere((e) => e.id == report.eventId, orElse: () => throw Exception('Event not found'));
+    event.reports.remove(report);
+    _reportsStorage.removeReport(report);
     notifyListeners();
   }
 

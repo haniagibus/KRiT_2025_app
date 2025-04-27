@@ -16,7 +16,7 @@ class _ReportManagerScreenState extends State<ReportManagerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final reportsDataStorage = context.watch<ReportsDataStorage>(); // <- nasłuchujemy zmian
+    final reportsDataStorage = context.watch<ReportsDataStorage>();
 
     final filteredReports = reportsDataStorage.filterReportsByQuery(_searchQuery);
 
