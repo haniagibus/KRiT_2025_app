@@ -58,6 +58,7 @@ class Report {
       'pdfUrl': pdfUrl,
       'keywords': keywords,
       'eventId': eventId,
+
     };
   }
 }
