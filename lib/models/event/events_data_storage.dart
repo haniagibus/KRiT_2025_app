@@ -33,7 +33,6 @@ class EventsDataStorage {
 
 
 
-
   EventsDataStorage._internal(){}
   //asynchronicznie pobieranie danych
   Future<void> initializeEvents() async {
