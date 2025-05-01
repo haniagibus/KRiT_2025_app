@@ -101,36 +101,30 @@ class Event {
     required this.room,
     required this.reports,
 //BACKEND
-//     this.isFavourite = false,
-//   }) : id = id ?? Uuid().v4();
-    this.isFavourite = false
-  }) : id = Uuid().v4();
+     this.isFavourite = false,
+   }) : id = id ?? Uuid().v4();
 
-  factory Event.fromJson(Map<String, dynamic> json) {
-    return Event(
-      title: json['title'] ?? 'Brak tytułu',
-      subtitle: json['subtitle'] ?? '',
+  //wera
+//     this.isFavourite = false
+//   }) : id = Uuid().v4();
+
+   factory Event.fromJson(Map<String, dynamic> json) {
+     return Event(
+       title: json['title'] ?? 'Brak tytułu',
+       subtitle: json['subtitle'] ?? '',
       type: EventType.values.firstWhere(
             (e) => e.toString() == 'EventType.${json['type']}',
         orElse: () => EventType.PlenarySession, // Domyślny typ eventu
       ),
       dateTimeStart: DateTime.parse(json['dateTimeStart']),
       dateTimeEnd: DateTime.parse(json['dateTimeEnd']),
-//BACKEND
-//       description: json['description'] ?? '',
-//       building: json['building'] ?? '',
-//       room: json['room'] ?? '',
-//       reports: (json['reports'] as List<dynamic>?)
-//           ?.map((reportJson) => Report.fromJson(reportJson))
-//           .toList() ?? [], // Jeśli `reports` brak → zwraca pustą listę
-//       isFavourite: json['isFavourite'] ?? false,
-      description: json['description'],
-      building: json['building'],
-      room: json['room'],
-      reports: (json['reports'] as List<dynamic>)
-          .map((reportJson) => Report.fromJson(reportJson))
-          .toList(),
-      isFavourite: json['isFavourite'] ?? false
+      description: json['description'] ?? '',
+      building: json['building'] ?? '',
+      room: json['room'] ?? '',
+      reports: (json['reports'] as List<dynamic>?)
+          ?.map((reportJson) => Report.fromJson(reportJson))
+          .toList() ?? [], // Jeśli `reports` brak → zwraca pustą listę
+      isFavourite: json['isFavourite'] ?? false,
     );
   }
 
