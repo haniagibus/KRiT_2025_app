@@ -91,11 +91,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: _selectedIndex == 0
+            ? null
+            : Text(
           'KRiT $currentYear',
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
+        automaticallyImplyLeading: true,
+        elevation: _selectedIndex == 0 ? 0 : 4,
       ),
       body: SafeArea(
         child: PageView(
