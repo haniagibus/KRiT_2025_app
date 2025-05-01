@@ -16,7 +16,7 @@ class MockedEvents {
         building: "Centrum Wykładowo-Konferencyjne",
         room: "Sala CW-1",
         reports: [],
-        isFavourite: false,
+        isFavourite: false
       ),
       Event(
         title: "Sesja techniczna nr 1",
@@ -28,7 +28,7 @@ class MockedEvents {
         building: "Centrum Wykładowo-Konferencyjne",
         room: "Sala CW-1",
         reports: [],
-        isFavourite: false,
+        isFavourite: false
       ),
       Event(
         title: "Sesja techniczna nr 2",
@@ -40,7 +40,7 @@ class MockedEvents {
         building: "Centrum Wykładowo-Konferencyjne",
         room: "Sala 022",
         reports: [],
-        isFavourite: false,
+        isFavourite: false
       ),
       Event(
         title: "Sesja techniczna nr 3",
@@ -52,7 +52,7 @@ class MockedEvents {
         building: "Centrum Wykładowo-Konferencyjne",
         room: "Sala 023",
         reports: [],
-        isFavourite: false,
+        isFavourite: false
       ),
       Event(
         title: "Sesja techniczna nr 4",
@@ -64,7 +64,7 @@ class MockedEvents {
         building: "Centrum Wykładowo-Konferencyjne",
         room: "Sala 027",
         reports: [],
-        isFavourite: false,
+        isFavourite: false
       ),
       Event(
         title: "Referat plenarny nr 2",
@@ -76,7 +76,7 @@ class MockedEvents {
         building: "Centrum Wykładowo-Konferencyjne",
         room: "Sala CW-1",
         reports: [],
-        isFavourite: false,
+        isFavourite: false
       ),
       Event(
         title: "Sesja firmowa",
@@ -88,7 +88,7 @@ class MockedEvents {
         building: "Centrum Wykładowo-Konferencyjne",
         room: "CW-1",
         reports: [],
-        isFavourite: false,
+        isFavourite: false
       ),
       Event(
         title: "Sesja techniczna nr 5",
@@ -100,7 +100,7 @@ class MockedEvents {
         building: "Centrum Wykładowo-Konferencyjne",
         room: "Sala CW-1",
         reports: [],
-        isFavourite: false,
+        isFavourite: false
       ),
       Event(
         title: "Sesja techniczna nr 6",
@@ -112,7 +112,7 @@ class MockedEvents {
         building: "Centrum Wykładowo-Konferencyjne",
         room: "Sala 022",
         reports: [],
-        isFavourite: false,
+        isFavourite: false
       ),
       Event(
         title: "Sesja techniczna nr 7",
@@ -124,7 +124,7 @@ class MockedEvents {
         building: "Centrum Wykładowo-Konferencyjne",
         room: "Sala 023",
         reports: [],
-        isFavourite: false,
+        isFavourite: false
       ),
       Event(
         title: "Sesja techniczna nr 8",
@@ -136,7 +136,7 @@ class MockedEvents {
         building: "Centrum Wykładowo-Konferencyjne",
         room: "Sala 027",
         reports: [],
-        isFavourite: false,
+        isFavourite: false
       ),
 
       // Day 2: 12 September
@@ -150,7 +150,7 @@ class MockedEvents {
         building: "Centrum Wykładowo-Konferencyjne",
         room: "Sala CW-1",
         reports: [],
-        isFavourite: false,
+        isFavourite: false
       ),
       Event(
         title: "Sesja techniczna nr 10",
@@ -162,7 +162,7 @@ class MockedEvents {
         building: "Centrum Wykładowo-Konferencyjne",
         room: "Sala 022",
         reports: [],
-        isFavourite: false,
+        isFavourite: false
       ),
       Event(
         title: "Sesja techniczna nr 11",
@@ -174,7 +174,7 @@ class MockedEvents {
         building: "Centrum Wykładowo-Konferencyjne",
         room: "Sala 023",
         reports: [],
-        isFavourite: false,
+        isFavourite: false
       ),
       Event(
         title: "Sesja techniczna nr 12",
@@ -186,7 +186,7 @@ class MockedEvents {
         building: "Centrum Wykładowo-Konferencyjne",
         room: "Sala 027",
         reports: [],
-        isFavourite: false,
+        isFavourite: false
       ),
       Event(
         title: "Referat plenarny nr 3",
@@ -198,7 +198,7 @@ class MockedEvents {
         building: "Centrum Wykładowo-Konferencyjne",
         room: "Sala CW-1",
         reports: [],
-        isFavourite: false,
+        isFavourite: false
       ),
       Event(
         title: "Referat plenarny nr 4",
@@ -210,7 +210,7 @@ class MockedEvents {
         building: "Centrum Wykładowo-Konferencyjne",
         room: "Sala CW-1",
         reports: [],
-        isFavourite: false,
+        isFavourite: false
       ),
       Event(
         title: "Panel satelitarny",
@@ -222,7 +222,7 @@ class MockedEvents {
         building: "Centrum Wykładowo-Konferencyjne",
         room: "Sala CW-1",
         reports: [],
-        isFavourite: false,
+        isFavourite: false
       ),
       Event(
         title: "Sesja firmowa",
@@ -234,7 +234,7 @@ class MockedEvents {
         building: "Centrum Wykładowo-Konferencyjne",
         room: "Sala CW-1",
         reports: [],
-        isFavourite: false,
+        isFavourite: false
       ),
       Event(
         title: "Sekcja telekomunikacji",
@@ -246,7 +246,7 @@ class MockedEvents {
         building: "Centrum Wykładowo-Konferencyjne",
         room: "Sala 056",
         reports: [],
-        isFavourite: false,
+        isFavourite: false
       ),
       Event(
         title: "Sesja techniczna nr 13",
@@ -258,7 +258,7 @@ class MockedEvents {
         building: "Centrum Wykładowo-Konferencyjne",
         room: "Sala CW-1",
         reports: [],
-        isFavourite: false,
+        isFavourite: false
       ),
       Event(
         title: "Sesja techniczna nr 14",
@@ -270,7 +270,7 @@ class MockedEvents {
         building: "Centrum Wykładowo-Konferencyjne",
         room: "Sala 022",
         reports: [],
-        isFavourite: false,
+        isFavourite: false
       ),
       Event(
         title: "Sesja techniczna nr 15",
@@ -282,7 +282,7 @@ class MockedEvents {
         building: "Centrum Wykładowo-Konferencyjne",
         room: "Sala 023",
         reports: [],
-        isFavourite: false,
+        isFavourite: false
       ),
       Event(
         title: "Sesja techniczna nr 16",
@@ -294,7 +294,7 @@ class MockedEvents {
         building: "Centrum Wykładowo-Konferencyjne",
         room: "Sala 027",
         reports: [],
-        isFavourite: false,
+        isFavourite: false
       ),
 
       // Day 3: 13 September
@@ -308,7 +308,7 @@ class MockedEvents {
         building: "Centrum Wykładowo-Konferencyjne",
         room: "Sala CW-1",
         reports: [],
-        isFavourite: false,
+        isFavourite: false
       ),
       Event(
         title: "Sesja techniczna nr 18",
@@ -320,7 +320,7 @@ class MockedEvents {
         building: "Centrum Wykładowo-Konferencyjne",
         room: "Sala 022",
         reports: [],
-        isFavourite: false,
+        isFavourite: false
       ),
       Event(
         title: "Sesja techniczna nr 19",
@@ -332,7 +332,7 @@ class MockedEvents {
         building: "Centrum Wykładowo-Konferencyjne",
         room: "Sala 023",
         reports: [],
-        isFavourite: false,
+        isFavourite: false
       ),
       Event(
         title: "Sesja techniczna nr 20",
@@ -344,7 +344,7 @@ class MockedEvents {
         building: "Centrum Wykładowo-Konferencyjne",
         room: "Sala 027",
         reports: [],
-        isFavourite: false,
+        isFavourite: false
       ),
       Event(
         title: "Sesja techniczna nr 21",
@@ -356,7 +356,7 @@ class MockedEvents {
         building: "Centrum Wykładowo-Konferencyjne",
         room: "Sala 029",
         reports: [],
-        isFavourite: false,
+        isFavourite: false
       ),
       Event(
         title: "Referat plenarny nr 5",
@@ -368,7 +368,7 @@ class MockedEvents {
         building: "Centrum Wykładowo-Konferencyjne",
         room: "Sala CW-1",
         reports: [],
-        isFavourite: false,
+        isFavourite: false
       ),
       Event(
         title: "Referat plenarny nr 6",
@@ -380,7 +380,7 @@ class MockedEvents {
         building: "Centrum Wykładowo-Konferencyjne",
         room: "Sala CW-1",
         reports: [],
-        isFavourite: false,
+        isFavourite: false
       ),
     ];
   }

@@ -26,53 +26,30 @@ class ReportTile extends StatelessWidget {
         );
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
         decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.all(Radius.circular(8)),
         ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            ElementIcon(
-                backgroundColor: AppColors.secondary,
-                icon: Icons.article
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 4),
-                  Text(
-                    report.title,
-                    style: const TextStyle(
-                      color: AppColors.text_primary,
-                      fontFamily: 'Roboto',
-                      fontSize: 18,
-                    ),
-                  ),
-                  Text(
-                    report.author,
-                    style: const TextStyle(
-                      color: AppColors.text_secondary,
-                      fontFamily: 'Roboto',
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: Icon(
-                Icons.arrow_forward_ios,
-                color: Colors.grey[700],
-                size: 24,
-              ),
-            ),
-          ],
+        child: ListTile(
+          leading: ElementIcon(
+              backgroundColor: AppColors.secondary, icon: Icons.article),
+          title: Text(
+            report.title,
+            style: TextStyle(fontWeight: FontWeight.bold),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          subtitle: Text(
+            report.author,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          trailing: Icon(
+            Icons.arrow_forward_ios,
+            color: Colors.grey[700],
+            size: 24,
+          ),
         ),
       ),
     );

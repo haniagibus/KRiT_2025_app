@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:krit_app/models/event/event.dart';
 import 'package:krit_app/models/event/events_data_storage.dart';
 import 'package:krit_app/views/widgets/searchbar_widget.dart';
 import '../../widgets/schedule/calendar_widget.dart';
@@ -11,7 +13,6 @@ class ScheduleScreen extends StatefulWidget {
 }
 
 class _EventViewState extends State<ScheduleScreen> {
-  late final EventsDataStorage _eventsDataStorage;
   String _searchQuery = '';
 
   // @override
@@ -20,20 +21,21 @@ class _EventViewState extends State<ScheduleScreen> {
   //   super.initState();
   // }
 
-  @override
-  void initState() {
-    super.initState();
-    _eventsDataStorage = EventsDataStorage(() => setState(() {}));
-    _loadEvents(); // Pobierz eventy
-  }
+//BACKEND
+//   @override
+//   void initState() {
+//     super.initState();
+//     _eventsDataStorage = EventsDataStorage(() => setState(() {}));
+//     _loadEvents(); // Pobierz eventy
+//   }
 
-  Future<void> _loadEvents() async {
-    await _eventsDataStorage.initializeEvents();
-  }
-
+//   Future<void> _loadEvents() async {
+//     await _eventsDataStorage.initializeEvents();
+//   }
 
   @override
   Widget build(BuildContext context) {
+    final eventsDataStorage = Provider.of<EventsDataStorage>(context);
     return Column(
       children: [
         SearchBarApp(
@@ -47,7 +49,6 @@ class _EventViewState extends State<ScheduleScreen> {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: CalendarWidget(
-              eventsDataStorage: _eventsDataStorage,
               searchQuery: _searchQuery,
             ),
           ),

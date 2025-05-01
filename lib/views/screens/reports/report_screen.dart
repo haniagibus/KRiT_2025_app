@@ -34,7 +34,7 @@ class ReportScreen extends StatelessWidget {
                     child: Text(
                       report.title,
                       style: const TextStyle(
-                        fontSize: 24,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: AppColors.text_primary,
                       ),
@@ -75,6 +75,25 @@ class ReportScreen extends StatelessWidget {
               thickness: 1,
               indent: 16,
               endIndent: 16,
+            ),
+            // Keywords
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Wrap(
+                spacing: 8.0,
+                runSpacing: 4.0,
+                children: report.keywords.map((keyword) {
+                  return Chip(
+                    label: Text(keyword),
+                    backgroundColor: AppColors.primary_faded,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      side: BorderSide.none,
+                    ),
+                    labelStyle: const TextStyle(color: Colors.white),
+                  );
+                }).toList(),
+              ),
             ),
             const SizedBox(height: 8),
             // Description

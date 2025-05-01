@@ -100,8 +100,11 @@ class Event {
     required this.building,
     required this.room,
     required this.reports,
-    this.isFavourite = false,
-  }) : id = id ?? Uuid().v4();
+//BACKEND
+//     this.isFavourite = false,
+//   }) : id = id ?? Uuid().v4();
+    this.isFavourite = false
+  }) : id = Uuid().v4();
 
   factory Event.fromJson(Map<String, dynamic> json) {
     return Event(
@@ -113,13 +116,21 @@ class Event {
       ),
       dateTimeStart: DateTime.parse(json['dateTimeStart']),
       dateTimeEnd: DateTime.parse(json['dateTimeEnd']),
-      description: json['description'] ?? '',
-      building: json['building'] ?? '',
-      room: json['room'] ?? '',
-      reports: (json['reports'] as List<dynamic>?)
-          ?.map((reportJson) => Report.fromJson(reportJson))
-          .toList() ?? [], // Jeśli `reports` brak → zwraca pustą listę
-      isFavourite: json['isFavourite'] ?? false,
+//BACKEND
+//       description: json['description'] ?? '',
+//       building: json['building'] ?? '',
+//       room: json['room'] ?? '',
+//       reports: (json['reports'] as List<dynamic>?)
+//           ?.map((reportJson) => Report.fromJson(reportJson))
+//           .toList() ?? [], // Jeśli `reports` brak → zwraca pustą listę
+//       isFavourite: json['isFavourite'] ?? false,
+      description: json['description'],
+      building: json['building'],
+      room: json['room'],
+      reports: (json['reports'] as List<dynamic>)
+          .map((reportJson) => Report.fromJson(reportJson))
+          .toList(),
+      isFavourite: json['isFavourite'] ?? false
     );
   }
 
@@ -132,8 +143,8 @@ class Event {
     'dateTimeEnd': dateTimeEnd.toIso8601String(),
     'description': description,
     'building': building,
-    'room': room,
-    'reports': reports.map((report) => report.toJson()).toList(), // Poprawione
+    'room': "Sala $room",
+    'reports': reports.map((report) => report.toJson()).toList(),
     'isFavourite': isFavourite,
   };
 }
