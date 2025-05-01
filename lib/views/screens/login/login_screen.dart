@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:krit_app/theme/app_colors.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }

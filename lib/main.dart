@@ -7,6 +7,9 @@ import 'package:krit_app/views/screens/reports/reports_screen.dart';
 import 'package:krit_app/theme/app_theme.dart';
 import 'package:krit_app/views/widgets/side_menu.dart';
 import 'package:krit_app/generated/l10n.dart';
+//BACKEND
+//import 'package:krit_app/api_service.dart';  // Dodaj ApiService
+
 import 'package:provider/provider.dart';
 import 'package:krit_app/services/auth_service.dart';
 import 'package:syncfusion_flutter_core/core.dart';
@@ -43,7 +46,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'KRiT App',
-      theme: AppTheme.lightTheme, // Apply the custom theme
+      theme: AppTheme.lightTheme,
       debugShowCheckedModeBanner: false,
       localizationsDelegates: [
         S.delegate,
@@ -140,3 +143,23 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+// import 'dart:convert';
+// import 'package:http/http.dart' as http;
+//
+// void main() async {
+//   const String baseUrl = "http://10.0.2.2:8080/api/events";
+//
+//   try {
+//     final response = await http.get(Uri.parse(baseUrl));
+//
+//     if (response.statusCode == 200) {
+//       List jsonResponse = json.decode(response.body);
+//       print("✅ Sukces! Otrzymane eventy:");
+//       print(jsonResponse);
+//     } else {
+//       print("❌ Błąd: ${response.statusCode}");
+//     }
+//   } catch (e) {
+//     print("⚠️ Wystąpił błąd: $e");
+//   }
+// }
