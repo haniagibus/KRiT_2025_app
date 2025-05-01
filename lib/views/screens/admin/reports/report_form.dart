@@ -135,6 +135,7 @@ class _ReportFormState extends State<ReportForm> {
         _descriptionController.text = extractedData['abstract'] ?? '';
         _keywordsController.text = extractedData['keywords'] ?? '';
         _titleController.text = extractedData['title'] ?? '';
+        _authorController.text = extractedData['authors'] ?? '';
       });
 
       if ((_descriptionController.text).isEmpty) {

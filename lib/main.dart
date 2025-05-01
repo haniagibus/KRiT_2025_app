@@ -6,7 +6,7 @@ import 'package:krit_app/views/screens/schedule/schedule_screen.dart';
 import 'package:krit_app/views/screens/reports/reports_screen.dart';
 import 'package:krit_app/theme/app_theme.dart';
 import 'package:krit_app/views/widgets/side_menu.dart';
-import 'package:krit_app/generated/l10n.dart';
+//import 'package:krit_app/generated/l10n.dart';
 import 'package:provider/provider.dart';
 import 'package:krit_app/services/auth_service.dart';
 import 'package:syncfusion_flutter_core/core.dart';
@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.lightTheme, // Apply the custom theme
       debugShowCheckedModeBanner: false,
       localizationsDelegates: [
-        S.delegate,
+        //S.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
       ],
