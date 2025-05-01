@@ -64,7 +64,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             event.dateTimeStart.day == _selectedDate.day;
       }).toList();
 
-      print("📆 Eventy na ${_selectedDate}: ${_eventsForSelectedDate.length}"); // 🔍 Debugging
+      print("📆 Eventy na $_selectedDate: ${_eventsForSelectedDate.length}"); // 🔍 Debugging
     });
   }
 

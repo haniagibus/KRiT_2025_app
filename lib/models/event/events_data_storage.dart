@@ -1,10 +1,8 @@
 import 'dart:collection';
-import 'package:krit_app/config.dart';
 import 'package:krit_app/models/ApiService.dart';
 import '../report/report.dart';
 import '../report/reports_data_storage.dart';
 import 'event.dart';
-import 'mocked_events.dart';
 
 class EventsDataStorage {
   static final EventsDataStorage _singleton = EventsDataStorage._internal();
@@ -33,7 +31,7 @@ class EventsDataStorage {
 
 
 
-  EventsDataStorage._internal(){}
+  EventsDataStorage._internal();
   //asynchronicznie pobieranie danych
   Future<void> initializeEvents() async {
     print("🟡 Start pobierania eventów");

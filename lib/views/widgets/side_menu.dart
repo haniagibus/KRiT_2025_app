@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:krit_app/theme/app_colors.dart';
 
 import '../screens/login/login_screen.dart';
 

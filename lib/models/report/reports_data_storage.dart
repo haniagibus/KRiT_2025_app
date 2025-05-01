@@ -115,7 +115,6 @@
 // }
 import 'dart:collection';
 import 'dart:math';
-import 'package:krit_app/config.dart';
 import 'package:krit_app/models/event/event.dart';
 import '../ApiService.dart';
 import 'report.dart';

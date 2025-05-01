@@ -62,7 +62,7 @@ class SearchBarApp extends StatefulWidget {
 
 class _SearchBarAppState extends State<SearchBarApp> {
   final SearchController _controller = SearchController();
-  String _searchQuery = "";
+  final String _searchQuery = "";
   bool isDark = false;
 
 
