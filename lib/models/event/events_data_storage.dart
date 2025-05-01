@@ -7,6 +7,7 @@ import 'package:flutter/scheduler.dart';
 import '../report/report.dart';
 import '../report/reports_data_storage.dart';
 import 'event.dart';
+import 'mocked_events.dart';
 
 class EventsDataStorage extends ChangeNotifier {
   ReportsDataStorage _reportsStorage;

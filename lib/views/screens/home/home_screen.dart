@@ -38,8 +38,9 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 8.0),
           Text(
             'Konferencja Radiokomunikacji i Teleinformatyki 2025',
+            textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 32,
+              fontSize: 30,
               fontWeight: FontWeight.bold,
               color: AppColors.text_primary,
             ),
