@@ -15,6 +15,16 @@ class _ReportManagerScreenState extends State<ReportManagerScreen> {
   String _searchQuery = '';
 
   @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final dataStorage = context.read<ReportsDataStorage>();
+      await dataStorage.refreshReports();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final reportsDataStorage = context.watch<ReportsDataStorage>();
 

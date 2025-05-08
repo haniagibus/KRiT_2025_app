@@ -247,7 +247,7 @@ class EventsDataStorage extends ChangeNotifier {
       try {
         final apiService = ApiService();
         _eventList = await apiService.fetchEvents();
-        _isInitialized = true;
+        // _isInitialized = true;
 
         print("✅ Odświeżanie zakończone, liczba eventów: ${_eventList.length}");
 

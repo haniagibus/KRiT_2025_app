@@ -87,6 +87,17 @@ class ReportsScreen extends StatefulWidget {
 class _ReportsViewState extends State<ReportsScreen> {
   String _searchQuery = '';
 
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final dataStorage = context.read<ReportsDataStorage>();
+      await dataStorage.refreshReports();
+    });
+  }
+
+
 //BACKEND
 //   List<Report> _filteredReports = [];
 //   bool _isLoading = true;

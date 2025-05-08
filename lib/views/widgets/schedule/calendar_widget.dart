@@ -25,16 +25,29 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   @override
   void initState() {
     super.initState();
-    _initializeDates();
-    _selectedDate = _availableDates[0];
-    
-//BACKEND
-//     // ⏳ Poczekaj, aż widget się załaduje, a potem przefiltruj eventy
-//     WidgetsBinding.instance.addPostFrameCallback((_) {
-//       _filterEventsByDate();
-//     });
-    _filterEventsByDate();
 
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final dataStorage = context.read<EventsDataStorage>();
+      await dataStorage.refreshEvents();
+
+      setState(() {
+        _initializeDates();
+        if (_availableDates.isNotEmpty) {
+          _selectedDate = _availableDates[0];
+        }
+        _filterEventsByDate();
+      });
+    });
+
+//     _initializeDates();
+//     _selectedDate = _availableDates[0];
+//
+// //BACKEND
+// //     // ⏳ Poczekaj, aż widget się załaduje, a potem przefiltruj eventy
+// //     WidgetsBinding.instance.addPostFrameCallback((_) {
+// //       _filterEventsByDate();
+// //     });
+//     _filterEventsByDate();
   }
 
   void _initializeDates() {
