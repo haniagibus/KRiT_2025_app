@@ -50,158 +50,126 @@ class _EventScreenState extends State<EventScreen> {
           },
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 10),
-            // Logo and Name
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Row(
-                children: [
-                  ElementIcon(
-                    backgroundColor: AppColors.plenary_session,
-                    icon: Icons.event,
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Text(
-                      widget.event.title,
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.text_primary,
-                      ),
-                    ),
-                  ),
-                  StarWidget(
-                    isFavourite: isFavourite,
-                    onTap: toggleFavourite,
-                  )
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Divider(
-                    color: Colors.grey,
-                    thickness: 1,
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 24.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 10),
+                // Logo and Name
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
                     children: [
-                      Icon(
-                        Icons.room,
-                        size: 28,
-                        color: AppColors.text_secondary,
+                      ElementIcon(
+                        backgroundColor: AppColors.plenary_session,
+                        icon: Icons.event,
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Text(
+                          widget.event.title,
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.text_primary,
+                          ),
+                        ),
+                      ),
+                      StarWidget(
+                        isFavourite: isFavourite,
+                        onTap: toggleFavourite,
+                      )
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Divider(color: Colors.grey, thickness: 1),
+                      const SizedBox(height: 8),
+                      GridView.count(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 4,
+                        mainAxisSpacing: 4,
+                        childAspectRatio: 1.6,
+                        children: [
+                          _buildCard(Icons.calendar_today, widget.event.formattedDate, AppColors.text_primary),
+                          _buildCard(Icons.access_time, widget.event.formattedTime, AppColors.accent),
+                          _buildCard(Icons.home, widget.event.building, AppColors.text_secondary),
+                          _buildCard(Icons.room, widget.event.room, AppColors.text_secondary),
+                        ],
+                      ),
+                      const SizedBox(height: 24),
+                      const Text(
+                        "Tytuł:",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.text_primary,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
                       Text(
-                        widget.event.room,
+                        widget.event.subtitle,
                         style: const TextStyle(
                           fontSize: 18,
-                          fontWeight: FontWeight.bold,
                           color: AppColors.text_secondary,
                         ),
                       ),
+                      // const SizedBox(height: 8),
+                      // const Divider(color: Colors.grey, thickness: 1),
+                      // const SizedBox(height: 8),
+                      // Text(
+                      //   widget.event.description,
+                      //   style: const TextStyle(
+                      //     fontSize: 16,
+                      //     color: AppColors.text_secondary,
+                      //   ),
+                      // ),
+                      const SizedBox(height: 24),
+                      _buildReportsSection(widget.event.reports),
                     ],
                   ),
-                  const SizedBox(height: 8),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(12.0),
-                    child: Image.asset(
-                      'assets/images/floor_map.png',
-                      height: 300,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Divider(
-                    color: Colors.grey,
-                    thickness: 1,
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          children: [
-                            Icon(
-                              Icons.calendar_today,
-                              size: 28,
-                              color: AppColors.text_primary,
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              widget.event.formattedDate,
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.text_primary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const VerticalDivider(
-                        color: AppColors.primary,
-                        thickness: 2,
-                        width: 20,
-                      ),
-                      Expanded(
-                        child: Column(
-                          children: [
-                            Icon(
-                              Icons.access_time,
-                              size: 28,
-                              color: AppColors.accent,
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              widget.event.formattedTime,
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.accent,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  const Divider(
-                    color: Colors.grey,
-                    thickness: 1,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    widget.event.description,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: AppColors.text_secondary,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  _buildReportsSection(widget.event.reports),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
   }
 
-  /// Reports Section
+  Widget _buildCard(IconData icon, String title, Color color) {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: 32, color: color),
+          const SizedBox(height: 8),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildReportsSection(List<Report> reports) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -227,15 +195,11 @@ class _EventScreenState extends State<EventScreen> {
             itemCount: reports.length,
             itemBuilder: (context, index) {
               final report = reports[index];
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: ReportTile(
-                  report: report,
-                  onTap: () {
-                    // Additional logic for tapping a report
-                    print("Wybrano raport: ${report.title}");
-                  },
-                ),
+              return ReportTile(
+                report: report,
+                onTap: () {
+                  print("Wybrano referat: ${report.title}");
+                },
               );
             },
           ),

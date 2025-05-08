@@ -105,7 +105,7 @@ class _ReportFormState extends State<ReportForm> {
     );
 
     if (result == null || result.files.isEmpty) {
-      return; // użytkownik anulował wybór
+      return;
     }
 
     final path = result.files.single.path;

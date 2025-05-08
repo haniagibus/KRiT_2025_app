@@ -23,6 +23,7 @@ class _EventFormState extends State<EventForm> {
   final _titleController = TextEditingController();
   final _subtitleController = TextEditingController();
   final _descriptionController = TextEditingController();
+  final _buildingController = TextEditingController();
   final _roomController = TextEditingController();
 
   bool isSubmitted = false;
@@ -43,6 +44,7 @@ class _EventFormState extends State<EventForm> {
       _titleController.text = event.title;
       _subtitleController.text = event.subtitle;
       _descriptionController.text = event.description;
+      _buildingController.text = event.building;
       _roomController.text = event.room;
       _selectedDate = event.dateTimeStart;
       _selectedStartTime = TimeOfDay.fromDateTime(event.dateTimeStart);
@@ -56,6 +58,7 @@ class _EventFormState extends State<EventForm> {
     _titleController.dispose();
     _subtitleController.dispose();
     _descriptionController.dispose();
+    _buildingController.dispose();
     _roomController.dispose();
     super.dispose();
   }
@@ -217,7 +220,7 @@ class _EventFormState extends State<EventForm> {
         type: EventType.Other,
         dateTimeStart: startDateTime,
         dateTimeEnd: endDateTime,
-        building: "Budynek A",
+        building: _buildingController.text.trim(),
         room: _roomController.text.trim(),
         reports: _selectedReports,
         isFavourite: widget.event?.isFavourite ?? false,
@@ -272,7 +275,7 @@ class _EventFormState extends State<EventForm> {
                     const SizedBox(height: 16),
                     _buildTextField(_subtitleController, "Podtytuł"),
                     const SizedBox(height: 16),
-                    _buildTextField(_descriptionController, "Opis"),
+                    _buildTextField(_descriptionController, "Opis", maxLines: 3),
                     const SizedBox(height: 16),
                     Row(
                       children: [
@@ -350,6 +353,8 @@ class _EventFormState extends State<EventForm> {
                         ),
                       ],
                     ),
+                    const SizedBox(height: 16),
+                    _buildTextField(_buildingController, "Budynek"),
                     const SizedBox(height: 16),
                     _buildTextField(_roomController, "Sala"),
                     const SizedBox(height: 16),
