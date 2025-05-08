@@ -15,8 +15,19 @@ class _ReportManagerScreenState extends State<ReportManagerScreen> {
   String _searchQuery = '';
 
   @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final dataStorage = context.read<ReportsDataStorage>();
+      await dataStorage.refreshReports();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final reportsDataStorage = Provider.of<ReportsDataStorage>(context);
+    final reportsDataStorage = context.watch<ReportsDataStorage>();
+
     final filteredReports = reportsDataStorage.filterReportsByQuery(_searchQuery);
 
     return Scaffold(
@@ -35,13 +46,13 @@ class _ReportManagerScreenState extends State<ReportManagerScreen> {
           ),
           Expanded(
             child: filteredReports.isEmpty
-                ? const Center(child: Text("Brak wydarzeń"))
+                ? const Center(child: Text("Brak referatów"))
                 : ListView.builder(
-                    itemCount: filteredReports.length,
-                    itemBuilder: (context, index) {
-                      return ReportTileAdmin(filteredReports[index]);
-                    },
-                  ),
+              itemCount: filteredReports.length,
+              itemBuilder: (context, index) {
+                return ReportTileAdmin(filteredReports[index]);
+              },
+            ),
           ),
         ],
       ),

@@ -85,7 +85,7 @@ class ReportScreen extends StatelessWidget {
                 children: report.keywords.map((keyword) {
                   return Chip(
                     label: Text(keyword),
-                    backgroundColor: AppColors.primary,
+                    backgroundColor: AppColors.primary_faded,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                       side: BorderSide.none,
