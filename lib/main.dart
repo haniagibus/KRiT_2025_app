@@ -206,7 +206,7 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       debugShowCheckedModeBanner: false,
       localizationsDelegates: [
-        S.delegate,
+        //S.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
       ],
