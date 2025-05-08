@@ -4,6 +4,8 @@ class AppColors {
   static const primary = Color(0xFF0A3050);
   static const secondary = Color(0xFF92B4F4);
 
+  static const primary_faded = Color(0xFF115186);
+
   static const accent = Color(0xFFFFAA00);
   static const background = Color(0xFFFFFFFF);
   static const button_background = Color(0xFFDAE6FB);

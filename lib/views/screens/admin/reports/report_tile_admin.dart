@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:krit_app/theme/app_colors.dart';
 import 'package:krit_app/views/screens/admin/reports/report_form.dart';
+import 'package:provider/provider.dart';
 import '../../../../models/report/report.dart';
+import '../../../../models/report/reports_data_storage.dart';
+import '../../../../models/event/events_data_storage.dart';
 import '../../../widgets/element_icon.dart';
 
 class ReportTileAdmin extends StatelessWidget {
@@ -11,6 +14,8 @@ class ReportTileAdmin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final reportsDataStorage = Provider.of<ReportsDataStorage>(context, listen: false);
+    final eventsDataStorage = Provider.of<EventsDataStorage>(context, listen: false);
     return Dismissible(
       key: Key(report.id),
       background: Container(
@@ -51,8 +56,12 @@ class ReportTileAdmin extends StatelessWidget {
                 ),
                 ElevatedButton(
                   child: Text("Usuń"),
-                  onPressed: () => Navigator.of(ctx).pop(true),
+                  onPressed: () {
+                    eventsDataStorage.removeReportFromEvent(report);
+                    Navigator.of(ctx).pop(true);
+                  },
                 ),
+
               ],
             ),
           );

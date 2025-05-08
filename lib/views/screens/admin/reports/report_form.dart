@@ -1,12 +1,15 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:krit_app/models/report/reports_data_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../models/event/events_data_storage.dart';
 import '../../../../models/report/report.dart';
 import '../../../../theme/app_colors.dart';
+import 'pdf_reader.dart';
+import 'dart:io';
 
 class ReportForm extends StatefulWidget {
   final Report? report;
@@ -26,6 +29,7 @@ class _ReportFormState extends State<ReportForm> {
   final _keywordsController = TextEditingController();
 
   bool isSubmitted = false;
+  bool isLoadingPdf = false;
   String? _selectedEventId;
   String? _selectedPdfPath;
 
@@ -72,14 +76,21 @@ class _ReportFormState extends State<ReportForm> {
         eventId: _selectedEventId!,
       );
 
-      if (widget.onSubmit != null) {
-        widget.onSubmit!(report);
+      final storage = Provider.of<ReportsDataStorage>(context, listen: false);
+      if (widget.report == null) {
+        storage.addReport(report);
+        Provider.of<EventsDataStorage>(context, listen: false)
+            .addReportToEvent(report);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Referta dodany pomyślnie!")),
+        );
+      } else {
+        storage.updateReport(widget.report!, report);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Referat zaktualizowane!")),
+        );
       }
-
       Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Referat zapisany pomyślnie!")),
-      );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Uzupełnij wszystkie wymagane pola")),
@@ -93,10 +104,61 @@ class _ReportFormState extends State<ReportForm> {
       allowedExtensions: ['pdf'],
     );
 
-    if (result != null && result.files.isNotEmpty) {
-      setState(() => _selectedPdfPath = result.files.single.path);
+    if (result == null || result.files.isEmpty) {
+      return;
+    }
+
+    final path = result.files.single.path;
+    if (path == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Błąd podczas wybierania pliku PDF.")),
+      );
+      return;
+    }
+
+    setState(() {
+      isLoadingPdf = true;
+      _selectedPdfPath = path;
+    });
+
+    try {
+      final file = File(path);
+
+      if (!await file.exists()) {
+        throw Exception("Wybrany plik nie istnieje.");
+      }
+
+      final pdfReader = PdfReader();
+      final extractedData = await pdfReader.extractDataFromPdf(file);
+
+      setState(() {
+        _descriptionController.text = extractedData['abstract'] ?? '';
+        _keywordsController.text = extractedData['keywords'] ?? '';
+        _titleController.text = extractedData['title'] ?? '';
+        _authorController.text = extractedData['authors'] ?? '';
+      });
+
+      if ((_descriptionController.text).isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Nie znaleziono streszczenia w pliku PDF.")),
+        );
+      }
+
+    } catch (e, stackTrace) {
+      print('Błąd przy czytaniu PDF: $e');
+      print('StackTrace: $stackTrace');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Nie udało się odczytać danych z PDF.")),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoadingPdf = false;
+        });
+      }
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +179,9 @@ class _ReportFormState extends State<ReportForm> {
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             child: Padding(
               padding: const EdgeInsets.all(20),
-              child: Form(
+              child: isLoadingPdf
+                  ? Center(child: CircularProgressIndicator())
+                  : Form(
                 key: _formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -151,12 +215,13 @@ class _ReportFormState extends State<ReportForm> {
                     ),
                     const SizedBox(height: 16),
                     DropdownButtonFormField<String>(
-                      value: _selectedEventId,
+                      value: eventsDataStorage.eventList.any((event) => event.id == _selectedEventId)
+                          ? _selectedEventId
+                          : null,
                       hint: Text(
                         "Wybierz wydarzenie",
                         style: TextStyle(
-                          color: isSubmitted &&
-                                  _titleController.text.trim().isEmpty
+                          color: isSubmitted && _titleController.text.trim().isEmpty
                               ? Color(0xFFB00020)
                               : AppColors.primary,
                         ),
@@ -166,12 +231,11 @@ class _ReportFormState extends State<ReportForm> {
                       }),
                       items: eventsDataStorage.eventList
                           .map((event) => DropdownMenuItem(
-                                value: event.id,
-                                child: Text(event.title),
-                              ))
+                        value: event.id,
+                        child: Text(event.title),
+                      ))
                           .toList(),
-                      validator: (value) =>
-                          value == null ? 'Wybierz wydarzenie' : null,
+                      validator: (value) => value == null ? 'Wybierz wydarzenie' : null,
                     ),
                     const SizedBox(height: 8.0),
                     const Divider(

@@ -10,7 +10,7 @@ class EventTile extends StatelessWidget {
   final Event event;
   final VoidCallback onFavouriteControl;
 
-  EventTile(this.event, {required this.onFavouriteControl});
+  const EventTile(this.event, {super.key, required this.onFavouriteControl});
 
   @override
   Widget build(BuildContext context) {

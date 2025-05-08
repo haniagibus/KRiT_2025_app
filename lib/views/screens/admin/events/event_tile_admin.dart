@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:krit_app/models/event/event.dart';
 import 'package:krit_app/views/screens/admin/events/event_form.dart';
 import 'package:krit_app/theme/app_colors.dart';
+import 'package:provider/provider.dart';
+import '../../../../models/event/events_data_storage.dart';
 import '../../../widgets/element_icon.dart';
 
 class EventTileAdmin extends StatelessWidget {
@@ -11,6 +13,7 @@ class EventTileAdmin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final storage = Provider.of<EventsDataStorage>(context, listen: false);
     return Dismissible(
       key: Key(event.id),
       background: Container(
@@ -51,7 +54,10 @@ class EventTileAdmin extends StatelessWidget {
                 ),
                 ElevatedButton(
                   child: Text("Usuń"),
-                  onPressed: () => Navigator.of(ctx).pop(true),
+                  onPressed: () {
+                    storage.removeEvent(event);
+                    Navigator.of(ctx).pop(true);
+                  },
                 ),
               ],
             ),

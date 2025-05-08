@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../../../theme/app_colors.dart';
@@ -17,6 +20,7 @@ class _NewEditionFormState extends State<NewEditionForm> {
   DateTime? _selectedStartDate;
   DateTime? _selectedEndDate;
   List<String> _selectedReports = [];
+  String? _selectedLogoPath;
 
   void _pickDate({required bool isStart}) async {
     DateTime? pickedDate = await showDatePicker(
@@ -52,6 +56,17 @@ class _NewEditionFormState extends State<NewEditionForm> {
       print("Tytuł: ${_titleController.text}");
       print("Data rozpoczęcia: $formattedStartDate");
       print("Data zakończenia: $formattedEndDate");
+    }
+  }
+
+  Future<void> _pickLogoFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['png', 'jpg', 'jpeg'],
+    );
+
+    if (result != null && result.files.isNotEmpty) {
+      setState(() => _selectedLogoPath = result.files.single.path);
     }
   }
 
@@ -121,6 +136,42 @@ class _NewEditionFormState extends State<NewEditionForm> {
                       validator: (value) =>
                           value!.isEmpty ? 'Podaj opis' : null,
                     ),
+                    SizedBox(height: 16),
+                    GestureDetector(
+                      onTap: _pickLogoFile,
+                      child: AbsorbPointer(
+                        child: TextFormField(
+                          readOnly: true,
+                          decoration: InputDecoration(
+                            labelText: _selectedLogoPath != null
+                                ? _selectedLogoPath!.split('/').last
+                                : "Wybierz logo (PNG, JPG)",
+                            labelStyle: TextStyle(
+                              color: isSubmitted && _selectedLogoPath == null
+                                  ? Theme.of(context).colorScheme.error
+                                  : AppColors.primary,
+                            ),
+                            suffixIcon: const Icon(Icons.image),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          validator: (_) =>
+                          _selectedLogoPath == null ? 'Wybierz plik logo' : null,
+                        ),
+                      ),
+                    ),
+                    if (_selectedLogoPath != null && File(_selectedLogoPath!).existsSync())
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 12.0),
+                        child: Image.file(
+                          File(_selectedLogoPath!),
+                          height: 100,
+                          fit: BoxFit.contain,
+                          errorBuilder: (context, error, stackTrace) =>
+                              Text('Nie udało się załadować obrazu'),
+                        ),
+                      ),
                     SizedBox(height: 16),
                     Row(
                       children: [

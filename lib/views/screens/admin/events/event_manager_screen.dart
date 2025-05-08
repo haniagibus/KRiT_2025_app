@@ -16,6 +16,16 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
   String _searchQuery = '';
 
   @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final dataStorage = context.read<EventsDataStorage>();
+      await dataStorage.refreshEvents();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final eventsDataStorage = context.watch<EventsDataStorage>();
     final filteredEvents = eventsDataStorage.filterEventsByQuery(_searchQuery);

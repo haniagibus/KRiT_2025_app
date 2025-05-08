@@ -30,7 +30,7 @@ class AdminScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            _buildBCard(Icons.add_circle, "Stwórz Nową Edycję", () {
+            _buildCard(Icons.add_circle, "Stwórz Nową Edycję", () {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => NewEditionForm()),
@@ -43,33 +43,33 @@ class AdminScreen extends StatelessWidget {
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
                 children: [
-                  _buildBCard(Icons.event, "Dodaj Wydarzenie", () {
+                  _buildCard(Icons.event, "Dodaj Wydarzenie", () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => EventForm()),
                     );
                   }),
-                  _buildBCard(Icons.event, "Edytuj Wydarzenia", () {
+                  _buildCard(Icons.event, "Edytuj Wydarzenia", () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => EventManagerScreen()),
                     );
                   }),
-                  _buildBCard(Icons.article, "Dodaj Referat", () {
+                  _buildCard(Icons.article, "Dodaj Referat", () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => ReportForm()),
                     );
                   }),
-                  _buildBCard(Icons.article, "Edytuj Referaty", () {
+                  _buildCard(Icons.article, "Edytuj Referaty", () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => ReportManagerScreen()),
                     );
                   }),
-                  _buildBCard(Icons.logout, "Wyloguj", () => _logout(context)),
+                  _buildCard(Icons.logout, "Wyloguj", () => _logout(context)),
                 ],
               ),
             ),
@@ -79,7 +79,7 @@ class AdminScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBCard(IconData icon, String title, VoidCallback onTap) {
+  Widget _buildCard(IconData icon, String title, VoidCallback onTap) {
     return SizedBox(
       width: double.infinity,
       child: Card(
