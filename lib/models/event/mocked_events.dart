@@ -6,13 +6,14 @@ class MockedEvents {
     return [
       // Day 1: 11 September
       Event(
+
         title: "Referat plenarny nr 1",
-        subtitle: "Sławomir Hausman",
+        subtitle: "Fale milimetrowe i subterahercowe w systemach komórkowych: Planowane wykorzystanie, modelowanie propagacji i wpływ na architekturę sieci",
         type: EventType.PlenarySession,
         dateTimeStart: DateTime(2024, 9, 11, 9, 45),
         dateTimeEnd: DateTime(2024, 9, 11, 10, 30),
         description: "Fale milimetrowe i subterahercowe w systemach komórkowych: Planowane wykorzystanie, modelowanie propagacji i wpływ na architekturę sieci",
-        building: "Centrum Wykładowo-Konferencyjne",
+        building: "Budynek A WETI",
         room: "Sala CW-1",
         reports: [],
         isFavourite: false

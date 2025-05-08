@@ -9,7 +9,7 @@ class ReportTile extends StatelessWidget {
   final Report report;
   final VoidCallback onTap;
 
-  ReportTile({
+  const ReportTile({super.key, 
     required this.report,
     required this.onTap,
   });

@@ -10,7 +10,7 @@ class ElementIcon extends StatelessWidget {
   final double borderRadius;
 
   const ElementIcon({
-    Key? key,
+    super.key,
     required this.backgroundColor,
     required this.icon,
     this.iconSize = 32.0,
@@ -18,7 +18,7 @@ class ElementIcon extends StatelessWidget {
     this.width = 56.0,
     this.height = 56.0,
     this.borderRadius = 16.0,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
