@@ -1,152 +1,3 @@
-// import 'dart:collection';
-// import 'package:flutter/cupertino.dart';
-// import 'package:flutter/scheduler.dart';
-// import 'package:krit_app/config.dart';
-// import '../ApiService.dart';
-// import '../report/report.dart';
-// import '../report/reports_data_storage.dart';
-// import 'event.dart';
-// import 'mocked_events.dart';
-//
-// class EventsDataStorage extends ChangeNotifier {
-//   List<Event> _eventList = [];
-//   bool _mockGenerated = false;
-//   late ReportsDataStorage _reportsStorage;
-//   VoidCallback? _callback;
-//
-//   List<Event> get eventList => UnmodifiableListView(_eventList);
-//
-//   List<Event> get favoriteEvents =>
-//       _eventList.where((event) => event.isFavourite).toList();
-//
-//
-//   //chwila stop backend
-//   // static final EventsDataStorage _singleton = EventsDataStorage._internal();
-//   // late Function _callback;
-//   //
-//   // /// Factory do singletona, umożliwiający rejestrację callbacku
-//   // factory EventsDataStorage(Function callback) {
-//   //   _singleton._callback = callback;
-//   //   return _singleton;
-//   // }
-//   // EventsDataStorage._internal();
-//
-//   EventsDataStorage(this._reportsStorage, {VoidCallback? callback}) {
-//   _callback = callback;
-//   if (Config.useMockData && !_mockGenerated) {
-//   _eventList = MockedEvents.getMockedEvents();
-//   _reportsStorage.generateMockReports(_eventList);
-//   _mockGenerated = true;
-//   notifyListeners();
-//   }
-//   }
-//
-//
-//   /// Ustawienie zewnętrznego storage raportów (dependency injection)
-//   void updateReportsStorage(ReportsDataStorage newStorage) {
-//     _reportsStorage = newStorage;
-//
-//     // Inicjalizacja mocków, jeśli wymagane
-//     if (Config.useMockData && !_mockGenerated) {
-//       _eventList = MockedEvents.getMockedEvents();
-//       _reportsStorage.generateMockReports(_eventList);
-//       _mockGenerated = true;
-//       notifyListeners();
-//     }
-//   }
-//
-//   Future<void> initializeEvents() async {
-//     print("🟡 Start pobierania eventów");
-//
-//     if (!Config.useMockData) {
-//       _eventList = await ApiService().fetchEvents();
-//       print("✅ Pobranie zakończone, liczba eventów: ${_eventList.length}");
-//
-//       for (var event in _eventList) {
-//         print("📅 Event w storage: ${event.title} - ${event.dateTimeStart}");
-//       }
-//
-//       _callback?.call();
-//
-//       //_callback!();
-//       notifyListeners();
-//     }
-//   }
-//
-//   List<Event> filterEventsByQuery(String query) {
-//     final lowerQuery = query.toLowerCase();
-//     return eventList.where((event) {
-//       final matchesEvent = event.title.toLowerCase().contains(lowerQuery) ||
-//           event.subtitle.toLowerCase().contains(lowerQuery);
-//
-//       final matchingReports = _reportsStorage.filterReportsByQuery(query);
-//       final matchesReport =
-//       matchingReports.any((report) => event.reports.contains(report));
-//
-//       return matchesEvent || matchesReport;
-//     }).toList();
-//   }
-//
-//   void controlFavourite(Event event) {
-//     final index = _eventList.indexOf(event);
-//     if (index != -1) {
-//       _eventList[index].isFavourite = !_eventList[index].isFavourite;
-//       notifyListeners();
-//     } else {
-//       print("❌ Nie znaleziono wydarzenia w liście!");
-//     }
-//   }
-//
-//   List<Report> getReportsForEvent(String id) {
-//     return _reportsStorage.getReportsForEvent(id);
-//   }
-//
-//   List<Event> getEventsForDate(DateTime date) {
-//     DateTime inputDateOnly = DateTime(date.year, date.month, date.day);
-//     return _eventList.where((event) {
-//       DateTime eventDateOnly = DateTime(
-//           event.dateTimeStart.year, event.dateTimeStart.month, event.dateTimeStart.day);
-//       return eventDateOnly.isAtSameMomentAs(inputDateOnly);
-//     }).toList();
-//   }
-//
-//   void addEvent(Event event) {
-//     _eventList.add(event);
-//     notifyListeners();
-//   }
-//
-//   void updateEvent(Event oldEvent, Event updatedEvent) {
-//     final index = _eventList.indexOf(oldEvent);
-//     if (index != -1) {
-//       _eventList[index] = updatedEvent;
-//       notifyListeners();
-//     }
-//   }
-//
-//   void removeEvent(Event event) {
-//     _eventList.remove(event);
-//     notifyListeners();
-//   }
-//
-//   void addReportToEvent(Report report) {
-//     final event = _eventList.firstWhere(
-//           (e) => e.id == report.eventId,
-//       orElse: () => throw Exception('Event not found'),
-//     );
-//     event.reports.add(report);
-//     notifyListeners();
-//   }
-//
-//   void removeReportFromEvent(Report report) {
-//     final event = _eventList.firstWhere(
-//           (e) => e.id == report.eventId,
-//       orElse: () => throw Exception('Event not found'),
-//     );
-//     event.reports.remove(report);
-//     _reportsStorage.removeReport(report);
-//     notifyListeners();
-//   }
-// }
 import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:krit_app/config.dart';
@@ -314,17 +165,65 @@ class EventsDataStorage extends ChangeNotifier {
       }
 
       notifyListeners();
-    } catch (e) {
+    } catch (e, stackTrace) {
       print("❌ Błąd podczas dodawania eventu: $e");
+      print("📌 Stack Trace: $stackTrace"); // Wyświetlenie śladu stosu
       throw e;
     }
   }
+  //
+  // void updateEvent(Event oldEvent, Event updatedEvent) {
+  //   final index = _eventList.indexWhere((e) => e.id == oldEvent.id);
+  //   if (index != -1) {
+  //     _eventList[index] = updatedEvent;
+  //
+  //     notifyListeners();
+  //   }
+  // }
+  Future<void> updateEvent(Event oldEvent, Event updatedEvent) async {
+    try {
+      final index = _eventList.indexWhere((e) => e.id == oldEvent.id);
+      if (index != -1) {
+        if (!Config.useMockData) {
+          // Call the API service to update the event on the backend
+          final apiService = ApiService();
 
-  void updateEvent(Event oldEvent, Event updatedEvent) {
-    final index = _eventList.indexWhere((e) => e.id == oldEvent.id);
-    if (index != -1) {
-      _eventList[index] = updatedEvent;
-      notifyListeners();
+          // Make sure the updated event has the same ID as the old one
+          final eventToUpdate = Event(
+            id: oldEvent.id,  // Preserve the original ID
+            title: updatedEvent.title,
+            subtitle: updatedEvent.subtitle,
+            description: updatedEvent.description,
+            type: updatedEvent.type,
+            dateTimeStart: updatedEvent.dateTimeStart,
+            dateTimeEnd: updatedEvent.dateTimeEnd,
+            building: updatedEvent.building,
+            room: updatedEvent.room,
+            reports: updatedEvent.reports,
+            isFavourite: updatedEvent.isFavourite,
+          );
+
+          // Send the update to the backend
+          final updatedEventFromApi = await apiService.updateEvent(oldEvent);
+
+          // Update the local copy with the response from the API
+          _eventList[index] = updatedEventFromApi;
+          print("✅ Event updated successfully: ${updatedEventFromApi.title}");
+        } else {
+          // For mock data, just update locally
+          _eventList[index] = updatedEvent;
+          print("✅ Mock event updated in storage: ${updatedEvent.title}");
+        }
+
+        notifyListeners();
+      } else {
+        print("❌ Event not found for update: ${oldEvent.title}");
+        throw Exception('Event not found with ID: ${oldEvent.id}');
+      }
+    } catch (e, stackTrace) {
+      print("❌ Error updating event: $e");
+      print("📌 Stack Trace: $stackTrace");
+      throw e;
     }
   }
 

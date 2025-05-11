@@ -1,58 +1,3 @@
-// import 'dart:convert';
-// import 'package:http/http.dart' as http;
-// import 'package:krit_app/models/report/report.dart';
-//
-// import 'event/event.dart';
-//
-//
-// class ApiService {
-//   final String baseUrl = "http://10.0.2.2:8080";
-//
-//   Future<List<Event>> fetchEvents() async {
-//     final response = await http.get(Uri.parse('$baseUrl/api/events'));
-//     print("Wysłano zapytanie do: $baseUrl/api/events");
-//
-//     if (response.statusCode == 200) {
-//       print("Otrzymana odpowiedź: ${response.body}");
-//
-//       List jsonResponse = json.decode(response.body);
-//       List<Event> events = jsonResponse.map((event) => Event.fromJson(event)).toList();
-//
-//       for (var event in events) {
-//         print("Event: ${event.title} - ${event.dateTimeStart}");
-//       }
-//
-//       return events;
-//     } else {
-//       print("Błąd: ${response.statusCode} - ${response.reasonPhrase}");
-//       throw Exception('Błąd podczas pobierania eventów');
-//     }
-//   }
-//
-//   Future<List<Report>> fetchReports() async {
-//     final response = await http.get(Uri.parse('$baseUrl/api/reports'));
-//     print("Wysłano zapytanie do: $baseUrl/api/reports");
-//
-//     if (response.statusCode == 200) {
-//       print("Otrzymana odpowiedź: ${response.body}");
-//
-//       List jsonResponse = json.decode(response.body);
-//       List<Report> reports = jsonResponse.map((report) => Report.fromJson(report)).toList();
-//
-//       for (var report in reports) {
-//         print("Raport: ${report.title} - ${report.id}");
-//       }
-//
-//       return reports;
-//     } else {
-//       print("❌ Błąd: ${response.statusCode} - ${response.reasonPhrase}");
-//       throw Exception('Błąd podczas pobierania eventów');
-//     }
-//   }
-//
-//
-// }
-//
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:krit_app/models/report/report.dart';
@@ -68,6 +13,7 @@ class ApiService {
   ApiService._internal();
 
   final String baseUrl = "http://10.0.2.2:8080";
+  final String baseUrl2 = "http://localhost:8080";
 
   // Cache flag to prevent unnecessary reinitialization
   bool _dataInitialized = false;
@@ -110,6 +56,8 @@ class ApiService {
     }
   }
 
+
+
   Future<Report> addReport(Report report) async {
     final response = await http.post(
       Uri.parse('$baseUrl/api/reports'),
@@ -119,7 +67,7 @@ class ApiService {
 
     print("📤 Wysłano zapytanie POST do: $baseUrl/api/reports");
 
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200) {
       print("✅ Raport dodany pomyślnie: ${response.body}");
       return Report.fromJson(json.decode(response.body));
     } else {
@@ -134,14 +82,38 @@ class ApiService {
       headers: {'Content-Type': 'application/json'},
       body: json.encode(event.toJson()),
     );
+    print("AAA Wysyłany event jako JSON:");
+    print(json.encode(event.toJson()));
 
     print("📤 Wysłano zapytanie POST do: $baseUrl/api/events");
 
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200) {
       print("✅ Event dodany pomyślnie: ${response.body}");
       return Event.fromJson(json.decode(response.body));
     } else {
       print("❌ Błąd dodawania eventu: ${response.statusCode} - ${response.reasonPhrase}");
+      throw Exception('Błąd podczas dodawania eventu');
+    }
+  }
+
+
+  Future<Event> updateEvent(Event event) async {
+    final response = await http.put(
+      Uri.parse('$baseUrl/api/events/5b8e3dea-9dc1-4697-86e8-fde4ba20f674'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(event.toJson()),
+    );
+    print("AAA Wysyłany event jako JSON:");
+    print(json.encode(event.toJson()));
+    print("✅✅✅✅✅✅✅eventid: ${event.id}");
+
+    print("📤 Wysłano zapytanie PUT do: $baseUrl/api/events/5b8e3dea-9dc1-4697-86e8-fde4ba20f674");
+
+    if (response.statusCode == 200) {
+      print("✅ Event edutowany pomyślnie: ${response.body}");
+      return Event.fromJson(json.decode(response.body));
+    } else {
+      print("❌ Błąd update eventu: ${response.statusCode} - ${response.reasonPhrase}");
       throw Exception('Błąd podczas dodawania eventu');
     }
   }

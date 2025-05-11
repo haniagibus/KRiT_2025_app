@@ -233,8 +233,29 @@ class _EventFormState extends State<EventForm> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Wydarzenie dodane pomyślnie!")),
         );
+        // } else {
+        //   storage.updateEvent(widget.event!, newEvent);
+        //   ScaffoldMessenger.of(context).showSnackBar(
+        //     const SnackBar(content: Text("Wydarzenie zaktualizowane!")),
+        //   );
+        // }
       } else {
-        storage.updateEvent(widget.event!, newEvent);
+        // Aktualizacja istniejącego wydarzenia
+        final updatedEvent = Event(
+          id: widget.event!.id,  // Zachowanie oryginalnego ID
+          title: _titleController.text.trim(),
+          subtitle: _subtitleController.text.trim(),
+          description: _descriptionController.text.trim(),
+          type: EventType.Other,
+          dateTimeStart: startDateTime,
+          dateTimeEnd: endDateTime,
+          building: _buildingController.text.trim(),
+          room: _roomController.text.trim(),
+          reports: _selectedReports,
+          isFavourite: widget.event!.isFavourite,
+        );
+
+        storage.updateEvent(widget.event!, updatedEvent);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Wydarzenie zaktualizowane!")),
         );
