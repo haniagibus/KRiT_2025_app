@@ -106,8 +106,6 @@ class ApiService {
     }
   }
 
-
-
   Future<Event> updateEvent(Event event) async {
     print("✅ ID eventu do edycji: ${event.id}");
     final response = await http.put(
@@ -119,7 +117,7 @@ class ApiService {
     print(json.encode(event.toJson()));
     print("✅✅✅✅✅✅✅eventid: ${event.id}");
 
-    print("📤 Wysłano zapytanie PUT do: $baseUrl/api/events/5b8e3dea-9dc1-4697-86e8-fde4ba20f674");
+    print("📤 Wysłano zapytanie PUT do: $baseUrl/api/events/${event.id}");
 
     if (response.statusCode == 200) {
       print("✅ Event edutowany pomyślnie: ${response.body}");
@@ -127,6 +125,23 @@ class ApiService {
     } else {
       print("❌ Błąd update eventu: ${response.statusCode} - ${response.reasonPhrase}");
       throw Exception('Błąd podczas dodawania eventu');
+    }
+  }
+
+  Future<void> deleteEvent(Event event) async{
+    print("✅ ID eventu do usunięcia: ${event.id}");
+    final response = await http.delete(
+      Uri.parse('$baseUrl/api/events/${event.id}'),
+      headers: {'Content-Type': 'application/json'},
+      //body: json.encode(event.toJson()),
+    );
+
+    print("📤 Wysłano zapytanie DELETE do: $baseUrl/api/events/${event.id}");
+    if (response.statusCode == 200 || response.statusCode == 204) {
+      print("✅ Wydarzenie zostało usunięte.");
+    } else {
+      print("❌ Błąd usuwania eventu: ${response.statusCode} - ${response.reasonPhrase}");
+      throw Exception('Nie udało się usunąć wydarzenia.');
     }
   }
 

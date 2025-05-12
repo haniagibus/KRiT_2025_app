@@ -204,7 +204,7 @@ class EventsDataStorage extends ChangeNotifier {
           );
 
           // Send the update to the backend
-          final updatedEventFromApi = await apiService.updateEvent(oldEvent);
+          final updatedEventFromApi = await apiService.updateEvent(eventToUpdate);
 
           // Update the local copy with the response from the API
           _eventList[index] = updatedEventFromApi;
@@ -227,9 +227,12 @@ class EventsDataStorage extends ChangeNotifier {
     }
   }
 
-  void removeEvent(Event event) {
-    _eventList.removeWhere((e) => e.id == event.id);
-    notifyListeners();
+  Future<void> removeEvent(Event event) async {
+   // _eventList.removeWhere((e) => e.id == event.id);
+    //notifyListeners();
+    //final apiService = ApiService();
+    final apiService = ApiService();
+    await apiService.deleteEvent(event);
   }
 
   Future<void> addReportToEvent(Report report) async {
@@ -266,4 +269,5 @@ class EventsDataStorage extends ChangeNotifier {
       print("❌ Event not found for report removal: ${report.title}");
     }
   }
+
 }
