@@ -4,7 +4,7 @@ import 'package:krit_app/models/report/report.dart';
 import 'package:uuid/uuid.dart';
 
 class Event {
-  final String id;
+  String? id;
   final String title;
   final String subtitle;
   final EventType type;
@@ -35,29 +35,26 @@ class Event {
      this.isFavourite = false,
    }) : id = id ?? Uuid().v4();
 
-  //wera
-//     this.isFavourite = false
-//   }) : id = Uuid().v4();
-
-   factory Event.fromJson(Map<String, dynamic> json) {
-     return Event(
-       title: json['title'] ?? 'Brak tytułu',
-       subtitle: json['subtitle'] ?? '',
+  factory Event.fromJson(Map<String, dynamic> json) {
+    return Event(
+      id: json['id'],  // Powinna być wartość 'id', nie NULL
+      title: json['title'] ?? 'Brak tytułu',  // Domyślny tytuł, jeśli jest null
+      subtitle: json['subtitle'] ?? '',  // Domyślny pusty ciąg dla 'subtitle'
       type: EventType.values.firstWhere(
             (e) => e.toString() == 'EventType.${json['type']}',
-        orElse: () => EventType.PlenarySession, // Domyślny typ eventu
+        orElse: () => EventType.PlenarySession,  // Domyślny typ, jeśli jest null
       ),
-      dateTimeStart: DateTime.parse(json['dateTimeStart']),
-      dateTimeEnd: DateTime.parse(json['dateTimeEnd']),
+      dateTimeStart: DateTime.parse(json['dateTimeStart'] ?? ''),
+      dateTimeEnd: DateTime.parse(json['dateTimeEnd'] ?? ''),
       description: json['description'] ?? '',
       building: json['building'] ?? '',
       room: json['room'] ?? '',
-       reports: (json['reports'] != null && json['reports'] is List)
-           ? (json['reports'] as List)
-           .map((reportJson) => Report.fromJson(reportJson))
-           .toList()
-           : [],
-       isFavourite: json['isFavourite'] ?? false,
+      reports: (json['reports'] != null && json['reports'] is List)
+          ? (json['reports'] as List)
+          .map((reportJson) => Report.fromJson(reportJson))
+          .toList()
+          : [],
+      isFavourite: json['isFavourite'] ?? false,  // Domyślnie fałsz, jeśli brak
     );
   }
 

@@ -77,19 +77,29 @@ class ApiService {
   }
 
   Future<Event> addEvent(Event event) async {
+    final uri = Uri.parse('$baseUrl/api/events');
     final response = await http.post(
-      Uri.parse('$baseUrl/api/events'),
+      uri,
       headers: {'Content-Type': 'application/json'},
       body: json.encode(event.toJson()),
     );
+
+    print("📤 Wysłano zapytanie POST do: $uri");
     print("AAA Wysyłany event jako JSON:");
     print(json.encode(event.toJson()));
 
-    print("📤 Wysłano zapytanie POST do: $baseUrl/api/events");
-
+    // 🔍 Sprawdzamy status 201 zamiast 200
     if (response.statusCode == 200) {
       print("✅ Event dodany pomyślnie: ${response.body}");
-      return Event.fromJson(json.decode(response.body));
+
+      final backendEvent = Event.fromJson(json.decode(response.body));
+
+      event.id = backendEvent.id;
+
+      print("🎯 Nowe ID eventu po stronie frontendu: ${event.id}");
+      print("🎯 Nowe ID eventu po stronie frontendu: ${backendEvent.id}");
+
+      return backendEvent;
     } else {
       print("❌ Błąd dodawania eventu: ${response.statusCode} - ${response.reasonPhrase}");
       throw Exception('Błąd podczas dodawania eventu');
@@ -97,9 +107,11 @@ class ApiService {
   }
 
 
+
   Future<Event> updateEvent(Event event) async {
+    print("✅ ID eventu do edycji: ${event.id}");
     final response = await http.put(
-      Uri.parse('$baseUrl/api/events/5b8e3dea-9dc1-4697-86e8-fde4ba20f674'),
+      Uri.parse('$baseUrl/api/events/${event.id}'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode(event.toJson()),
     );

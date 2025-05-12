@@ -241,7 +241,7 @@ class ReportsDataStorage extends ChangeNotifier {
     }
   }
 
-  String randomEventId(List<Event> existingEvents) {
+  String? randomEventId(List<Event> existingEvents) {
     if (existingEvents.isEmpty) {
       throw Exception("Brak eventów do przypisania raportów!");
     }
@@ -303,14 +303,14 @@ class ReportsDataStorage extends ChangeNotifier {
     if (Config.useMockData && !_isInitialized) {
       _reportList.clear();
       for (int i = 0; i < 15; i++) {
-        String eventId = randomEventId(existingEvents);
+        String? eventId = randomEventId(existingEvents);
         Report newReport = Report.mock(
           randomTitle(),
           randomAuthor(),
           randomDescription(),
           "/sdcard/Documents/organizacja_i_struktura_projektu_v1.0.pdf",
           randomKeywords(),
-          eventId,
+          eventId!,
         );
         _reportList.add(newReport);
 
