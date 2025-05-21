@@ -263,11 +263,12 @@ class EventsDataStorage extends ChangeNotifier {
     final eventIndex = _eventList.indexWhere((e) => e.id == report.eventId);
     if (eventIndex != -1) {
       _eventList[eventIndex].reports.removeWhere((r) => r.id == report.id);
-      _reportsStorage.removeReport(report);
+    _reportsStorage.removeReport(report);
       notifyListeners();
     } else {
       print("❌ Event not found for report removal: ${report.title}");
     }
+
   }
 
 }

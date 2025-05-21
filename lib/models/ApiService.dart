@@ -56,8 +56,6 @@ class ApiService {
     }
   }
 
-
-
   Future<Report> addReport(Report report) async {
     final response = await http.post(
       Uri.parse('$baseUrl/api/reports'),
@@ -144,6 +142,46 @@ class ApiService {
       throw Exception('Nie udało się usunąć wydarzenia.');
     }
   }
+
+  Future<void> deleteReport(Report report) async{
+    print("✅ ID raportu do usunięcia: ${report.id}");
+    final response = await http.delete(
+      Uri.parse('$baseUrl/api/reports/${report.id}'),
+      headers: {'Content-Type': 'application/json'},
+      //body: json.encode(event.toJson()),
+    );
+
+    print("📤 Wysłano zapytanie DELETE do: $baseUrl/api/reports/${report.id}");
+    if (response.statusCode == 200 || response.statusCode == 204) {
+      print("✅ raport został usunięty.");
+    } else {
+      print("❌ Błąd usuwania raportu: ${response.statusCode} - ${response.reasonPhrase}");
+      throw Exception('Nie udało się usunąć raportu.');
+    }
+  }
+
+  Future<Report> updateReport(Report report) async {
+    print("✅ ID referatu do edycji: ${report.id}");
+    final response = await http.put(
+      Uri.parse('$baseUrl/api/reports/${report.id}'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(report.toJson()),
+    );
+    print("AAA Wysyłany report jako JSON:");
+    print(json.encode(report.toJson()));
+    print("✅✅✅✅✅✅✅reportID: ${report.id}");
+
+    print("📤 Wysłano zapytanie PUT do: $baseUrl/api/reports/${report.id}");
+
+    if (response.statusCode == 200) {
+      print("✅ report edutowany pomyślnie: ${response.body}");
+      return Report.fromJson(json.decode(response.body));
+    } else {
+      print("❌ Błąd update reportu: ${response.statusCode} - ${response.reasonPhrase}");
+      throw Exception('Błąd podczas dodawania reportu');
+    }
+  }
+
 
   int min(int a, int b) {
     return a < b ? a : b;

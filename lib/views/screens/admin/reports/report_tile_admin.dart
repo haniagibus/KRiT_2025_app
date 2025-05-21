@@ -57,7 +57,8 @@ class ReportTileAdmin extends StatelessWidget {
                 ElevatedButton(
                   child: Text("Usuń"),
                   onPressed: () {
-                    eventsDataStorage.removeReportFromEvent(report);
+                    //eventsDataStorage.removeReportFromEvent(report);
+                    reportsDataStorage.removeReport(report);
                     Navigator.of(ctx).pop(true);
                   },
                 ),

@@ -359,16 +359,22 @@ class ReportsDataStorage extends ChangeNotifier {
     }
   }
 
-  void updateReport(Report oldReport, Report updatedReport) {
+  Future<void> updateReport(Report oldReport, Report updatedReport) async {
     final index = _reportList.indexWhere((r) => r.id == oldReport.id);
     if (index != -1) {
-      _reportList[index] = updatedReport;
+      //_reportList[index] = updatedReport;
+     // notifyListeners();
+
+      final apiService = ApiService();
+      await apiService.updateReport(updatedReport);
       notifyListeners();
     }
   }
 
-  void removeReport(Report report) {
+  Future<void> removeReport(Report report) async {
     _reportList.removeWhere((r) => r.id == report.id);
+    final apiService = ApiService();
+    await apiService.deleteReport(report);
     notifyListeners();
   }
 }
