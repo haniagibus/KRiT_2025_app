@@ -170,7 +170,7 @@ import 'package:provider/provider.dart';
 import 'package:krit_app/services/auth_service.dart';
 import 'package:syncfusion_flutter_core/core.dart';
 
-import 'models/ApiService.dart';
+import 'services/ApiService.dart';
 import 'models/event/events_data_storage.dart';
 
 void main() {

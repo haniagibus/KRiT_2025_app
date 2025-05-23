@@ -3,6 +3,7 @@ import 'package:krit_app/views/screens/admin/events/event_form.dart';
 import 'package:krit_app/views/screens/admin/events/event_manager_screen.dart';
 import 'package:krit_app/views/screens/admin/reports/report_form.dart';
 import 'package:krit_app/views/screens/admin/reports/report_manager_screen.dart';
+import 'package:krit_app/views/screens/admin/reports/reports_picker.dart';
 import 'package:provider/provider.dart';
 import '../../../main.dart';
 import '../../../services/auth_service.dart';
@@ -56,10 +57,10 @@ class AdminScreen extends StatelessWidget {
                           builder: (context) => EventManagerScreen()),
                     );
                   }),
-                  _buildCard(Icons.article, "Dodaj Referat", () {
+                  _buildCard(Icons.article, "Dodaj Referaty", () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ReportForm()),
+                      MaterialPageRoute(builder: (context) => ReportsPicker()),
                     );
                   }),
                   _buildCard(Icons.article, "Edytuj Referaty", () {
