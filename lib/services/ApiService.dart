@@ -64,6 +64,9 @@ class ApiService {
     );
 
     print("📤 Wysłano zapytanie POST do: $baseUrl/api/reports");
+    print("AAA Wysyłany rapoortu jako JSON:");
+    print(json.encode(report.toJson()));
+
 
     if (response.statusCode == 200) {
       print("✅ Raport dodany pomyślnie: ${response.body}");

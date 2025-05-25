@@ -123,8 +123,7 @@ class Report {
       'author': author,
       'description': description,
       'pdfUrl': pdfUrl,
-      'keywords': keywords,
-      'eventId': eventId,
+      'keywords': keywords
     };
   }
 }

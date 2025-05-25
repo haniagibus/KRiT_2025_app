@@ -347,7 +347,6 @@ class ReportsDataStorage extends ChangeNotifier {
       final apiService = ApiService();
       final addedReport = await apiService.addReport(report);
 
-      // Make sure we don't add duplicates
       if (!_reportList.any((r) => r.id == addedReport.id)) {
         _reportList.add(addedReport);
         print("✅ Raport dodany do storage: ${addedReport.title}");
