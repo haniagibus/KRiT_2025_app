@@ -10,6 +10,7 @@ import '../../../../models/report/report.dart';
 import '../../../../theme/app_colors.dart';
 import '../../../widgets/reports/report_tile.dart';
 import 'pdf_reader.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class ReportsPicker extends StatefulWidget {
   const ReportsPicker({super.key});
@@ -23,13 +24,29 @@ class _ReportsPickerState extends State<ReportsPicker> {
   List<Report> _generatedReports = [];
 
   Future<void> _pickMultiplePdfFiles() async {
+    // if (await Permission.storage.request().isDenied) {
+    //   print("Brak uprawnień do odczytu plików.");
+    //   return;
+    // }
+
     FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['pdf'],
+      type: FileType.any,
       allowMultiple: true,
     );
 
+    print("Wybieram pliki: $result");
+
     if (result == null || result.files.isEmpty) return;
+
+    print('Wybrane pliki: ${result.files.length}');
+    for (var file in result.files) {
+      print('Plik: ${file.name}, path: ${file.path}');
+    }
+
+    final pdfFiles = result.files.where((file) =>
+    file.extension?.toLowerCase() == 'pdf' &&
+        file.path != null
+    ).toList();
 
     setState(() {
       isLoadingPdf = true;
@@ -38,7 +55,7 @@ class _ReportsPickerState extends State<ReportsPicker> {
 
     final pdfReader = PdfReader();
 
-    for (var file in result.files) {
+    for (var file in pdfFiles) {
       if (file.path == null) continue;
       final pdfFile = File(file.path!);
       if (!await pdfFile.exists()) continue;
