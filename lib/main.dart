@@ -205,11 +205,7 @@ class MyApp extends StatelessWidget {
       title: 'KRiT App',
       theme: AppTheme.lightTheme,
       debugShowCheckedModeBanner: false,
-      localizationsDelegates: [
-        //S.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
       supportedLocales: const [
         Locale('en', ''),
         Locale('pl', ''),
