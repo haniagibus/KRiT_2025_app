@@ -63,7 +63,7 @@ class SideMenu extends StatelessWidget {
                           style: theme.textTheme.bodyMedium,
                         ),
                         onTap: () {
-                          authProvider.setUserRole();
+                          authProvider.logout();
                           Navigator.pop(context);
                         },
                       ),

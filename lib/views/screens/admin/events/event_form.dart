@@ -43,7 +43,7 @@ class _EventFormState extends State<EventForm> {
       final event = widget.event!;
       _titleController.text = event.title;
       _subtitleController.text = event.subtitle;
-      _descriptionController.text = event.description;
+      //_descriptionController.text = event.description;
       _buildingController.text = event.building;
       _roomController.text = event.room;
       _selectedDate = event.dateTimeStart;
@@ -207,7 +207,7 @@ class _EventFormState extends State<EventForm> {
       final newEvent = Event(
         title: _titleController.text.trim(),
         subtitle: _subtitleController.text.trim(),
-        description: _descriptionController.text.trim(),
+        //description: _descriptionController.text.trim(),
         type: EventType.Other,
         dateTimeStart: startDateTime,
         dateTimeEnd: endDateTime,
@@ -236,7 +236,7 @@ class _EventFormState extends State<EventForm> {
           id: widget.event!.id,  // Zachowanie oryginalnego ID
           title: _titleController.text.trim(),
           subtitle: _subtitleController.text.trim(),
-          description: _descriptionController.text.trim(),
+          //description: _descriptionController.text.trim(),
           type: EventType.Other,
           dateTimeStart: startDateTime,
           dateTimeEnd: endDateTime,

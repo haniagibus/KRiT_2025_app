@@ -16,13 +16,25 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  void _login() {
-    Provider.of<AuthProvider>(context, listen: false).setAdminRole();
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => AdminScreen()),
-    );
+  void _login() async {
+    if (_formKey.currentState!.validate()) {
+      final success = await Provider.of<AuthProvider>(context, listen: false)
+          .login(_emailController.text, _passwordController.text);
+
+      if (success) {
+        Provider.of<AuthProvider>(context, listen: false).setAdminRole();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => AdminScreen()),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Niepoprawny login lub hasło')),
+        );
+      }
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
