@@ -125,6 +125,7 @@ class EventsDataStorage extends ChangeNotifier {
   }
 
   void controlFavourite(Event event) {
+    print("fav");
     final index = _eventList.indexWhere((e) => e.id == event.id);
     if (index != -1) {
       _eventList[index].isFavourite = !_eventList[index].isFavourite;
@@ -271,4 +272,11 @@ class EventsDataStorage extends ChangeNotifier {
 
   }
 
+  Event? getEventById(String id) {
+    try {
+      return _eventList.firstWhere((event) => event.id == id);
+    } catch (e) {
+      return null;
+    }
+  }
 }

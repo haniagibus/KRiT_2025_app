@@ -104,16 +104,7 @@ class _EventFormState extends State<EventForm> {
 
         return StatefulBuilder(
           builder: (context, setStateDialog) {
-            final filteredReports = allReports
-                .where((report) =>
-                    report.title
-                        .toLowerCase()
-                        .contains(_searchQuery.toLowerCase()) ||
-                    report.author
-                        .toLowerCase()
-                        .contains(_searchQuery.toLowerCase()))
-                .toList();
-
+            final filteredReports = reportsData.filterReportsByQuery(_searchQuery);
             return AlertDialog(
               title: const Text("Wybierz referaty"),
               content: Column(
@@ -142,7 +133,7 @@ class _EventFormState extends State<EventForm> {
                               overflow: TextOverflow.ellipsis,
                             ),
                             subtitle: Text(
-                              report.author,
+                              report.authors.join(', '),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),

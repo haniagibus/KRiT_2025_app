@@ -8,6 +8,7 @@ import 'package:uuid/uuid.dart';
 import '../../../../models/event/events_data_storage.dart';
 import '../../../../models/report/report.dart';
 import '../../../../theme/app_colors.dart';
+import '../../reports/pdf_view_screen.dart';
 import 'pdf_reader.dart';
 import 'dart:io';
 
@@ -24,7 +25,7 @@ class ReportForm extends StatefulWidget {
 class _ReportFormState extends State<ReportForm> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
-  final _authorController = TextEditingController();
+  final _authorsController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _keywordsController = TextEditingController();
 
@@ -39,7 +40,7 @@ class _ReportFormState extends State<ReportForm> {
     final report = widget.report;
     if (report != null) {
       _titleController.text = report.title;
-      _authorController.text = report.author;
+      _authorsController.text = report.authors.join(', ');
       _descriptionController.text = report.description;
       _keywordsController.text = report.keywords.join(', ');
       _selectedEventId = report.eventId;
@@ -50,7 +51,7 @@ class _ReportFormState extends State<ReportForm> {
   @override
   void dispose() {
     _titleController.dispose();
-    _authorController.dispose();
+    _authorsController.dispose();
     _descriptionController.dispose();
     _keywordsController.dispose();
     super.dispose();
@@ -62,10 +63,14 @@ class _ReportFormState extends State<ReportForm> {
     if (_formKey.currentState!.validate() &&
         _selectedEventId != null &&
         _selectedPdfPath != null) {
-      final report = Report(
-        id: widget.report?.id ?? const Uuid().v4(),
+      final updatedReport = Report(
+        id: widget.report!.id,
         title: _titleController.text.trim(),
-        author: _authorController.text.trim(),
+        authors: _authorsController.text
+            .split(',')
+            .map((a) => a.trim())
+            .where((a) => a.isNotEmpty)
+            .toList(),
         description: _descriptionController.text.trim(),
         pdfUrl: _selectedPdfPath!,
         keywords: _keywordsController.text
@@ -77,19 +82,12 @@ class _ReportFormState extends State<ReportForm> {
       );
 
       final storage = Provider.of<ReportsDataStorage>(context, listen: false);
-      if (widget.report == null) {
-        storage.addReport(report);
-        Provider.of<EventsDataStorage>(context, listen: false)
-            .addReportToEvent(report);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Referta dodany pomyślnie!")),
-        );
-      } else {
-        storage.updateReport(widget.report!, report);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Referat zaktualizowane!")),
-        );
-      }
+      storage.updateReport(widget.report!, updatedReport);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Referat zaktualizowany!")),
+      );
+
       Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -98,76 +96,13 @@ class _ReportFormState extends State<ReportForm> {
     }
   }
 
-  Future<void> _pickPdfFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['pdf'],
-    );
-
-    if (result == null || result.files.isEmpty) {
-      return;
-    }
-
-    final path = result.files.single.path;
-    if (path == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Błąd podczas wybierania pliku PDF.")),
-      );
-      return;
-    }
-
-    setState(() {
-      isLoadingPdf = true;
-      _selectedPdfPath = path;
-    });
-
-    try {
-      final file = File(path);
-
-      if (!await file.exists()) {
-        throw Exception("Wybrany plik nie istnieje.");
-      }
-
-      final pdfReader = PdfReader();
-      final extractedData = await pdfReader.extractDataFromPdf(file);
-
-      setState(() {
-        _descriptionController.text = extractedData['abstract'] ?? '';
-        _keywordsController.text = extractedData['keywords'] ?? '';
-        _titleController.text = extractedData['title'] ?? '';
-        _authorController.text = extractedData['authors'] ?? '';
-      });
-
-      if ((_descriptionController.text).isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Nie znaleziono streszczenia w pliku PDF.")),
-        );
-      }
-
-    } catch (e, stackTrace) {
-      print('Błąd przy czytaniu PDF: $e');
-      print('StackTrace: $stackTrace');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Nie udało się odczytać danych z PDF.")),
-      );
-    } finally {
-      if (mounted) {
-        setState(() {
-          isLoadingPdf = false;
-        });
-      }
-    }
-  }
-
-
   @override
   Widget build(BuildContext context) {
-    final isEditing = widget.report != null;
     final eventsDataStorage = Provider.of<EventsDataStorage>(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(isEditing ? "Edytuj Referat" : "Dodaj Referat"),
+        title: Text("Edytuj Referat"),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -186,66 +121,64 @@ class _ReportFormState extends State<ReportForm> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // PDF Picker
-                    GestureDetector(
-                      onTap: _pickPdfFile,
-                      child: AbsorbPointer(
-                        child: TextFormField(
-                          readOnly: true,
-                          decoration: InputDecoration(
-                            labelText: _selectedPdfPath != null
-                                ? _selectedPdfPath!.split('/').last
-                                : "Wybierz plik PDF",
-                            labelStyle: TextStyle(
-                              color: isSubmitted &&
-                                      _titleController.text.trim().isEmpty
-                                  ? null
-                                  : AppColors.primary,
-                            ),
-                            suffixIcon: const Icon(Icons.file_upload),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          validator: (_) => _selectedPdfPath == null
-                              ? 'Wybierz plik PDF'
-                              : null,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    DropdownButtonFormField<String>(
-                      value: eventsDataStorage.eventList.any((event) => event.id == _selectedEventId)
-                          ? _selectedEventId
-                          : null,
-                      hint: Text(
-                        "Wybierz wydarzenie",
-                        style: TextStyle(
-                          color: isSubmitted && _titleController.text.trim().isEmpty
-                              ? Color(0xFFB00020)
-                              : AppColors.primary,
-                        ),
-                      ),
-                      onChanged: (newValue) => setState(() {
-                        _selectedEventId = newValue;
-                      }),
-                      items: eventsDataStorage.eventList
-                          .map((event) => DropdownMenuItem(
-                        value: event.id,
-                        child: Text(event.title),
-                      ))
-                          .toList(),
-                      validator: (value) => value == null ? 'Wybierz wydarzenie' : null,
-                    ),
-                    const SizedBox(height: 8.0),
-                    const Divider(
-                      color: Colors.grey,
-                      thickness: 1,
-                    ),
-                    const SizedBox(height: 8.0),
+                    // Row(
+                    //   children: [
+                    //     Expanded(
+                    //       child: TextFormField(
+                    //         readOnly: true,
+                    //         enabled: false,
+                    //         initialValue: _selectedPdfPath != null
+                    //             ? _selectedPdfPath!.split('/').last
+                    //             : "Brak pliku PDF",
+                    //         decoration: InputDecoration(
+                    //           labelText: "Plik PDF",
+                    //           border: OutlineInputBorder(
+                    //             borderRadius: BorderRadius.circular(12),
+                    //           ),
+                    //         ),
+                    //         validator: (_) =>
+                    //         _selectedPdfPath == null ? 'Brak pliku PDF' : null,
+                    //       ),
+                    //     ),
+                    //     const SizedBox(width: 8),
+                    //     IconButton(
+                    //       icon: Icon(Icons.picture_as_pdf, color: AppColors.primary),
+                    //       onPressed: _selectedPdfPath == null
+                    //           ? null
+                    //           : () {
+                    //         Navigator.push(
+                    //           context,
+                    //           MaterialPageRoute(
+                    //             builder: (context) => PDFViewScreen(pdfUrl: _selectedPdfPath!),
+                    //           ),
+                    //         );
+                    //       },
+                    //     ),
+                    //   ],
+                    // ),
+                    // const SizedBox(height: 16),
+                    // TextFormField(
+                    //   enabled: false,
+                    //   readOnly: true,
+                    //   initialValue: _selectedEventId != null
+                    //       ? eventsDataStorage.getEventById(_selectedEventId!)?.title
+                    //       : 'Nieprzypisany do żadnego wydarzenia',
+                    //   decoration: InputDecoration(
+                    //     labelText: "Wydarzenie",
+                    //     border: OutlineInputBorder(
+                    //       borderRadius: BorderRadius.circular(12),
+                    //     ),
+                    //   ),
+                    // ),
+                    // const SizedBox(height: 8.0),
+                    // const Divider(
+                    //   color: Colors.grey,
+                    //   thickness: 1,
+                    // ),
+                    // const SizedBox(height: 8.0),
                     _buildTextField(_titleController, "Tytuł"),
                     const SizedBox(height: 16),
-                    _buildTextField(_authorController, "Autor"),
+                    _buildTextField(_authorsController, "Autorzy"),
                     const SizedBox(height: 16),
                     _buildTextField(_descriptionController, "Opis",
                         maxLines: 3),
@@ -254,11 +187,8 @@ class _ReportFormState extends State<ReportForm> {
                         "Słowa kluczowe (oddziel przecinkiem)"),
                     const SizedBox(height: 30),
                     ElevatedButton.icon(
-                      icon: Icon(
-                        isEditing ? Icons.check : Icons.add,
-                        color: AppColors.primary,
-                      ),
-                      label: Text(isEditing ? "Zapisz zmiany" : "Dodaj"),
+                      icon: Icon(Icons.save, color: AppColors.primary),
+                      label: Text("Zapisz zmiany"),
                       onPressed: _submitForm,
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(

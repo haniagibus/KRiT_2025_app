@@ -172,6 +172,7 @@
 
 import 'dart:collection';
 import 'dart:math';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:krit_app/config.dart';
 import 'package:krit_app/models/event/event.dart';
@@ -226,8 +227,19 @@ class ReportsDataStorage extends ChangeNotifier {
   final keywords = ["NLP", "LLM", "testowanie oprogramowania", "testy regresyjne"];
 
   String randomTitle() => titles[random.nextInt(titles.length)];
-  String randomAuthor() => authors[random.nextInt(authors.length)];
   String randomDescription() => descriptions[random.nextInt(descriptions.length)];
+
+  List<String> randomAuthors() {
+    if (authors.length >= 2) {
+      Set<int> indices = {};
+      while (indices.length < 2) {
+        indices.add(random.nextInt(authors.length));
+      }
+      return indices.map((index) => authors[index]).toList();
+    } else {
+      return authors;
+    }
+  }
 
   List<String> randomKeywords() {
     if (keywords.length >= 2) {
@@ -306,7 +318,7 @@ class ReportsDataStorage extends ChangeNotifier {
         String? eventId = randomEventId(existingEvents);
         Report newReport = Report.mock(
           randomTitle(),
-          randomAuthor(),
+          randomAuthors(),
           randomDescription(),
           "/sdcard/Documents/organizacja_i_struktura_projektu_v1.0.pdf",
           randomKeywords(),
@@ -337,7 +349,7 @@ class ReportsDataStorage extends ChangeNotifier {
     final lowerQuery = query.toLowerCase();
     return reportList.where((report) {
       return report.title.toLowerCase().contains(lowerQuery) ||
-          report.author.toLowerCase().contains(lowerQuery) ||
+          report.authors.any((author) => author.toLowerCase().contains(lowerQuery))||
           report.keywords.any((keyword) => keyword.toLowerCase().contains(lowerQuery));
     }).toList();
   }
@@ -376,4 +388,17 @@ class ReportsDataStorage extends ChangeNotifier {
     await apiService.deleteReport(report);
     notifyListeners();
   }
+
+  // Future<Map<String, String>?> parsePdf(FilePickerResult pickedFile) async {
+  //     if (pickedFile.files.single.bytes != null) {
+  //       final apiService = ApiService();
+  //       final parseResult = await apiService.sendPdfToBackend(pickedFile);
+  //       notifyListeners();
+  //
+  //       return parseResult;
+  //   } else {
+  //     print("⚠️ Brak wybranego pliku PDF");
+  //   }
+  //     return null;
+  // }
 }

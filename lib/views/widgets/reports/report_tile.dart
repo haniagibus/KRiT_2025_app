@@ -41,7 +41,7 @@ class ReportTile extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
           subtitle: Text(
-            report.author,
+            report.authors.join(', '),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),

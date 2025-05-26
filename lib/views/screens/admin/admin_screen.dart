@@ -31,13 +31,13 @@ class AdminScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            _buildCard(Icons.add_circle, "Stwórz Nową Edycję", () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => NewEditionForm()),
-              );
-            }),
-            SizedBox(height: 16),
+            // _buildCard(Icons.add_circle, "Stwórz Nową Edycję", () {
+            //   Navigator.push(
+            //     context,
+            //     MaterialPageRoute(builder: (context) => NewEditionForm()),
+            //   );
+            // }),
+            // SizedBox(height: 16),
             Expanded(
               child: GridView.count(
                 crossAxisCount: 2,

@@ -31,18 +31,17 @@ class Event {
     required this.building,
     required this.room,
     required this.reports,
-//BACKEND
      this.isFavourite = false,
    }) : id = id ?? Uuid().v4();
 
   factory Event.fromJson(Map<String, dynamic> json) {
     return Event(
-      id: json['id'],  // Powinna być wartość 'id', nie NULL
-      title: json['title'] ?? 'Brak tytułu',  // Domyślny tytuł, jeśli jest null
-      subtitle: json['subtitle'] ?? '',  // Domyślny pusty ciąg dla 'subtitle'
+      id: json['id'],
+      title: json['title'] ?? 'Brak tytułu',
+      subtitle: json['subtitle'] ?? '',
       type: EventType.values.firstWhere(
             (e) => e.toString() == 'EventType.${json['type']}',
-        orElse: () => EventType.PlenarySession,  // Domyślny typ, jeśli jest null
+        orElse: () => EventType.PlenarySession,
       ),
       dateTimeStart: DateTime.parse(json['dateTimeStart'] ?? ''),
       dateTimeEnd: DateTime.parse(json['dateTimeEnd'] ?? ''),
@@ -54,7 +53,7 @@ class Event {
           .map((reportJson) => Report.fromJson(reportJson))
           .toList()
           : [],
-      isFavourite: json['isFavourite'] ?? false,  // Domyślnie fałsz, jeśli brak
+      isFavourite: json['isFavourite'] ?? false,
     );
   }
 
@@ -67,9 +66,9 @@ class Event {
     'dateTimeEnd': dateTimeEnd.toIso8601String(),
     'description': description,
     'building': building,
-    'room': "Sala $room",
+    'room': room,
     'reportsId':  reports.map((r) => r.id).toList(),
-    //'isFavourite': isFavourite,
+    'isFavourite': isFavourite,
   };
 
 }

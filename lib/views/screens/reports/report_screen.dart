@@ -51,23 +51,28 @@ class ReportScreen extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.account_circle,
-                    size: 28,
-                    color: AppColors.text_secondary,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: report.authors.map((author) => Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 2.0),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.account_circle,
+                        size: 24,
+                        color: AppColors.text_secondary,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        author,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: AppColors.text_secondary,
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 8),
-                  Text(
-                    report.author,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.text_secondary,
-                    ),
-                  ),
-                ],
+                )).toList(),
               ),
             ),
             const Divider(

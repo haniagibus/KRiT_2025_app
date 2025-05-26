@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:krit_app/models/report/reports_data_storage.dart';
+import 'package:krit_app/services/ApiService.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
@@ -54,6 +55,7 @@ class _ReportsPickerState extends State<ReportsPicker> {
     });
 
     final pdfReader = PdfReader();
+    final apiService = ApiService();
 
     for (var file in pdfFiles) {
       if (file.path == null) continue;
@@ -61,13 +63,18 @@ class _ReportsPickerState extends State<ReportsPicker> {
       if (!await pdfFile.exists()) continue;
 
       try {
-        final extractedData = await pdfReader.extractDataFromPdf(pdfFile);
+        // final extractedData = await pdfReader.extractDataFromPdf(pdfFile);
+        final extractedData = await apiService.sendPdfToBackend(pdfFile);
         final newReport = Report(
           id: const Uuid().v4(),
-          title: extractedData['title'] ?? 'Nieznany tytuł',
-          author: extractedData['authors'] ?? 'Nieznany autor',
-          description: extractedData['abstract'] ?? '',
-          keywords: (extractedData['keywords'] ?? '')
+          title: extractedData?['title'] ?? 'Nieznany tytuł',
+          authors: (extractedData?['authors'] ?? '')
+              .split(',')
+              .map((e) => e.trim())
+              .where((e) => e.isNotEmpty)
+              .toList(),
+          description: extractedData?['abstract'] ?? '',
+          keywords: (extractedData?['keywords'] ?? '')
               .split(',')
               .map((e) => e.trim())
               .where((e) => e.isNotEmpty)
@@ -148,15 +155,6 @@ class _ReportsPickerState extends State<ReportsPicker> {
                                     report: report,
                                     onTap: () {},
                                   );
-                                  // return Card(
-                                  //   margin:
-                                  //       const EdgeInsets.symmetric(vertical: 8),
-                                  //   child: ListTile(
-                                  //     title: Text(report.title),
-                                  //     subtitle: Text("Autor: ${report.author}"),
-                                  //     trailing: Icon(Icons.picture_as_pdf),
-                                  //   ),
-                                  // );
                                 },
                               ),
                         if (_generatedReports.isNotEmpty)
