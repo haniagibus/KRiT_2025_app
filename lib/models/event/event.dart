@@ -10,7 +10,7 @@ class Event {
   final EventType type;
   final DateTime dateTimeStart;
   final DateTime dateTimeEnd;
-  final String description;
+  //final String description;
   final String building;
   final String room;
   final List<Report> reports;
@@ -27,7 +27,7 @@ class Event {
     required this.type,
     required this.dateTimeStart,
     required this.dateTimeEnd,
-    required this.description,
+    //required this.description,
     required this.building,
     required this.room,
     required this.reports,
@@ -46,7 +46,7 @@ class Event {
       ),
       dateTimeStart: DateTime.parse(json['dateTimeStart'] ?? ''),
       dateTimeEnd: DateTime.parse(json['dateTimeEnd'] ?? ''),
-      description: json['description'] ?? '',
+      //description: json['description'] ?? '',
       building: json['building'] ?? '',
       room: json['room'] ?? '',
       reports: (json['reports'] != null && json['reports'] is List)
@@ -65,7 +65,7 @@ class Event {
     'type': type.toString().split('.').last,
     'dateTimeStart': dateTimeStart.toIso8601String(),
     'dateTimeEnd': dateTimeEnd.toIso8601String(),
-    'description': description,
+    //'description': description,
     'building': building,
     'room': "Sala $room",
     'reportsId':  reports.map((r) => r.id).toList(),

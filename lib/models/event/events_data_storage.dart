@@ -193,7 +193,7 @@ class EventsDataStorage extends ChangeNotifier {
             id: oldEvent.id,  // Preserve the original ID
             title: updatedEvent.title,
             subtitle: updatedEvent.subtitle,
-            description: updatedEvent.description,
+            //description: updatedEvent.description,
             type: updatedEvent.type,
             dateTimeStart: updatedEvent.dateTimeStart,
             dateTimeEnd: updatedEvent.dateTimeEnd,

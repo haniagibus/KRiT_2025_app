@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:krit_app/models/report/report.dart';
 import 'package:krit_app/models/event/event.dart';
 
@@ -20,14 +21,26 @@ class ApiService {
   bool get dataInitialized => _dataInitialized;
   set dataInitialized(bool value) => _dataInitialized = value;
 
+  Future<String?> _getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('token');
+  }
+
   Future<List<Event>> fetchEvents() async {
-    final response = await http.get(Uri.parse('$baseUrl/api/events'));
+    final token = await _getToken();
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/events'),
+      headers: {
+        'Content-Type': 'application/json',
+        if (token != null) 'Authorization': 'Bearer $token',
+      },
+    );
     print("🔍 Wysłano zapytanie GET do: $baseUrl/api/events");
 
     if (response.statusCode == 200) {
       print("✅ Otrzymana odpowiedź: ${response.body.substring(0, min(100, response.body.length))}...");
 
-      List jsonResponse = json.decode(response.body);
+      List jsonResponse = json.decode(utf8.decode(response.bodyBytes));
       List<Event> events = jsonResponse.map((event) => Event.fromJson(event)).toList();
 
       print("📊 Pobrano ${events.length} wydarzeń");
@@ -39,13 +52,20 @@ class ApiService {
   }
 
   Future<List<Report>> fetchReports() async {
-    final response = await http.get(Uri.parse('$baseUrl/api/reports'));
+    final token = await _getToken();
+    final response = await http.get(Uri.parse(
+        '$baseUrl/api/reports'),
+      headers: {
+        'Content-Type': 'application/json',
+        if (token != null) 'Authorization': 'Bearer $token',
+      },
+    );
     print("🔍 Wysłano zapytanie GET do: $baseUrl/api/reports");
 
     if (response.statusCode == 200) {
       print("✅ Otrzymana odpowiedź: ${response.body.substring(0, min(100, response.body.length))}...");
 
-      List jsonResponse = json.decode(response.body);
+      List jsonResponse = json.decode(utf8.decode(response.bodyBytes));
       List<Report> reports = jsonResponse.map((report) => Report.fromJson(report)).toList();
 
       print("📊 Pobrano ${reports.length} raportów");
@@ -57,9 +77,13 @@ class ApiService {
   }
 
   Future<Report> addReport(Report report) async {
+    final token = await _getToken();
     final response = await http.post(
       Uri.parse('$baseUrl/api/reports'),
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        if (token != null) 'Authorization': 'Bearer $token',
+      },
       body: json.encode(report.toJson()),
     );
 
@@ -78,10 +102,12 @@ class ApiService {
   }
 
   Future<Event> addEvent(Event event) async {
+    final token = await _getToken();
     final uri = Uri.parse('$baseUrl/api/events');
     final response = await http.post(
       uri,
-      headers: {'Content-Type': 'application/json'},
+      headers: {'Content-Type': 'application/json',
+        if (token != null) 'Authorization': 'Bearer $token'},
       body: json.encode(event.toJson()),
     );
 
@@ -108,10 +134,12 @@ class ApiService {
   }
 
   Future<Event> updateEvent(Event event) async {
+    final token = await _getToken();
     print("✅ ID eventu do edycji: ${event.id}");
     final response = await http.put(
       Uri.parse('$baseUrl/api/events/${event.id}'),
-      headers: {'Content-Type': 'application/json'},
+      headers: {'Content-Type': 'application/json',
+        if (token != null) 'Authorization': 'Bearer $token',},
       body: json.encode(event.toJson()),
     );
     print("AAA Wysyłany event jako JSON:");
@@ -130,10 +158,12 @@ class ApiService {
   }
 
   Future<void> deleteEvent(Event event) async{
+    final token = await _getToken();
     print("✅ ID eventu do usunięcia: ${event.id}");
     final response = await http.delete(
       Uri.parse('$baseUrl/api/events/${event.id}'),
-      headers: {'Content-Type': 'application/json'},
+      headers: {'Content-Type': 'application/json',
+        if (token != null) 'Authorization': 'Bearer $token'},
       //body: json.encode(event.toJson()),
     );
 
@@ -147,10 +177,12 @@ class ApiService {
   }
 
   Future<void> deleteReport(Report report) async{
+    final token = _getToken();
     print("✅ ID raportu do usunięcia: ${report.id}");
     final response = await http.delete(
       Uri.parse('$baseUrl/api/reports/${report.id}'),
-      headers: {'Content-Type': 'application/json'},
+      headers: {'Content-Type': 'application/json',
+        if (token != null) 'Authorization': 'Bearer $token'},
       //body: json.encode(event.toJson()),
     );
 
@@ -164,10 +196,12 @@ class ApiService {
   }
 
   Future<Report> updateReport(Report report) async {
+    final token = await _getToken();
     print("✅ ID referatu do edycji: ${report.id}");
     final response = await http.put(
       Uri.parse('$baseUrl/api/reports/${report.id}'),
-      headers: {'Content-Type': 'application/json'},
+      headers: {'Content-Type': 'application/json',
+        if (token != null) 'Authorization': 'Bearer $token'},
       body: json.encode(report.toJson()),
     );
     print("AAA Wysyłany report jako JSON:");
@@ -189,4 +223,30 @@ class ApiService {
   int min(int a, int b) {
     return a < b ? a : b;
   }
+
+  Future<bool> login(String username, String password) async {
+    final url = Uri.parse('http://10.0.2.2:8080/api/auth/login');
+
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({
+        'username': username,
+        'password': password,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final token = data['token'];
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', token);
+
+      return true;
+    } else {
+      print('Błąd logowania: ${response.statusCode}');
+      return false;
+    }
+  }
+
 }
