@@ -9,7 +9,7 @@ import '../../widgets/star_widget.dart';
 
 class EventScreen extends StatefulWidget {
   final Event event;
-  final VoidCallback onFavouriteControl;
+  final Future<void> Function(Event event) onFavouriteControl;
 
   const EventScreen({
     super.key,
@@ -30,12 +30,17 @@ class _EventScreenState extends State<EventScreen> {
     isFavourite = widget.event.isFavourite;
   }
 
-  void toggleFavourite() {
+  Future<void> toggleFavourite() async {
     setState(() {
       isFavourite = !isFavourite;
       widget.event.isFavourite = isFavourite;
     });
-    widget.onFavouriteControl();
+
+    try {
+      await widget.onFavouriteControl(widget.event);
+    } catch (e) {
+      print("[!] ERROR favourite control: $e");
+    }
   }
 
   @override

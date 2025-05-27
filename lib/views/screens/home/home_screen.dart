@@ -16,6 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final eventsDataStorage = Provider.of<EventsDataStorage>(context);
     final favoriteEvents = eventsDataStorage.favoriteEvents;
+    int currentYear = DateTime.now().year;
 
     return Scaffold(
         body: Padding(
@@ -37,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 8.0),
           Text(
-            'Konferencja Radiokomunikacji i Teleinformatyki 2025',
+            'Konferencja Radiokomunikacji i Teleinformatyki $currentYear',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 30,
@@ -54,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Expanded(
             child: FavoritesTile(
               favoriteEvents: favoriteEvents,
-              onFavouriteControl: (event) {
+              onFavouriteControl: (event) async {
                 setState(() {
                   eventsDataStorage.controlFavourite(event);
                 });

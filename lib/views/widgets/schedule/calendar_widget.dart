@@ -43,7 +43,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   void _initializeDates() {
     final events = context.read<EventsDataStorage>().eventList;
     _availableDates = events
-        .map((event) => DateTime(event.dateTimeStart.year, event.dateTimeStart.month, event.dateTimeStart.day))
+        .map((event) => DateTime(event.dateTimeStart.year,
+            event.dateTimeStart.month, event.dateTimeStart.day))
         .toSet()
         .toList();
     _availableDates.sort((a, b) => a.compareTo(b));
@@ -113,19 +114,19 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             child: _eventsForSelectedDate.isEmpty
                 ? Center(child: Text("Brak wydarzeń na ten dzień"))
                 : ListView(
-              children: _eventsForSelectedDate
-                  .map(
-                    (event) => EventTile(
-                  event,
-                  onFavouriteControl: () {
-                    setState(() {
-                      eventsDataStorage.controlFavourite(event);
-                    });
-                  },
-                ),
-              )
-                  .toList(),
-            ),
+                    children: _eventsForSelectedDate
+                        .map(
+                          (event) => EventTile(
+                            event,
+                            onFavouriteControl: (updatedEvent) async {
+                              await eventsDataStorage
+                                  .controlFavourite(updatedEvent);
+                              setState(() {});
+                            },
+                          ),
+                        )
+                        .toList(),
+                  ),
           ),
         ],
       ),
