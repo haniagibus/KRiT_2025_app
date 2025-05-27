@@ -23,7 +23,7 @@ class EventTileAdmin extends StatelessWidget {
         child: Icon(Icons.edit, color: Colors.white),
       ),
       secondaryBackground: Container(
-        color: Colors.red,
+        color: Colors.redAccent,
         alignment: Alignment.centerRight,
         padding: EdgeInsets.symmetric(horizontal: 20),
         child: Icon(Icons.delete, color: Colors.white),

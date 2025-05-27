@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:krit_app/views/screens/admin/reports/report_tile_admin.dart';
 import 'package:provider/provider.dart';
 import '../../../../models/report/reports_data_storage.dart';
+import '../../../../theme/app_colors.dart';
 import '../../../widgets/searchbar_widget.dart';
 
 class ReportManagerScreen extends StatefulWidget {
@@ -43,6 +44,29 @@ class _ReportManagerScreenState extends State<ReportManagerScreen> {
                 _searchQuery = value;
               });
             },
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            child: Card(
+              elevation: 1,
+              color: AppColors.background,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: const [
+                    Icon(Icons.arrow_back, color: AppColors.primary),
+                    Icon(Icons.edit, color: AppColors.secondary),
+                    Text("Edytuj"),
+                    SizedBox(width: 32),
+                    Icon(Icons.delete, color: Colors.redAccent),
+                    Text("Usuń"),
+                    Icon(Icons.arrow_forward, color: AppColors.primary),
+                  ],
+                ),
+              ),
+            ),
           ),
           Expanded(
             child: filteredReports.isEmpty

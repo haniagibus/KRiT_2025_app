@@ -159,7 +159,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:krit_app/models/report/reports_data_storage.dart';
+import 'package:krit_app/views/screens/admin/admin_screen.dart';
 import 'package:krit_app/views/screens/home/home_screen.dart';
+import 'package:krit_app/views/screens/login/login_screen.dart';
 import 'package:krit_app/views/screens/schedule/schedule_screen.dart';
 import 'package:krit_app/views/screens/reports/reports_screen.dart';
 import 'package:krit_app/theme/app_theme.dart';
@@ -280,6 +282,29 @@ class _MyHomePageState extends State<MyHomePage> {
         centerTitle: true,
         automaticallyImplyLeading: true,
         elevation: _selectedIndex == 0 ? 0 : 4,
+        actions: [
+          Consumer<AuthProvider>(
+            builder: (context, authProvider, _) {
+              return IconButton(
+                icon: const Icon(Icons.account_circle),
+                tooltip: authProvider.role == 'admin' ? 'Panel administracyjny' : 'Logowanie',
+                onPressed: () {
+                  if (authProvider.role == 'admin') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AdminScreen()),
+                    );
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const LoginScreen()),
+                    );
+                  }
+                },
+              );
+            },
+          ),
+        ],
       ),
       body: SafeArea(
         child: PageView(
@@ -292,13 +317,13 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      drawer: SideMenu(
-        selectedIndex: _selectedIndex,
-        onItemSelected: (int index) {
-          Navigator.pop(context);
-          _onItemTapped(index);
-        },
-      ),
+      // drawer: SideMenu(
+      //   selectedIndex: _selectedIndex,
+      //   onItemSelected: (int index) {
+      //     Navigator.pop(context);
+      //     _onItemTapped(index);
+      //   },
+      // ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(

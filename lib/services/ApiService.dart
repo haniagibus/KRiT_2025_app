@@ -223,8 +223,8 @@ class ApiService {
   }
 
   Future<Map<String, String>?> sendPdfToBackend(File pickedFile) async {
+    final token = await _getToken();
     final uri = Uri.parse('$baseUrl/api/pdf/extract');
-
     final request = http.MultipartRequest('POST', uri);
 
     final fileBytes = await pickedFile.readAsBytes();
@@ -235,6 +235,11 @@ class ApiService {
       fileBytes,
       filename: fileName,
     ));
+
+    request.headers.addAll({
+      'Content-Type': 'multipart/form-data',
+      if (token != null) 'Authorization': 'Bearer $token',
+    });
 
     final response = await request.send();
 
