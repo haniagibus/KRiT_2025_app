@@ -67,7 +67,7 @@ import 'package:uuid/uuid.dart';
 class Report {
   final String id;
   final String title;
-  final String author;
+  final List<String> authors;
   final String description;
   final String pdfUrl;
   final List<String> keywords;
@@ -76,7 +76,7 @@ class Report {
   Report({
     required this.id,
     required this.title,
-    required this.author,
+    required this.authors,
     required this.description,
     required this.pdfUrl,
     required this.keywords,
@@ -85,7 +85,7 @@ class Report {
 
   factory Report.mock(
       String title,
-      String author,
+      List<String> authors,
       String description,
       String pdfUrl,
       List<String> keywords,
@@ -94,7 +94,7 @@ class Report {
     return Report(
       id: Uuid().v4(),
       title: title,
-      author: author,
+      authors: authors,
       description: description,
       pdfUrl: pdfUrl,
       keywords: keywords,
@@ -106,7 +106,9 @@ class Report {
     return Report(
       id: json['id'] ?? Uuid().v4(),
       title: json['title'] ?? 'Brak tytułu',
-      author: json['author'] ?? 'Nieznany autor',
+      authors: (json['authors'] as List<dynamic>?)
+          ?.map((e) => e.toString())
+          .toList() ?? ['Nieznany autor'],
       description: json['description'] ?? 'Brak opisu',
       pdfUrl: json['pdfUrl'] ?? '',
       keywords: (json['keywords'] as List<dynamic>?)
@@ -120,7 +122,7 @@ class Report {
     return {
       'id': id,
       'title': title,
-      'author': author,
+      'authors': authors,
       'description': description,
       'pdfUrl': pdfUrl,
       'keywords': keywords

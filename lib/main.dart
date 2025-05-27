@@ -222,11 +222,9 @@ class MyApp extends StatelessWidget {
       if (!apiService.dataInitialized) {
         print("🚀 First time initialization");
 
-        // Initialize reports first
         Provider.of<ReportsDataStorage>(context, listen: false)
             .initializeReports()
             .then((_) {
-          // Then initialize events
           Provider.of<EventsDataStorage>(context, listen: false)
               .initializeEvents();
         });

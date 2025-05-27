@@ -1,4 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
+import 'dart:math';
+import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:krit_app/models/report/report.dart';
@@ -219,9 +222,42 @@ class ApiService {
     }
   }
 
+  Future<Map<String, String>?> sendPdfToBackend(File pickedFile) async {
+    final uri = Uri.parse('$baseUrl/api/pdf/extract');
 
-  int min(int a, int b) {
-    return a < b ? a : b;
+    final request = http.MultipartRequest('POST', uri);
+
+    final fileBytes = await pickedFile.readAsBytes();
+    final fileName = pickedFile.path.split('/').last;
+
+    request.files.add(http.MultipartFile.fromBytes(
+      'file',
+      fileBytes,
+      filename: fileName,
+    ));
+
+    final response = await request.send();
+
+    if (response.statusCode == 200) {
+      final result = await response.stream.bytesToString();
+      final jsonData = jsonDecode(result);
+
+      print("✅ Tytuł: ${jsonData['title']}");
+      print("🧑‍🔬 Autorzy: ${jsonData['authors']}");
+      print("📝 Abstrakt: ${jsonData['abstract']}");
+      print("🔑 Słowa kluczowe: ${jsonData['keywords']}");
+
+      return {
+        'abstract': jsonData['abstract'],
+        'keywords': jsonData['keywords'],
+        'title': jsonData['title'],
+        'authors': jsonData['authors'],
+      };
+    } else {
+      print("❌ Błąd: ${response.statusCode}");
+    }
+
+    return null;
   }
 
   Future<bool> login(String username, String password) async {

@@ -19,7 +19,7 @@ class CalendarWidget extends StatefulWidget {
 
 class _CalendarWidgetState extends State<CalendarWidget> {
   late List<DateTime> _availableDates;
-  List<Event> _eventsForSelectedDate = []; // 🛠 Inicjalizujemy pustą listę
+  List<Event> _eventsForSelectedDate = [];
   late DateTime _selectedDate;
 
   @override
@@ -38,16 +38,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         _filterEventsByDate();
       });
     });
-
-//     _initializeDates();
-//     _selectedDate = _availableDates[0];
-//
-// //BACKEND
-// //     // ⏳ Poczekaj, aż widget się załaduje, a potem przefiltruj eventy
-// //     WidgetsBinding.instance.addPostFrameCallback((_) {
-// //       _filterEventsByDate();
-// //     });
-//     _filterEventsByDate();
   }
 
   void _initializeDates() {
@@ -60,31 +50,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   }
 
   void _filterEventsByDate() {
-//BACKEND
-//     final events = widget.eventsDataStorage.eventList;
-
-//     print("📢 Liczba eventów: ${events.length}"); // 🔍 Debugging
-
-//     final filteredEvents = events.where((event) {
-//       bool matchesSearch = event.title.toLowerCase().contains(widget.searchQuery.toLowerCase());
-
-//       bool matchesReport = event.reports.any((report) {
-//         return report.title.toLowerCase().contains(widget.searchQuery.toLowerCase()) ||
-//             report.author.toLowerCase().contains(widget.searchQuery.toLowerCase()) ||
-//             report.keywords.any((keyword) => keyword.toLowerCase().contains(widget.searchQuery.toLowerCase()));
-//       });
-
-//       return matchesSearch || matchesReport;
-//     }).toList();
-
-//     setState(() {
-//       _eventsForSelectedDate = filteredEvents.where((event) {
-//         return event.dateTimeStart.year == _selectedDate.year &&
-//             event.dateTimeStart.month == _selectedDate.month &&
-//             event.dateTimeStart.day == _selectedDate.day;
-//       }).toList();
-
-//       print("📆 Eventy na $_selectedDate: ${_eventsForSelectedDate.length}"); // 🔍 Debugging
     final dataStorage = context.read<EventsDataStorage>();
     final events = dataStorage.filterEventsByQuery(widget.searchQuery);
 
