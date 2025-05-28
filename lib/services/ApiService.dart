@@ -16,8 +16,9 @@ class ApiService {
 
   ApiService._internal();
 
-  final String baseUrl = "http://10.0.2.2:8080";
-  final String baseUrl2 = "http://localhost:8080";
+  final String baseUrl = "http://172.20.10.6:8080";
+  final String baseUrl2 = "http://10.0.2.2:8080";
+  final String baseUrl3 = "http://localhost:8080";
 
   // Cache flag to prevent unnecessary reinitialization
   bool _dataInitialized = false;
@@ -266,7 +267,7 @@ class ApiService {
   }
 
   Future<bool> login(String username, String password) async {
-    final url = Uri.parse('http://10.0.2.2:8080/api/auth/login');
+    final url = Uri.parse('$baseUrl/api/auth/login');
 
     final response = await http.post(
       url,

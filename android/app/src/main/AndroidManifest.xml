@@ -11,7 +11,7 @@
 
 
     <application
-            android:label="krit_app"
+            android:label="KRiT 2025"
             android:name="${applicationName}"
             android:icon="@mipmap/ic_launcher"
             android:enableOnBackInvokedCallback="true">

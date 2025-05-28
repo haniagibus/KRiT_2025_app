@@ -285,9 +285,7 @@ class _EventFormState extends State<EventForm> {
                   children: [
                     _buildTextField(_titleController, "Tytuł"),
                     const SizedBox(height: 16),
-                    _buildTextField(_subtitleController, "Podtytuł"),
-                    const SizedBox(height: 16),
-                    _buildTextField(_descriptionController, "Opis", maxLines: 3),
+                    _buildTextField(_subtitleController, "Podtytuł", maxLines: 3),
                     const SizedBox(height: 16),
                     Row(
                       children: [

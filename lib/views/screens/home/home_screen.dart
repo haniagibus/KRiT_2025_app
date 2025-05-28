@@ -36,16 +36,16 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 8.0),
-          Text(
-            'Konferencja Radiokomunikacji i Teleinformatyki $currentYear',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 30,
-              fontWeight: FontWeight.bold,
-              color: AppColors.text_primary,
-            ),
-          ),
+          // const SizedBox(height: 8.0),
+          // Text(
+          //   'Konferencja Radiokomunikacji i Teleinformatyki $currentYear',
+          //   textAlign: TextAlign.center,
+          //   style: TextStyle(
+          //     fontSize: 30,
+          //     fontWeight: FontWeight.bold,
+          //     color: AppColors.text_primary,
+          //   ),
+          // ),
           const SizedBox(height: 8.0),
           const Divider(
             color: Colors.grey,

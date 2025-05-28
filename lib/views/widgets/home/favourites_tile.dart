@@ -24,7 +24,7 @@ class FavoritesTile extends StatelessWidget {
           child: const Text(
             'Ulubione Wydarzenia',
             style: TextStyle(
-              fontSize: 24,
+              fontSize: 20,
               fontWeight: FontWeight.bold,
               color: AppColors.text_primary,
             ),

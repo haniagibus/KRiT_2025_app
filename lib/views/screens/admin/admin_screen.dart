@@ -53,6 +53,7 @@ class AdminScreen extends StatelessWidget {
                 }),
               ],
             ),
+            const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
