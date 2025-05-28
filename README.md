@@ -3,10 +3,22 @@ autorzy: [Agnieszka Kulesz](https://github.com/agatherat), [Weronika Koterba](ht
 
 ## Technologie
 - Flutter - ver: 3.27.1
-- [backend aplikacji](https://github.com/akulesz/KRiT_2025_api)
 
 ## Opis projektu
 MAK KRiT to mobilna aplikacja informacyjna i nawigacyjna stworzona specjalnie dla uczestników Konferencji Radiokomunikacji i Teleinformatyki. Aplikacja umożliwia łatwy dostęp do programu konferencji, referatów oraz zarządzanie wydarzeniami przez administratorów.
+Backend aplikacj dostępny [tutaj](https://github.com/akulesz/KRiT_2025_api)
+
 ## Wymagania wstępne
+- Flutter SDK
+- Android Studio
 
 ## Instrukcja uruchomienia
+### 1. Klonowanie repozytorium
+git clone <[repository-url](https://github.com/haniagibus/KRiT_2025_app.git)>
+
+### 2. Zainstaluj zależności:
+flutter pub get
+
+### 3. Uruchom emulator lub podłącz telefon.
+### 4. Uruchom aplikację
+Po uruchomieniu aplikacja wyświetli się na wybranym emulatorze/urządzeniu.
