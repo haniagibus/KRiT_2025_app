@@ -1,11 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+//import 'dart:nativewrappers/_internal/vm/lib/typed_data_patch.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:krit_app/models/report/report.dart';
 import 'package:krit_app/models/event/event.dart';
+import 'package:http_parser/http_parser.dart';
+import 'dart:typed_data';
+
 
 class ApiService {
   static final ApiService _instance = ApiService._internal();
@@ -16,8 +20,8 @@ class ApiService {
 
   ApiService._internal();
 
-  final String baseUrl2 = "http://10.0.2.2:8080";
-  final String baseUrl = "http://localhost:8080";
+  final String baseUrl = "http://10.0.2.2:8080";
+  final String baseUrl2 = "http://localhost:8080";
 
   // Cache flag to prevent unnecessary reinitialization
   bool _dataInitialized = false;
@@ -222,43 +226,88 @@ class ApiService {
     }
   }
 
-  Future<Map<String, String>?> sendPdfToBackend(File pickedFile) async {
+  // Future<Map<String, String>?> sendPdfToBackend(Uint8List? pdfBytes) async {
+  //   final uri = Uri.parse('$baseUrl/api/pdf/extract');
+  //
+  //   final request = http.MultipartRequest('POST', uri);
+  //
+  //   final fileName = pickedFile.path.split('/').last;
+  //
+  //   request.files.add(http.MultipartFile.fromBytes(
+  //     'file',
+  //     pdfBytes,
+  //     filename: fileName,
+  //   ));
+  //
+  //   final response = await request.send();
+  //
+  //   if (response.statusCode == 200) {
+  //     final result = await response.stream.bytesToString();
+  //     final jsonData = jsonDecode(result);
+  //
+  //     print("✅ Tytuł: ${jsonData['title']}");
+  //     print("🧑‍🔬 Autorzy: ${jsonData['authors']}");
+  //     print("📝 Abstrakt: ${jsonData['abstract']}");
+  //     print("🔑 Słowa kluczowe: ${jsonData['keywords']}");
+  //
+  //     return {
+  //       'abstract': jsonData['abstract'],
+  //       'keywords': jsonData['keywords'],
+  //       'title': jsonData['title'],
+  //       'authors': jsonData['authors'],
+  //     };
+  //   } else {
+  //     print("❌ Błąd: ${response.statusCode}");
+  //   }
+  //
+  //   return null;
+  // }
+
+
+  Future<Map<String, String>?> sendPdfToBackend(Uint8List? pdfBytes, {String fileName = 'uploaded.pdf'}) async {
+    if (pdfBytes == null) return null;
+
     final uri = Uri.parse('$baseUrl/api/pdf/extract');
 
-    final request = http.MultipartRequest('POST', uri);
+    final request = http.MultipartRequest('POST', uri)
+      ..files.add(http.MultipartFile.fromBytes(
+        'file',
+        pdfBytes as List<int>,
+        filename: fileName,
+        contentType: MediaType('application', 'pdf'),
+      ));
 
-    final fileBytes = await pickedFile.readAsBytes();
-    final fileName = pickedFile.path.split('/').last;
+    try {
+      final response = await request.send();
 
-    request.files.add(http.MultipartFile.fromBytes(
-      'file',
-      fileBytes,
-      filename: fileName,
-    ));
+      if (response.statusCode == 200) {
+        final result = await response.stream.bytesToString();
+        final jsonData = jsonDecode(result);
 
-    final response = await request.send();
+        print("✅ Tytuł: ${jsonData['title']}");
+        print("🧑‍🔬 Autorzy: ${jsonData['authors']}");
+        print("📝 Abstrakt: ${jsonData['abstract']}");
+        print("🔑 Słowa kluczowe: ${jsonData['keywords']}");
+        print("📄 PDF URL: ${jsonData['pdfUrl']}");
 
-    if (response.statusCode == 200) {
-      final result = await response.stream.bytesToString();
-      final jsonData = jsonDecode(result);
-
-      print("✅ Tytuł: ${jsonData['title']}");
-      print("🧑‍🔬 Autorzy: ${jsonData['authors']}");
-      print("📝 Abstrakt: ${jsonData['abstract']}");
-      print("🔑 Słowa kluczowe: ${jsonData['keywords']}");
-
-      return {
-        'abstract': jsonData['abstract'],
-        'keywords': jsonData['keywords'],
-        'title': jsonData['title'],
-        'authors': jsonData['authors'],
-      };
-    } else {
-      print("❌ Błąd: ${response.statusCode}");
+        return {
+          'abstract': jsonData['abstract'],
+          'keywords': jsonData['keywords'],
+          'title': jsonData['title'],
+          'authors': jsonData['authors'],
+          'pdfUrl': jsonData['pdfUrl'] ?? '',
+        };
+      } else {
+        print("❌ Błąd: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("❌ Wyjątek podczas wysyłania PDF: $e");
     }
 
     return null;
   }
+
+
 
   Future<bool> login(String username, String password) async {
     final url = Uri.parse('$baseUrl/api/auth/login');

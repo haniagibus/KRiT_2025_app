@@ -63,6 +63,7 @@
 // }
 
 import 'package:uuid/uuid.dart';
+import 'dart:typed_data';
 
 class Report {
   final String id;
@@ -72,6 +73,7 @@ class Report {
   final String pdfUrl;
   final List<String> keywords;
   final String eventId;
+  final Uint8List? pdfBytes;
 
   Report({
     required this.id,
@@ -81,6 +83,7 @@ class Report {
     required this.pdfUrl,
     required this.keywords,
     required this.eventId,
+    required this.pdfBytes
   });
 
   factory Report.mock(
@@ -90,6 +93,7 @@ class Report {
       String pdfUrl,
       List<String> keywords,
       String eventId,
+      Uint8List? pdfBytes
       ) {
     return Report(
       id: Uuid().v4(),
@@ -99,6 +103,7 @@ class Report {
       pdfUrl: pdfUrl,
       keywords: keywords,
       eventId: eventId,
+        pdfBytes: pdfBytes
     );
   }
 
@@ -115,6 +120,7 @@ class Report {
           ?.map((e) => e.toString())
           .toList() ?? [],
       eventId: json['eventId'] ?? 'brak_event_id',
+      pdfBytes: null
     );
   }
 
@@ -125,7 +131,7 @@ class Report {
       'authors': authors,
       'description': description,
       'pdfUrl': pdfUrl,
-      'keywords': keywords
+      'keywords': keywords,
     };
   }
 }

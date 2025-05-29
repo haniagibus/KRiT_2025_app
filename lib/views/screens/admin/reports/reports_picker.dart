@@ -1,4 +1,6 @@
-import 'dart:io';
+//import 'dart:io';
+//import 'dart:nativewrappers/_internal/vm/lib/typed_data_patch.dart';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:krit_app/models/report/reports_data_storage.dart';
@@ -12,6 +14,8 @@ import '../../../../theme/app_colors.dart';
 import '../../../widgets/reports/report_tile.dart';
 import 'pdf_reader.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'dart:typed_data';
+
 
 class ReportsPicker extends StatefulWidget {
   const ReportsPicker({super.key});
@@ -31,8 +35,10 @@ class _ReportsPickerState extends State<ReportsPicker> {
     // }
 
     FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.any,
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
       allowMultiple: true,
+      withData: true, // ← TO JEST KLUCZOWE!
     );
 
     print("Wybieram pliki: $result");
@@ -51,20 +57,34 @@ class _ReportsPickerState extends State<ReportsPicker> {
 
     setState(() {
       isLoadingPdf = true;
-      _generatedReports.clear();
+      //_generatedReports.clear();
     });
 
     final pdfReader = PdfReader();
     final apiService = ApiService();
 
-    for (var file in pdfFiles) {
-      if (file.path == null) continue;
-      final pdfFile = File(file.path!);
-      if (!await pdfFile.exists()) continue;
+    // for (var file in pdfFiles) {
+    //   if (file.path == null) continue;
+    //   final pdfBytes = file.bytes;
+    //   if (pdfBytes == null) continue;
 
-      try {
+      final existingTitles = _generatedReports.map((r) => r.title).toSet();
+
+      for (var file in pdfFiles) {
+        if (file.path == null || file.bytes == null) continue;
+
+        final extractedData = await apiService.sendPdfToBackend(file.bytes!);
+        final title = extractedData?['title'] ?? 'Nieznany tytuł';
+        final pdfUrl = extractedData?['pdfUrl'] ?? '';
+        print("Dane z backendu: $extractedData");
+
+
+        if (existingTitles.contains(title)) continue; // pomijaj duplikaty
+
+
+        try {
         // final extractedData = await pdfReader.extractDataFromPdf(pdfFile);
-        final extractedData = await apiService.sendPdfToBackend(pdfFile);
+        //final extractedData = await apiService.sendPdfToBackend(pdfBytes);
         final newReport = Report(
           id: const Uuid().v4(),
           title: extractedData?['title'] ?? 'Nieznany tytuł',
@@ -79,8 +99,9 @@ class _ReportsPickerState extends State<ReportsPicker> {
               .map((e) => e.trim())
               .where((e) => e.isNotEmpty)
               .toList(),
-          pdfUrl: file.path!,
+          pdfUrl: pdfUrl,
           eventId: '',
+          pdfBytes: file.bytes
         );
 
         _generatedReports.add(newReport);
