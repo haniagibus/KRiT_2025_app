@@ -29,56 +29,64 @@ class _ReportManagerScreenState extends State<ReportManagerScreen> {
   Widget build(BuildContext context) {
     final reportsDataStorage = context.watch<ReportsDataStorage>();
 
-    final filteredReports = reportsDataStorage.filterReportsByQuery(_searchQuery);
+    final filteredReports =
+        reportsDataStorage.filterReportsByQuery(_searchQuery);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text("Lista Referatów"),
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          SearchBarApp(
-            onChanged: (String value) {
-              setState(() {
-                _searchQuery = value;
-              });
-            },
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-            child: Card(
-              elevation: 1,
-              color: AppColors.background,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: const [
-                    Icon(Icons.arrow_back, color: AppColors.primary),
-                    Icon(Icons.edit, color: AppColors.secondary),
-                    Text("Edytuj"),
-                    SizedBox(width: 32),
-                    Icon(Icons.delete, color: Colors.redAccent),
-                    Text("Usuń"),
-                    Icon(Icons.arrow_forward, color: AppColors.primary),
-                  ],
+      body: Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: 700),
+          child: Column(
+            children: [
+              SearchBarApp(
+                onChanged: (String value) {
+                  setState(() {
+                    _searchQuery = value;
+                  });
+                },
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                child: Card(
+                  elevation: 1,
+                  color: AppColors.background,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: const [
+                        Icon(Icons.arrow_back, color: AppColors.primary),
+                        Icon(Icons.delete, color: Colors.redAccent),
+                        Text("Usuń"),
+                        SizedBox(width: 32),
+                        Icon(Icons.edit, color: AppColors.secondary),
+                        Text("Edytuj"),
+                        Icon(Icons.arrow_forward, color: AppColors.primary),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-            ),
+              Expanded(
+                child: filteredReports.isEmpty
+                    ? const Center(child: Text("Brak referatów"))
+                    : ListView.builder(
+                        itemCount: filteredReports.length,
+                        itemBuilder: (context, index) {
+                          return ReportTileAdmin(filteredReports[index]);
+                        },
+                      ),
+              ),
+            ],
           ),
-          Expanded(
-            child: filteredReports.isEmpty
-                ? const Center(child: Text("Brak referatów"))
-                : ListView.builder(
-              itemCount: filteredReports.length,
-              itemBuilder: (context, index) {
-                return ReportTileAdmin(filteredReports[index]);
-              },
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

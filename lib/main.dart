@@ -159,6 +159,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:krit_app/models/report/reports_data_storage.dart';
+import 'package:krit_app/theme/app_colors.dart';
 import 'package:krit_app/views/screens/admin/admin_screen.dart';
 import 'package:krit_app/views/screens/home/home_screen.dart';
 import 'package:krit_app/views/screens/login/login_screen.dart';
@@ -274,11 +275,13 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: _selectedIndex == 0
-            ? null
-            : Text(
-          'KRiT $currentYear',
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
+            ? Text(
+                'KRiT $currentYear',
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              )
+            : _selectedIndex == 1
+                ? Text('Harmonogram')
+                : Text('Referaty'),
         centerTitle: true,
         automaticallyImplyLeading: true,
         elevation: _selectedIndex == 0 ? 0 : 4,
@@ -287,7 +290,9 @@ class _MyHomePageState extends State<MyHomePage> {
             builder: (context, authProvider, _) {
               return IconButton(
                 icon: const Icon(Icons.account_circle),
-                tooltip: authProvider.role == 'admin' ? 'Panel administracyjny' : 'Logowanie',
+                tooltip: authProvider.role == 'admin'
+                    ? 'Panel administracyjny'
+                    : 'Logowanie',
                 onPressed: () {
                   if (authProvider.role == 'admin') {
                     Navigator.push(
@@ -297,7 +302,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   } else {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const LoginScreen()),
+                      MaterialPageRoute(
+                          builder: (context) => const LoginScreen()),
                     );
                   }
                 },
@@ -324,23 +330,47 @@ class _MyHomePageState extends State<MyHomePage> {
       //     _onItemTapped(index);
       //   },
       // ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: "Start",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today),
-            label: "Harmonogram",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.book),
-            label: "Referaty",
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
+      // bottomNavigationBar: BottomNavigationBar(
+      //   items: const <BottomNavigationBarItem>[
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.home),
+      //       label: "Start",
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.calendar_today),
+      //       label: "Harmonogram",
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.book),
+      //       label: "Referaty",
+      //     ),
+      //   ],
+      //   currentIndex: _selectedIndex,
+      //   onTap: _onItemTapped,
+      // ),
+      bottomNavigationBar: Container(
+        height: 80,
+        child: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: "Start",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.calendar_today),
+              label: "Harmonogram",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.book),
+              label: "Referaty",
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
+          iconSize: 28,
+          selectedIconTheme: IconThemeData(size: 30),
+          unselectedIconTheme: IconThemeData(size: 26),
+        ),
       ),
     );
   }

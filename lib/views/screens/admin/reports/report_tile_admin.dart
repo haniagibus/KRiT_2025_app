@@ -14,8 +14,10 @@ class ReportTileAdmin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final reportsDataStorage = Provider.of<ReportsDataStorage>(context, listen: false);
-    final eventsDataStorage = Provider.of<EventsDataStorage>(context, listen: false);
+    final reportsDataStorage =
+        Provider.of<ReportsDataStorage>(context, listen: false);
+    final eventsDataStorage =
+        Provider.of<EventsDataStorage>(context, listen: false);
     return Dismissible(
       key: Key(report.id),
       background: Container(
@@ -62,7 +64,6 @@ class ReportTileAdmin extends StatelessWidget {
                     Navigator.of(ctx).pop(true);
                   },
                 ),
-
               ],
             ),
           );

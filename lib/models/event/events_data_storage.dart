@@ -146,7 +146,6 @@ class EventsDataStorage extends ChangeNotifier {
 
       try {
         await updateEvent(event, updatedEvent);
-        notifyListeners();
       } catch (e) {
         print("[!] ERROR when updating isFavourite: $e");
       }

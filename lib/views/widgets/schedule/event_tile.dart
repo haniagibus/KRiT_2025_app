@@ -6,37 +6,11 @@ import 'package:krit_app/views/widgets/star_widget.dart';
 
 import '../element_icon.dart';
 
-class EventTile extends StatefulWidget {
+class EventTile extends StatelessWidget {
   final Event event;
   final Future<void> Function(Event event) onFavouriteControl;
 
   const EventTile(this.event, {super.key, required this.onFavouriteControl});
-
-  @override
-  State<EventTile> createState() => _EventTileState();
-}
-
-class _EventTileState extends State<EventTile> {
-  late bool isFavourite;
-
-  @override
-  void initState() {
-    super.initState();
-    isFavourite = widget.event.isFavourite;
-  }
-
-  Future<void> toggleFavourite() async {
-    setState(() {
-      isFavourite = !isFavourite;
-      widget.event.isFavourite = isFavourite;
-    });
-
-    try {
-      await widget.onFavouriteControl(widget.event);
-    } catch (e) {
-      print("[!] ERROR favourite control: $e");
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,15 +20,14 @@ class _EventTileState extends State<EventTile> {
           context,
           MaterialPageRoute(
             builder: (context) => EventScreen(
-              event: widget.event,
-              onFavouriteControl: widget.onFavouriteControl,
+              event: event,
+              onFavouriteControl: onFavouriteControl,
             ),
           ),
         );
-        if (updatedFavourite != null && updatedFavourite != isFavourite) {
-          setState(() {
-            isFavourite = updatedFavourite;
-          });
+        if (updatedFavourite != null && updatedFavourite != event.isFavourite) {
+          event.isFavourite = updatedFavourite;
+          onFavouriteControl(event);
         }
       },
       child: Container(
@@ -71,18 +44,18 @@ class _EventTileState extends State<EventTile> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                widget.event.formattedTime,
+                event.formattedTime,
                 style: TextStyle(
                     color: AppColors.accent, fontWeight: FontWeight.bold),
               ),
               Text(
-                widget.event.title,
+                event.title,
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
             ],
           ),
           subtitle: Text(
-            widget.event.subtitle,
+            event.subtitle,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
@@ -90,8 +63,11 @@ class _EventTileState extends State<EventTile> {
             mainAxisSize: MainAxisSize.min,
             children: [
               StarWidget(
-                isFavourite: isFavourite,
-                onTap: toggleFavourite,
+                isFavourite: event.isFavourite,
+                onTap: () async {
+                  event.isFavourite = !event.isFavourite;
+                  await onFavouriteControl(event);
+                },
               ),
               Icon(
                 Icons.arrow_forward_ios,
