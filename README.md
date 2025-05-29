@@ -1,24 +1,35 @@
 # MAK KRiT - Mobilna Aplikacja Konferencyjna 
-autorzy: [Agnieszka Kulesz](https://github.com/agatherat), [Weronika Koterba](https://github.com/weronikakoterba), [Hania Gibus](https://github.com/haniagibus)
+**Autorzy:** [Agnieszka Kulesz](https://github.com/agatherat), [Weronika Koterba](https://github.com/weronikakoterba), [Hania Gibus](https://github.com/haniagibus)
+
+**Projekt stworzony na potrzeby:** Konferencji Radiokomunikacji i Teleinformatyki 2025 ([KRiT 2025](https://krit.com.pl/#/))
+
+---
 
 ## Technologie
-- Flutter - ver: 3.27.1
+- [Flutter](https://flutter.dev/) - ver: 3.27.1
+- Dart
 
 ## Opis projektu
-MAK KRiT to mobilna aplikacja informacyjna i nawigacyjna stworzona specjalnie dla uczestników Konferencji Radiokomunikacji i Teleinformatyki. Aplikacja umożliwia łatwy dostęp do programu konferencji, referatów oraz zarządzanie wydarzeniami przez administratorów.
-Backend aplikacj dostępny [tutaj](https://github.com/akulesz/KRiT_2025_api)
+**MAK KRiT** to aplikacja mobilna zaprojektowana z myślą o uczestnikach KRiT 2025. Ułatwia nawigację podczas wydarzenia oraz zapewnia dostęp do najważniejszych informacji, takich jak:
+- Program konferencji
+- Lista referatów
+- Szczegóły sesji i wydarzeń
+- Funkcje administracyjne (dla organizatorów)
+
+Backend aplikacji dostępny [tutaj](https://github.com/akulesz/KRiT_2025_api)
 
 ## Wymagania wstępne
 - Flutter SDK
 - Android Studio
 
 ## Instrukcja uruchomienia
-### 1. Klonowanie repozytorium
-```git clone <repository-url>```
+#### 1. Klonowanie repozytorium
+```git clone https://github.com/haniagibus/KRiT_2025_app.git```
 
-### 2. Zainstaluj zależności
+#### 3. Zainstaluj zależności
 ```flutter pub get```
 
-### 3. Uruchom emulator lub podłącz telefon.
-### 4. Uruchom aplikację
+#### 4. Uruchom emulator lub podłącz telefon.
+
+#### 5. Uruchom aplikację
 Po uruchomieniu aplikacja wyświetli się na wybranym emulatorze/urządzeniu.
