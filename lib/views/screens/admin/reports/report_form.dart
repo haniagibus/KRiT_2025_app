@@ -1,16 +1,11 @@
-import 'package:file_picker/file_picker.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:krit_app/models/report/reports_data_storage.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../../../models/event/events_data_storage.dart';
 import '../../../../models/report/report.dart';
 import '../../../../theme/app_colors.dart';
-import '../../reports/pdf_view_screen.dart';
-import 'pdf_reader.dart';
-import 'dart:io';
+
 
 class ReportForm extends StatefulWidget {
   final Report? report;
@@ -79,6 +74,7 @@ class _ReportFormState extends State<ReportForm> {
             .where((k) => k.isNotEmpty)
             .toList(),
         eventId: _selectedEventId!,
+        pdfBytes: null,
       );
 
       final storage = Provider.of<ReportsDataStorage>(context, listen: false);

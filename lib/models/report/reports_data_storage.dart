@@ -312,33 +312,33 @@ class ReportsDataStorage extends ChangeNotifier {
   }
 
   void generateMockReports(List<Event> existingEvents) {
-    if (Config.useMockData && !_isInitialized) {
-      _reportList.clear();
-      for (int i = 0; i < 15; i++) {
-        String? eventId = randomEventId(existingEvents);
-        Report newReport = Report.mock(
-          randomTitle(),
-          randomAuthors(),
-          randomDescription(),
-          "/sdcard/Documents/organizacja_i_struktura_projektu_v1.0.pdf",
-          randomKeywords(),
-          eventId!,
-        );
-        _reportList.add(newReport);
-
-        // Find the event and add report to it
-        try {
-          Event event = existingEvents.firstWhere((e) => e.id == eventId);
-          if (!event.reports.contains(newReport)) {
-            event.reports.add(newReport);
-          }
-        } catch (e) {
-          print("❌ Event not found for ID: $eventId");
-        }
-      }
-      _isInitialized = true;
-      notifyListeners();
-    }
+    // if (Config.useMockData && !_isInitialized) {
+    //   _reportList.clear();
+    //   for (int i = 0; i < 15; i++) {
+    //     String? eventId = randomEventId(existingEvents);
+    //     Report newReport = Report.mock(
+    //       randomTitle(),
+    //       randomAuthors(),
+    //       randomDescription(),
+    //       "/sdcard/Documents/organizacja_i_struktura_projektu_v1.0.pdf",
+    //       randomKeywords(),
+    //       eventId!,
+    //     );
+    //     _reportList.add(newReport);
+    //
+    //     // Find the event and add report to it
+    //     try {
+    //       Event event = existingEvents.firstWhere((e) => e.id == eventId);
+    //       if (!event.reports.contains(newReport)) {
+    //         event.reports.add(newReport);
+    //       }
+    //     } catch (e) {
+    //       print("❌ Event not found for ID: $eventId");
+    //     }
+    //   }
+    //   _isInitialized = true;
+    //   notifyListeners();
+    // }
   }
 
   List<Report> getReportsForEvent(String eventId) {

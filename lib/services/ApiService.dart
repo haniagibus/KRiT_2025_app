@@ -1,11 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+//import 'dart:nativewrappers/_internal/vm/lib/typed_data_patch.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:krit_app/models/report/report.dart';
 import 'package:krit_app/models/event/event.dart';
+import 'package:http_parser/http_parser.dart';
+import 'dart:typed_data';
+
 
 class ApiService {
   static final ApiService _instance = ApiService._internal();
@@ -224,44 +228,44 @@ class ApiService {
     }
   }
 
-  Future<Map<String, String>?> sendPdfToBackend(File pickedFile) async {
-    final token = await _getToken();
+  Future<Map<String, String>?> sendPdfToBackend(Uint8List? pdfBytes, {String fileName = 'uploaded.pdf'}) async {
+    if (pdfBytes == null) return null;
+
     final uri = Uri.parse('$baseUrl/api/pdf/extract');
-    final request = http.MultipartRequest('POST', uri);
 
-    final fileBytes = await pickedFile.readAsBytes();
-    final fileName = pickedFile.path.split('/').last;
+    final request = http.MultipartRequest('POST', uri)
+      ..files.add(http.MultipartFile.fromBytes(
+        'file',
+        pdfBytes as List<int>,
+        filename: fileName,
+        contentType: MediaType('application', 'pdf'),
+      ));
 
-    request.files.add(http.MultipartFile.fromBytes(
-      'file',
-      fileBytes,
-      filename: fileName,
-    ));
+    try {
+      final response = await request.send();
 
-    request.headers.addAll({
-      'Content-Type': 'multipart/form-data',
-      if (token != null) 'Authorization': 'Bearer $token',
-    });
+      if (response.statusCode == 200) {
+        final result = await response.stream.bytesToString();
+        final jsonData = jsonDecode(result);
 
-    final response = await request.send();
+        print("✅ Tytuł: ${jsonData['title']}");
+        print("🧑‍🔬 Autorzy: ${jsonData['authors']}");
+        print("📝 Abstrakt: ${jsonData['abstract']}");
+        print("🔑 Słowa kluczowe: ${jsonData['keywords']}");
+        print("📄 PDF URL: ${jsonData['pdfUrl']}");
 
-    if (response.statusCode == 200) {
-      final result = await response.stream.bytesToString();
-      final jsonData = jsonDecode(result);
-
-      print("✅ Tytuł: ${jsonData['title']}");
-      print("🧑‍🔬 Autorzy: ${jsonData['authors']}");
-      print("📝 Abstrakt: ${jsonData['abstract']}");
-      print("🔑 Słowa kluczowe: ${jsonData['keywords']}");
-
-      return {
-        'abstract': jsonData['abstract'],
-        'keywords': jsonData['keywords'],
-        'title': jsonData['title'],
-        'authors': jsonData['authors'],
-      };
-    } else {
-      print("❌ Błąd: ${response.statusCode}");
+        return {
+          'abstract': jsonData['abstract'],
+          'keywords': jsonData['keywords'],
+          'title': jsonData['title'],
+          'authors': jsonData['authors'],
+          'pdfUrl': jsonData['pdfUrl'] ?? '',
+        };
+      } else {
+        print("❌ Błąd: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("❌ Wyjątek podczas wysyłania PDF: $e");
     }
 
     return null;

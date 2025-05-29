@@ -4,11 +4,16 @@ import 'package:krit_app/theme/app_colors.dart';
 import 'package:krit_app/views/screens/reports/pdf_view_screen.dart';
 
 import '../../widgets/element_icon.dart';
+import 'dart:html' as html;
 
 class ReportScreen extends StatelessWidget {
   final Report report;
 
   const ReportScreen({super.key, required this.report});
+
+  void openPdfInNewTab(String url) {
+    html.window.open(url, '_blank');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -123,14 +128,7 @@ class ReportScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: ElevatedButton(
                     onPressed: () {
-                      // Navigate to the PDF view screen
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              PDFViewScreen(pdfUrl: report.pdfUrl),
-                        ),
-                      );
+                      openPdfInNewTab('${report.pdfUrl}?t=${DateTime.now().millisecondsSinceEpoch}');
                     },
                     child: const Text("View Report PDF"),
                   ),
