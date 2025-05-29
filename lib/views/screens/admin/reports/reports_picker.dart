@@ -4,7 +4,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:krit_app/models/report/reports_data_storage.dart';
-import 'package:krit_app/services/ApiService.dart';
+import 'package:krit_app/services/api_service.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
@@ -14,7 +14,6 @@ import '../../../widgets/reports/report_tile.dart';
 import 'pdf_reader.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:typed_data';
-
 
 class ReportsPicker extends StatefulWidget {
   const ReportsPicker({super.key});
@@ -67,41 +66,45 @@ class _ReportsPickerState extends State<ReportsPicker> {
     //   final pdfBytes = file.bytes;
     //   if (pdfBytes == null) continue;
 
-      final existingTitles = _generatedReports.map((r) => r.title).toSet();
+    final existingTitles = _generatedReports.map((r) => r.title).toSet();
 
-      for (var file in pdfFiles) {
-        if (file.path == null || file.bytes == null) continue;
+    for (var file in pdfFiles) {
+      if (file.path == null || file.bytes == null) continue;
 
-        final extractedData = await apiService.sendPdfToBackend(file.bytes!);
-        final title = extractedData?['title'] ?? 'Nieznany tytuł';
-        final pdfUrl = extractedData?['pdfUrl'] ?? '';
-        print("Dane z backendu: $extractedData");
+      final extractedData = await apiService.sendPdfToBackend(file.bytes!);
+      final title = extractedData?['title'] ?? 'Nieznany tytuł';
+      final pdfUrl = extractedData?['pdfUrl'] ?? '';
+      print("Dane z backendu: $extractedData");
 
+      if (existingTitles.contains(title)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text("Ten plik PDF już został dodany"),
+              backgroundColor: Colors.red),
+        );
+        continue; // skip duplicates
+      }
 
-        if (existingTitles.contains(title)) continue; // pomijaj duplikaty
-
-
-        try {
+      try {
         // final extractedData = await pdfReader.extractDataFromPdf(pdfFile);
         //final extractedData = await apiService.sendPdfToBackend(pdfBytes);
         final newReport = Report(
-          id: const Uuid().v4(),
-          title: extractedData?['title'] ?? 'Nieznany tytuł',
-          authors: (extractedData?['authors'] ?? '')
-              .split(',')
-              .map((e) => e.trim())
-              .where((e) => e.isNotEmpty)
-              .toList(),
-          description: extractedData?['abstract'] ?? '',
-          keywords: (extractedData?['keywords'] ?? '')
-              .split(',')
-              .map((e) => e.trim())
-              .where((e) => e.isNotEmpty)
-              .toList(),
-          pdfUrl: pdfUrl,
-          eventId: '',
-          pdfBytes: file.bytes
-        );
+            id: const Uuid().v4(),
+            title: extractedData?['title'] ?? 'Nieznany tytuł',
+            authors: (extractedData?['authors'] ?? '')
+                .split(',')
+                .map((e) => e.trim())
+                .where((e) => e.isNotEmpty)
+                .toList(),
+            description: extractedData?['abstract'] ?? '',
+            keywords: (extractedData?['keywords'] ?? '')
+                .split(',')
+                .map((e) => e.trim())
+                .where((e) => e.isNotEmpty)
+                .toList(),
+            pdfUrl: pdfUrl,
+            eventId: '',
+            pdfBytes: file.bytes);
 
         _generatedReports.add(newReport);
       } catch (e) {
@@ -121,8 +124,13 @@ class _ReportsPickerState extends State<ReportsPicker> {
       storage.addReport(report);
     }
 
+    String tmp = "referatów";
+    if (_generatedReports.length == 1) tmp = "referat";
+
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Dodano ${_generatedReports.length} referatów!")),
+      SnackBar(
+          content: Text("Dodano ${_generatedReports.length} $tmp}!"),
+          backgroundColor: Colors.green),
     );
 
     Navigator.pop(context);
@@ -141,70 +149,70 @@ class _ReportsPickerState extends State<ReportsPicker> {
               child: Center(
                 child: ConstrainedBox(
                   constraints: BoxConstraints(maxWidth: 700),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Card(
-                      elevation: 6,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            ElevatedButton.icon(
-                              icon: Icon(Icons.file_upload),
-                              label: Text("Wybierz pliki PDF"),
-                              onPressed: _pickMultiplePdfFiles,
-                              style: ElevatedButton.styleFrom(
-                                foregroundColor: AppColors.primary,
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 14),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Card(
+                        elevation: 6,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              ElevatedButton.icon(
+                                icon: Icon(Icons.file_upload, color: AppColors.primary,),
+                                label: Text("Wybierz pliki PDF"),
+                                onPressed: _pickMultiplePdfFiles,
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: AppColors.primary,
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 14),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
                                 ),
                               ),
-                            ),
-                            const SizedBox(height: 20),
-                            _generatedReports.isEmpty
-                                ? Text("Brak załadowanych referatów.")
-                                : ListView.builder(
-                                    shrinkWrap: true,
-                                    physics: NeverScrollableScrollPhysics(),
-                                    itemCount: _generatedReports.length,
-                                    itemBuilder: (context, index) {
-                                      final report = _generatedReports[index];
-                                      return ReportTile(
-                                        report: report,
-                                        onTap: () {},
-                                      );
-                                    },
-                                  ),
-                            if (_generatedReports.isNotEmpty)
-                              Padding(
-                                padding: const EdgeInsets.only(top: 24),
-                                child: ElevatedButton.icon(
-                                  icon: Icon(Icons.save,
-                                      color: AppColors.primary),
-                                  label: Text("Zapisz wszystkie"),
-                                  onPressed: _saveAllReports,
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        AppColors.button_background,
-                                    foregroundColor: AppColors.primary,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 14),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
+                              const SizedBox(height: 20),
+                              _generatedReports.isEmpty
+                                  ? Text("Brak załadowanych referatów.")
+                                  : ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      itemCount: _generatedReports.length,
+                                      itemBuilder: (context, index) {
+                                        final report = _generatedReports[index];
+                                        return ReportTile(
+                                          report: report,
+                                          onTap: () {},
+                                        );
+                                      },
                                     ),
-                                    textStyle: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600),
+                              if (_generatedReports.isNotEmpty)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 16),
+                                  child: ElevatedButton.icon(
+                                    icon: Icon(Icons.save,
+                                        color: AppColors.primary),
+                                    label: Text("Zapisz wszystkie"),
+                                    onPressed: _saveAllReports,
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor:
+                                          AppColors.button_background,
+                                      foregroundColor: AppColors.primary,
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 14),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),

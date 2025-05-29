@@ -20,10 +20,11 @@ class ApiService {
 
   ApiService._internal();
 
+  final String baseUrl4 = "http://172.20.10.4:8080";
   final String baseUrl1 = "http://172.20.10.6:8080";
-  final String baseUrl3 = "http://192.168.0.43:8080";
-  final String baseUrl2 = "http://10.0.2.2:8080";
-  final String baseUrl = "http://localhost:8080";
+  final String baseUrl2 = "http://192.168.0.43:8080";
+  final String baseUrl = "http://10.0.2.2:8080";
+  final String baseUrl3 = "http://localhost:8080";
 
   // Cache flag to prevent unnecessary reinitialization
   bool _dataInitialized = false;

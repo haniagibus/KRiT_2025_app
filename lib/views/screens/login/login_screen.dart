@@ -23,6 +23,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (success) {
         Provider.of<AuthProvider>(context, listen: false).setAdminRole();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Zalogowano pomyślnie!'),
+            backgroundColor: Colors.green,
+          ),
+        );
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => AdminScreen()),
@@ -78,7 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
                         borderRadius:
-                            BorderRadius.circular(12), // Zaokrąglenie pola
+                            BorderRadius.circular(12),
                       ),
                       labelText: 'Nazwa użytkownika',
                     ),
@@ -114,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           EdgeInsets.symmetric(vertical: 14, horizontal: 32),
                       shape: RoundedRectangleBorder(
                         borderRadius:
-                            BorderRadius.circular(12), // Zaokrąglenie przycisku
+                            BorderRadius.circular(12),
                       ),
                     ),
                     child: Text(
