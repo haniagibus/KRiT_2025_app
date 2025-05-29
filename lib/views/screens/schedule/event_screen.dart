@@ -9,7 +9,7 @@ import '../../widgets/star_widget.dart';
 
 class EventScreen extends StatefulWidget {
   final Event event;
-  final VoidCallback onFavouriteControl;
+  final Future<void> Function(Event event) onFavouriteControl;
 
   const EventScreen({
     super.key,
@@ -30,12 +30,17 @@ class _EventScreenState extends State<EventScreen> {
     isFavourite = widget.event.isFavourite;
   }
 
-  void toggleFavourite() {
+  Future<void> toggleFavourite() async {
     setState(() {
       isFavourite = !isFavourite;
       widget.event.isFavourite = isFavourite;
     });
-    widget.onFavouriteControl();
+
+    try {
+      await widget.onFavouriteControl(widget.event);
+    } catch (e) {
+      print("[!] ERROR favourite control: $e");
+    }
   }
 
   @override
@@ -50,95 +55,106 @@ class _EventScreenState extends State<EventScreen> {
           },
         ),
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 24.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 10),
-                // Logo and Name
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Row(
-                    children: [
-                      ElementIcon(
-                        backgroundColor: AppColors.plenary_session,
-                        icon: Icons.event,
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Text(
-                          widget.event.title,
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.text_primary,
-                          ),
-                        ),
-                      ),
-                      StarWidget(
-                        isFavourite: isFavourite,
-                        onTap: toggleFavourite,
-                      )
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Divider(color: Colors.grey, thickness: 1),
-                      const SizedBox(height: 8),
-                      GridView.count(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 4,
-                        mainAxisSpacing: 4,
-                        childAspectRatio: 1.6,
+      body: Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: 700),
+          child: SafeArea(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 10),
+                    // Logo and Name
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Row(
                         children: [
-                          _buildCard(Icons.calendar_today, widget.event.formattedDate, AppColors.text_primary),
-                          _buildCard(Icons.access_time, widget.event.formattedTime, AppColors.accent),
-                          _buildCard(Icons.home, widget.event.building, AppColors.text_secondary),
-                          _buildCard(Icons.room, widget.event.room, AppColors.text_secondary),
+                          ElementIcon(
+                            backgroundColor: AppColors.plenary_session,
+                            icon: Icons.event,
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Text(
+                              widget.event.title,
+                              style: const TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.text_primary,
+                              ),
+                            ),
+                          ),
+                          StarWidget(
+                            isFavourite: isFavourite,
+                            onTap: toggleFavourite,
+                          )
                         ],
                       ),
-                      const SizedBox(height: 24),
-                      const Text(
-                        "Tytuł:",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.text_primary,
-                        ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Divider(color: Colors.grey, thickness: 1),
+                          const SizedBox(height: 8),
+                          GridView.count(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 4,
+                            mainAxisSpacing: 4,
+                            childAspectRatio: 1.6,
+                            children: [
+                              _buildCard(
+                                  Icons.calendar_today,
+                                  widget.event.formattedDate,
+                                  AppColors.text_primary),
+                              _buildCard(Icons.access_time,
+                                  widget.event.formattedTime, AppColors.accent),
+                              _buildCard(Icons.home, widget.event.building,
+                                  AppColors.text_secondary),
+                              _buildCard(Icons.room, widget.event.room,
+                                  AppColors.text_secondary),
+                            ],
+                          ),
+                          const SizedBox(height: 24),
+                          const Text(
+                            "Tytuł:",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.text_primary,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            widget.event.subtitle,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              color: AppColors.text_secondary,
+                            ),
+                          ),
+                          // const SizedBox(height: 8),
+                          // const Divider(color: Colors.grey, thickness: 1),
+                          // const SizedBox(height: 8),
+                          // Text(
+                          //   widget.event.description,
+                          //   style: const TextStyle(
+                          //     fontSize: 16,
+                          //     color: AppColors.text_secondary,
+                          //   ),
+                          // ),
+                          const SizedBox(height: 24),
+                          _buildReportsSection(widget.event.reports),
+                        ],
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        widget.event.subtitle,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          color: AppColors.text_secondary,
-                        ),
-                      ),
-                      // const SizedBox(height: 8),
-                      // const Divider(color: Colors.grey, thickness: 1),
-                      // const SizedBox(height: 8),
-                      // Text(
-                      //   widget.event.description,
-                      //   style: const TextStyle(
-                      //     fontSize: 16,
-                      //     color: AppColors.text_secondary,
-                      //   ),
-                      // ),
-                      const SizedBox(height: 24),
-                      _buildReportsSection(widget.event.reports),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),
@@ -185,7 +201,7 @@ class _EventScreenState extends State<EventScreen> {
         const SizedBox(height: 8),
         if (reports.isEmpty)
           const Text(
-            "Brak referatów dla tego wydarzenia.",
+            "Brak referatów dla tego wydarzenia",
             style: TextStyle(fontSize: 16, color: AppColors.text_secondary),
           )
         else

@@ -20,8 +20,10 @@ class ApiService {
 
   ApiService._internal();
 
-  final String baseUrl = "http://10.0.2.2:8080";
-  final String baseUrl2 = "http://localhost:8080";
+  final String baseUrl1 = "http://172.20.10.6:8080";
+  final String baseUrl3 = "http://192.168.0.43:8080";
+  final String baseUrl2 = "http://10.0.2.2:8080";
+  final String baseUrl = "http://localhost:8080";
 
   // Cache flag to prevent unnecessary reinitialization
   bool _dataInitialized = false;
@@ -226,44 +228,6 @@ class ApiService {
     }
   }
 
-  // Future<Map<String, String>?> sendPdfToBackend(Uint8List? pdfBytes) async {
-  //   final uri = Uri.parse('$baseUrl/api/pdf/extract');
-  //
-  //   final request = http.MultipartRequest('POST', uri);
-  //
-  //   final fileName = pickedFile.path.split('/').last;
-  //
-  //   request.files.add(http.MultipartFile.fromBytes(
-  //     'file',
-  //     pdfBytes,
-  //     filename: fileName,
-  //   ));
-  //
-  //   final response = await request.send();
-  //
-  //   if (response.statusCode == 200) {
-  //     final result = await response.stream.bytesToString();
-  //     final jsonData = jsonDecode(result);
-  //
-  //     print("✅ Tytuł: ${jsonData['title']}");
-  //     print("🧑‍🔬 Autorzy: ${jsonData['authors']}");
-  //     print("📝 Abstrakt: ${jsonData['abstract']}");
-  //     print("🔑 Słowa kluczowe: ${jsonData['keywords']}");
-  //
-  //     return {
-  //       'abstract': jsonData['abstract'],
-  //       'keywords': jsonData['keywords'],
-  //       'title': jsonData['title'],
-  //       'authors': jsonData['authors'],
-  //     };
-  //   } else {
-  //     print("❌ Błąd: ${response.statusCode}");
-  //   }
-  //
-  //   return null;
-  // }
-
-
   Future<Map<String, String>?> sendPdfToBackend(Uint8List? pdfBytes, {String fileName = 'uploaded.pdf'}) async {
     if (pdfBytes == null) return null;
 
@@ -306,8 +270,6 @@ class ApiService {
 
     return null;
   }
-
-
 
   Future<bool> login(String username, String password) async {
     final url = Uri.parse('$baseUrl/api/auth/login');

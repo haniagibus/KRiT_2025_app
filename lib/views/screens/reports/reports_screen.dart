@@ -116,7 +116,7 @@ class _ReportsViewState extends State<ReportsScreen> {
               final reports = reportsData.filterReportsByQuery(_searchQuery);
 
               if (reports.isEmpty) {
-                return const Center(child: Text("Brak wyników."));
+                return const Center(child: Text("Brak wyników"));
               }
 
               return ListView.builder(

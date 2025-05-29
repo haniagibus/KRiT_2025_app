@@ -8,7 +8,7 @@ import '../element_icon.dart';
 
 class EventTile extends StatelessWidget {
   final Event event;
-  final VoidCallback onFavouriteControl;
+  final Future<void> Function(Event event) onFavouriteControl;
 
   const EventTile(this.event, {super.key, required this.onFavouriteControl});
 
@@ -26,7 +26,8 @@ class EventTile extends StatelessWidget {
           ),
         );
         if (updatedFavourite != null && updatedFavourite != event.isFavourite) {
-          onFavouriteControl();
+          event.isFavourite = updatedFavourite;
+          onFavouriteControl(event);
         }
       },
       child: Container(
@@ -63,7 +64,10 @@ class EventTile extends StatelessWidget {
             children: [
               StarWidget(
                 isFavourite: event.isFavourite,
-                onTap: onFavouriteControl,
+                onTap: () async {
+                  event.isFavourite = !event.isFavourite;
+                  await onFavouriteControl(event);
+                },
               ),
               Icon(
                 Icons.arrow_forward_ios,

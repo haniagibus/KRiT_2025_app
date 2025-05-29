@@ -81,13 +81,19 @@ class _ReportFormState extends State<ReportForm> {
       storage.updateReport(widget.report!, updatedReport);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Referat zaktualizowany!")),
+        const SnackBar(
+          content: Text("Referat zaktualizowany!"),
+          backgroundColor: Colors.green,
+        ),
       );
 
       Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Uzupełnij wszystkie wymagane pola")),
+        SnackBar(
+          content: Text("Uzupełnij wszystkie wymagane pola"),
+          backgroundColor: Colors.red,
+        ),
       );
     }
   }
@@ -101,100 +107,108 @@ class _ReportFormState extends State<ReportForm> {
         title: Text("Edytuj Referat"),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Card(
-            elevation: 6,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      body: Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: 700),
+          child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: isLoadingPdf
-                  ? Center(child: CircularProgressIndicator())
-                  : Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    // Row(
-                    //   children: [
-                    //     Expanded(
-                    //       child: TextFormField(
-                    //         readOnly: true,
-                    //         enabled: false,
-                    //         initialValue: _selectedPdfPath != null
-                    //             ? _selectedPdfPath!.split('/').last
-                    //             : "Brak pliku PDF",
-                    //         decoration: InputDecoration(
-                    //           labelText: "Plik PDF",
-                    //           border: OutlineInputBorder(
-                    //             borderRadius: BorderRadius.circular(12),
-                    //           ),
-                    //         ),
-                    //         validator: (_) =>
-                    //         _selectedPdfPath == null ? 'Brak pliku PDF' : null,
-                    //       ),
-                    //     ),
-                    //     const SizedBox(width: 8),
-                    //     IconButton(
-                    //       icon: Icon(Icons.picture_as_pdf, color: AppColors.primary),
-                    //       onPressed: _selectedPdfPath == null
-                    //           ? null
-                    //           : () {
-                    //         Navigator.push(
-                    //           context,
-                    //           MaterialPageRoute(
-                    //             builder: (context) => PDFViewScreen(pdfUrl: _selectedPdfPath!),
-                    //           ),
-                    //         );
-                    //       },
-                    //     ),
-                    //   ],
-                    // ),
-                    // const SizedBox(height: 16),
-                    // TextFormField(
-                    //   enabled: false,
-                    //   readOnly: true,
-                    //   initialValue: _selectedEventId != null
-                    //       ? eventsDataStorage.getEventById(_selectedEventId!)?.title
-                    //       : 'Nieprzypisany do żadnego wydarzenia',
-                    //   decoration: InputDecoration(
-                    //     labelText: "Wydarzenie",
-                    //     border: OutlineInputBorder(
-                    //       borderRadius: BorderRadius.circular(12),
-                    //     ),
-                    //   ),
-                    // ),
-                    // const SizedBox(height: 8.0),
-                    // const Divider(
-                    //   color: Colors.grey,
-                    //   thickness: 1,
-                    // ),
-                    // const SizedBox(height: 8.0),
-                    _buildTextField(_titleController, "Tytuł"),
-                    const SizedBox(height: 16),
-                    _buildTextField(_authorsController, "Autorzy"),
-                    const SizedBox(height: 16),
-                    _buildTextField(_descriptionController, "Opis",
-                        maxLines: 3),
-                    const SizedBox(height: 16),
-                    _buildTextField(_keywordsController,
-                        "Słowa kluczowe (oddziel przecinkiem)"),
-                    const SizedBox(height: 30),
-                    ElevatedButton.icon(
-                      icon: Icon(Icons.save, color: AppColors.primary),
-                      label: Text("Zapisz zmiany"),
-                      onPressed: _submitForm,
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 14, horizontal: 32),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+              padding: const EdgeInsets.all(16.0),
+              child: Card(
+                elevation: 6,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16)),
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: isLoadingPdf
+                      ? Center(child: CircularProgressIndicator())
+                      : Form(
+                          key: _formKey,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              // Row(
+                              //   children: [
+                              //     Expanded(
+                              //       child: TextFormField(
+                              //         readOnly: true,
+                              //         enabled: false,
+                              //         initialValue: _selectedPdfPath != null
+                              //             ? _selectedPdfPath!.split('/').last
+                              //             : "Brak pliku PDF",
+                              //         decoration: InputDecoration(
+                              //           labelText: "Plik PDF",
+                              //           border: OutlineInputBorder(
+                              //             borderRadius: BorderRadius.circular(12),
+                              //           ),
+                              //         ),
+                              //         validator: (_) =>
+                              //         _selectedPdfPath == null ? 'Brak pliku PDF' : null,
+                              //       ),
+                              //     ),
+                              //     const SizedBox(width: 8),
+                              //     IconButton(
+                              //       icon: Icon(Icons.picture_as_pdf, color: AppColors.primary),
+                              //       onPressed: _selectedPdfPath == null
+                              //           ? null
+                              //           : () {
+                              //         Navigator.push(
+                              //           context,
+                              //           MaterialPageRoute(
+                              //             builder: (context) => PDFViewScreen(pdfUrl: _selectedPdfPath!),
+                              //           ),
+                              //         );
+                              //       },
+                              //     ),
+                              //   ],
+                              // ),
+                              // const SizedBox(height: 16),
+                              // TextFormField(
+                              //   enabled: false,
+                              //   readOnly: true,
+                              //   initialValue: _selectedEventId != null
+                              //       ? eventsDataStorage.getEventById(_selectedEventId!)?.title
+                              //       : 'Nieprzypisany do żadnego wydarzenia',
+                              //   decoration: InputDecoration(
+                              //     labelText: "Wydarzenie",
+                              //     border: OutlineInputBorder(
+                              //       borderRadius: BorderRadius.circular(12),
+                              //     ),
+                              //   ),
+                              // ),
+                              // const SizedBox(height: 8.0),
+                              // const Divider(
+                              //   color: Colors.grey,
+                              //   thickness: 1,
+                              // ),
+                              // const SizedBox(height: 8.0),
+                              _buildTextField(_titleController, "Tytuł",
+                                  maxLines: 2),
+                              const SizedBox(height: 16),
+                              _buildTextField(_authorsController, "Autorzy"),
+                              const SizedBox(height: 16),
+                              _buildTextField(_descriptionController, "Opis",
+                                  maxLines: 3),
+                              const SizedBox(height: 16),
+                              _buildTextField(_keywordsController,
+                                  "Słowa kluczowe (oddziel przecinkiem)",
+                                  maxLines: 2),
+                              const SizedBox(height: 30),
+                              ElevatedButton.icon(
+                                icon:
+                                    Icon(Icons.save, color: AppColors.primary),
+                                label: Text("Zapisz zmiany"),
+                                onPressed: _submitForm,
+                                style: ElevatedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 14, horizontal: 32),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ),
-                  ],
                 ),
               ),
             ),

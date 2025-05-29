@@ -102,6 +102,10 @@ class EventsDataStorage extends ChangeNotifier {
 
         print("✅ Odświeżanie zakończone, liczba eventów: ${_eventList.length}");
 
+        for (Event event in _eventList) {
+          print("isFavorite ${event.isFavourite}");
+        }
+
         _callback?.call();
         notifyListeners();
       } catch (e) {
@@ -124,20 +128,32 @@ class EventsDataStorage extends ChangeNotifier {
     }).toList();
   }
 
-  void controlFavourite(Event event) {
-    print("fav");
+  Future<void> controlFavourite(Event event) async {
     final index = _eventList.indexWhere((e) => e.id == event.id);
     if (index != -1) {
-      _eventList[index].isFavourite = !_eventList[index].isFavourite;
-      notifyListeners();
+      final updatedEvent = Event(
+        id: event.id,
+        title: event.title,
+        subtitle: event.subtitle,
+        type: event.type,
+        dateTimeStart: event.dateTimeStart,
+        dateTimeEnd: event.dateTimeEnd,
+        building: event.building,
+        room: event.room,
+        reports: event.reports,
+        isFavourite: event.isFavourite,
+      );
+
+      try {
+        await updateEvent(event, updatedEvent);
+      } catch (e) {
+        print("[!] ERROR when updating isFavourite: $e");
+      }
     } else {
-      print("❌ Nie znaleziono wydarzenia w liście!");
+      print("[!] ERROR event not found in _evenList");
     }
   }
 
-  List<Report> getReportsForEvent(String id) {
-    return _reportsStorage.getReportsForEvent(id);
-  }
 
   List<Event> getEventsForDate(DateTime date) {
     DateTime inputDateOnly = DateTime(date.year, date.month, date.day);

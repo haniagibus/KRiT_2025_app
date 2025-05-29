@@ -27,60 +27,90 @@ class AdminScreen extends StatelessWidget {
         title: Text("Panel Administracyjny"),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            // _buildCard(Icons.add_circle, "Stwórz Nową Edycję", () {
-            //   Navigator.push(
-            //     context,
-            //     MaterialPageRoute(builder: (context) => NewEditionForm()),
-            //   );
-            // }),
-            // SizedBox(height: 16),
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                children: [
-                  _buildCard(Icons.event, "Dodaj Wydarzenie", () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => EventForm()),
-                    );
-                  }),
-                  _buildCard(Icons.event, "Edytuj Wydarzenia", () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => EventManagerScreen()),
-                    );
-                  }),
-                  _buildCard(Icons.article, "Dodaj Referaty", () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ReportsPicker()),
-                    );
-                  }),
-                  _buildCard(Icons.article, "Edytuj Referaty", () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ReportManagerScreen()),
-                    );
-                  }),
-                  _buildCard(Icons.logout, "Wyloguj", () => _logout(context)),
-                ],
-              ),
+      body: Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: 500),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                GridView.count(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: [
+                    _buildCard(Icons.event, "Dodaj Wydarzenie", () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => EventForm()));
+                    }),
+                    _buildCard(Icons.event, "Edytuj Wydarzenia", () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => EventManagerScreen()));
+                    }),
+                    _buildCard(Icons.article, "Dodaj Referaty", () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ReportsPicker()));
+                    }),
+                    _buildCard(Icons.article, "Edytuj Referaty", () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ReportManagerScreen()));
+                    }),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () => _logout(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.redAccent,
+                      elevation: 4,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(Icons.logout, color: Colors.white),
+                        SizedBox(width: 8),
+                        Text(
+                          "Wyloguj",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildCard(IconData icon, String title, VoidCallback onTap) {
+  Widget _buildCard(
+    IconData icon,
+    String title,
+    VoidCallback onTap, {
+    Color iconColor = Colors.blueAccent,
+  }) {
     return SizedBox(
       width: double.infinity,
       child: Card(
@@ -97,11 +127,11 @@ class AdminScreen extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(icon, size: 40, color: Colors.blueAccent),
+                Icon(icon, size: 40, color: iconColor),
                 const SizedBox(height: 10),
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),

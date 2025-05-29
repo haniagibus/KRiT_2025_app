@@ -17,10 +17,11 @@ class CalendarWidget extends StatefulWidget {
   _CalendarWidgetState createState() => _CalendarWidgetState();
 }
 
-class _CalendarWidgetState extends State<CalendarWidget> {
-  late List<DateTime> _availableDates;
+class _CalendarWidgetState extends State<CalendarWidget> with SingleTickerProviderStateMixin {
+  List<DateTime> _availableDates = [];
   List<Event> _eventsForSelectedDate = [];
   late DateTime _selectedDate;
+  TabController? _tabController;
 
   @override
   void initState() {
@@ -30,20 +31,35 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       final dataStorage = context.read<EventsDataStorage>();
       await dataStorage.refreshEvents();
 
-      setState(() {
-        _initializeDates();
-        if (_availableDates.isNotEmpty) {
-          _selectedDate = _availableDates[0];
-        }
-        _filterEventsByDate();
-      });
+      _initializeDates();
+
+      if (_availableDates.isNotEmpty) {
+        _selectedDate = _availableDates[0];
+        _tabController = TabController(length: _availableDates.length, vsync: this);
+        _tabController!.addListener(() {
+          if (_tabController!.indexIsChanging) {
+            setState(() {
+              _selectedDate = _availableDates[_tabController!.index];
+              _filterEventsByDate();
+            });
+          }
+        });
+      } else {
+        _tabController = TabController(length: 1, vsync: this);
+        _selectedDate = DateTime.now();
+      }
+
+      _filterEventsByDate();
+
+      setState(() {});
     });
   }
 
   void _initializeDates() {
     final events = context.read<EventsDataStorage>().eventList;
     _availableDates = events
-        .map((event) => DateTime(event.dateTimeStart.year, event.dateTimeStart.month, event.dateTimeStart.day))
+        .map((event) => DateTime(event.dateTimeStart.year,
+        event.dateTimeStart.month, event.dateTimeStart.day))
         .toSet()
         .toList();
     _availableDates.sort((a, b) => a.compareTo(b));
@@ -73,62 +89,62 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   }
 
   @override
+  void dispose() {
+    _tabController?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final eventsDataStorage = context.watch<EventsDataStorage>();
 
-    _initializeDates();
+    if (_availableDates.isEmpty || _tabController == null) {
+      return Center(child: Text("Brak dostępnych dat"));
+    }
 
-    return DefaultTabController(
-      length: _availableDates.length,
-      child: Column(
-        children: [
-          Container(
-            color: AppColors.background,
-            child: TabBar(
-              indicatorColor: AppColors.accent,
-              indicatorWeight: 4.0,
-              labelPadding: EdgeInsets.symmetric(vertical: 8.0),
-              tabs: _availableDates.map((date) {
-                return Tab(
-                  child: Text(
-                    "${date.day}/${date.month}",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+    return Column(
+      children: [
+        Container(
+          color: AppColors.background,
+          child: TabBar(
+            controller: _tabController,
+            indicatorColor: AppColors.accent,
+            indicatorWeight: 4.0,
+            labelPadding: const EdgeInsets.symmetric(vertical: 8.0),
+            tabs: _availableDates.map((date) {
+              return Tab(
+                child: Text(
+                  "${date.day}/${date.month}",
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
                   ),
-                );
-              }).toList(),
-              labelColor: AppColors.accent,
-              unselectedLabelColor: AppColors.text_secondary,
-              onTap: (index) {
-                setState(() {
-                  _selectedDate = _availableDates[index];
-                  _filterEventsByDate();
-                });
-              },
-            ),
-          ),
-          Expanded(
-            child: _eventsForSelectedDate.isEmpty
-                ? Center(child: Text("Brak wydarzeń na ten dzień"))
-                : ListView(
-              children: _eventsForSelectedDate
-                  .map(
-                    (event) => EventTile(
-                  event,
-                  onFavouriteControl: () {
-                    setState(() {
-                      eventsDataStorage.controlFavourite(event);
-                    });
-                  },
                 ),
-              )
-                  .toList(),
-            ),
+              );
+            }).toList(),
+            labelColor: AppColors.accent,
+            unselectedLabelColor: AppColors.text_secondary,
           ),
-        ],
-      ),
+        ),
+        Expanded(
+          child: _eventsForSelectedDate.isEmpty
+              ? const Center(child: Text("Brak wyników"))
+              : ListView(
+            children: _eventsForSelectedDate
+                .map(
+                  (event) => EventTile(
+                event,
+                onFavouriteControl: (updatedEvent) async {
+                  await eventsDataStorage.controlFavourite(updatedEvent);
+                  setState(() {
+                  });
+                },
+              ),
+            )
+                .toList(),
+          ),
+        ),
+      ],
     );
   }
 }
