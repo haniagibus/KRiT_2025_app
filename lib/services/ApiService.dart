@@ -1,8 +1,5 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:math';
-//import 'dart:nativewrappers/_internal/vm/lib/typed_data_patch.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:krit_app/models/report/report.dart';
@@ -25,7 +22,7 @@ class ApiService {
   final String baseUrl2 = "http://10.0.2.2:8080";
   final String baseUrl = "http://localhost:8080";
 
-  // Cache flag to prevent unnecessary reinitialization
+
   bool _dataInitialized = false;
   bool get dataInitialized => _dataInitialized;
   set dataInitialized(bool value) => _dataInitialized = value;

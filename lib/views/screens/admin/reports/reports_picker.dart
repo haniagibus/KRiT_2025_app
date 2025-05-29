@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:krit_app/models/report/reports_data_storage.dart';
 import 'package:krit_app/services/ApiService.dart';
 import 'package:provider/provider.dart';
+import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../models/report/report.dart';
@@ -14,7 +15,6 @@ import '../../../widgets/reports/report_tile.dart';
 import 'pdf_reader.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:typed_data';
-
 
 class ReportsPicker extends StatefulWidget {
   const ReportsPicker({super.key});
@@ -26,28 +26,42 @@ class ReportsPicker extends StatefulWidget {
 class _ReportsPickerState extends State<ReportsPicker> {
   bool isLoadingPdf = false;
   List<Report> _generatedReports = [];
+  List<String> fileNames = [];
+
+  Future<List<int>?> extractFirstPage(Uint8List originalBytes) async {
+    try {
+      final PdfDocument originalDocument = PdfDocument(inputBytes: originalBytes);
+      final PdfDocument newDoc = PdfDocument();
+      newDoc.pages.removeAt(0);
+
+      newDoc.pages.add().graphics.drawPdfTemplate(
+        originalDocument.pages[0].createTemplate(),
+        const Offset(0, 0),
+      );
+
+      final List<int> newBytes = newDoc.saveSync();
+      originalDocument.dispose();
+      newDoc.dispose();
+
+      return newBytes;
+    } catch (e) {
+      print("Błąd przy wycinaniu pierwszej strony: $e");
+      return null;
+    }
+  }
 
   Future<void> _pickMultiplePdfFiles() async {
-    // if (await Permission.storage.request().isDenied) {
-    //   print("Brak uprawnień do odczytu plików.");
-    //   return;
-    // }
+
+    final apiService = ApiService();
 
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['pdf'],
       allowMultiple: true,
-      withData: true, // ← TO JEST KLUCZOWE!
+      withData: true,
     );
 
-    print("Wybieram pliki: $result");
-
     if (result == null || result.files.isEmpty) return;
-
-    print('Wybrane pliki: ${result.files.length}');
-    for (var file in result.files) {
-      print('Plik: ${file.name}, path: ${file.path}');
-    }
 
     final pdfFiles = result.files
         .where((file) =>
@@ -56,59 +70,43 @@ class _ReportsPickerState extends State<ReportsPicker> {
 
     setState(() {
       isLoadingPdf = true;
-      //_generatedReports.clear();
     });
 
-    // final pdfReader = PdfReader();
-    final apiService = ApiService();
+    for (var file in pdfFiles) {
+      if (file.path == null || file.bytes == null) continue;
+      if (fileNames.contains(file.name)) {
+        continue;
+      }
 
-    // for (var file in pdfFiles) {
-    //   if (file.path == null) continue;
-    //   final pdfBytes = file.bytes;
-    //   if (pdfBytes == null) continue;
+      final firstPageBytes = await extractFirstPage(file.bytes!);
+      if (firstPageBytes == null) continue;
 
-      final existingTitles = _generatedReports.map((r) => r.title).toSet();
-
-      for (var file in pdfFiles) {
-        if (file.path == null || file.bytes == null) continue;
-
-        final extractedData = await apiService.sendPdfToBackend(file.bytes!);
-        final title = extractedData?['title'] ?? 'Nieznany tytuł';
-        final pdfUrl = extractedData?['pdfUrl'] ?? '';
-        print("Dane z backendu: $extractedData");
-
-
-        if (existingTitles.contains(title)) continue; // pomijaj duplikaty
-
-
-        try {
-        // final extractedData = await pdfReader.extractDataFromPdf(pdfFile);
-        //final extractedData = await apiService.sendPdfToBackend(pdfBytes);
+      final extractedData = await apiService.sendPdfToBackend(file.bytes);
+      try {
         final newReport = Report(
-          id: const Uuid().v4(),
-          title: extractedData?['title'] ?? 'Nieznany tytuł',
-          authors: (extractedData?['authors'] ?? '')
-              .split(',')
-              .map((e) => e.trim())
-              .where((e) => e.isNotEmpty)
-              .toList(),
-          description: extractedData?['abstract'] ?? '',
-          keywords: (extractedData?['keywords'] ?? '')
-              .split(',')
-              .map((e) => e.trim())
-              .where((e) => e.isNotEmpty)
-              .toList(),
-          pdfUrl: pdfUrl,
-          eventId: '',
-          pdfBytes: file.bytes
-        );
+            id: const Uuid().v4(),
+            title: extractedData?['title'] ?? 'Nieznany tytuł',
+            authors: (extractedData?['authors'] ?? '')
+                .split(',')
+                .map((e) => e.trim())
+                .where((e) => e.isNotEmpty)
+                .toList(),
+            description: extractedData?['abstract'] ?? '',
+            keywords: (extractedData?['keywords'] ?? '')
+                .split(',')
+                .map((e) => e.trim())
+                .where((e) => e.isNotEmpty)
+                .toList(),
+            pdfUrl: extractedData?['pdfUrl'] ?? '',
+            eventId: '',
+            pdfBytes: file.bytes);
 
         _generatedReports.add(newReport);
+        fileNames.add(file.name);
       } catch (e) {
         print("Błąd odczytu PDF: $e");
       }
     }
-
     setState(() {
       isLoadingPdf = false;
     });
