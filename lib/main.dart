@@ -159,7 +159,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:krit_app/models/report/reports_data_storage.dart';
+import 'package:krit_app/theme/app_colors.dart';
+import 'package:krit_app/views/screens/admin/admin_screen.dart';
 import 'package:krit_app/views/screens/home/home_screen.dart';
+import 'package:krit_app/views/screens/login/login_screen.dart';
 import 'package:krit_app/views/screens/schedule/schedule_screen.dart';
 import 'package:krit_app/views/screens/reports/reports_screen.dart';
 import 'package:krit_app/theme/app_theme.dart';
@@ -170,7 +173,7 @@ import 'package:provider/provider.dart';
 import 'package:krit_app/services/auth_service.dart';
 import 'package:syncfusion_flutter_core/core.dart';
 
-import 'models/ApiService.dart';
+import 'services/api_service.dart';
 import 'models/event/events_data_storage.dart';
 
 void main() {
@@ -205,11 +208,7 @@ class MyApp extends StatelessWidget {
       title: 'KRiT App',
       theme: AppTheme.lightTheme,
       debugShowCheckedModeBanner: false,
-      localizationsDelegates: [
-        //S.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
       supportedLocales: const [
         Locale('en', ''),
         Locale('pl', ''),
@@ -226,11 +225,9 @@ class MyApp extends StatelessWidget {
       if (!apiService.dataInitialized) {
         print("🚀 First time initialization");
 
-        // Initialize reports first
         Provider.of<ReportsDataStorage>(context, listen: false)
             .initializeReports()
             .then((_) {
-          // Then initialize events
           Provider.of<EventsDataStorage>(context, listen: false)
               .initializeEvents();
         });
@@ -274,14 +271,42 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: _selectedIndex == 0
-            ? null
-            : Text(
-          'KRiT $currentYear',
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
+            ? Text(
+                'KRiT $currentYear',
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              )
+            : _selectedIndex == 1
+                ? Text('Harmonogram')
+                : Text('Referaty'),
         centerTitle: true,
         automaticallyImplyLeading: true,
         elevation: _selectedIndex == 0 ? 0 : 4,
+        actions: [
+          Consumer<AuthProvider>(
+            builder: (context, authProvider, _) {
+              return IconButton(
+                icon: const Icon(Icons.account_circle),
+                tooltip: authProvider.role == 'admin'
+                    ? 'Panel administracyjny'
+                    : 'Logowanie',
+                onPressed: () {
+                  if (authProvider.role == 'admin') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AdminScreen()),
+                    );
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LoginScreen()),
+                    );
+                  }
+                },
+              );
+            },
+          ),
+        ],
       ),
       body: SafeArea(
         child: PageView(
@@ -294,30 +319,54 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      drawer: SideMenu(
-        selectedIndex: _selectedIndex,
-        onItemSelected: (int index) {
-          Navigator.pop(context);
-          _onItemTapped(index);
-        },
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: "Start",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today),
-            label: "Harmonogram",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.book),
-            label: "Referaty",
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
+      // drawer: SideMenu(
+      //   selectedIndex: _selectedIndex,
+      //   onItemSelected: (int index) {
+      //     Navigator.pop(context);
+      //     _onItemTapped(index);
+      //   },
+      // ),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   items: const <BottomNavigationBarItem>[
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.home),
+      //       label: "Start",
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.calendar_today),
+      //       label: "Harmonogram",
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.book),
+      //       label: "Referaty",
+      //     ),
+      //   ],
+      //   currentIndex: _selectedIndex,
+      //   onTap: _onItemTapped,
+      // ),
+      bottomNavigationBar: Container(
+        // height: 80,
+        child: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: "Start",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.calendar_today),
+              label: "Harmonogram",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.book),
+              label: "Referaty",
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
+          iconSize: 28,
+          selectedIconTheme: IconThemeData(size: 30),
+          unselectedIconTheme: IconThemeData(size: 26),
+        ),
       ),
     );
   }

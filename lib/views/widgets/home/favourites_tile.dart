@@ -6,7 +6,7 @@ import '../../../models/event/event.dart';
 
 class FavoritesTile extends StatelessWidget {
   final List<Event> favoriteEvents;
-  final Function(Event) onFavouriteControl;
+  final Future<void> Function(Event) onFavouriteControl;
 
   const FavoritesTile({
     super.key,
@@ -24,7 +24,7 @@ class FavoritesTile extends StatelessWidget {
           child: const Text(
             'Ulubione Wydarzenia',
             style: TextStyle(
-              fontSize: 24,
+              fontSize: 20,
               fontWeight: FontWeight.bold,
               color: AppColors.text_primary,
             ),
@@ -45,8 +45,8 @@ class FavoritesTile extends StatelessWidget {
               final event = favoriteEvents[index];
               return EventTile(
                 event,
-                onFavouriteControl: () {
-                  onFavouriteControl(event);
+                onFavouriteControl: (updatedEvent) async {
+                  await onFavouriteControl(updatedEvent);
                 },
               );
             },

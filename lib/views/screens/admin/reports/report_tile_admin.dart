@@ -14,8 +14,10 @@ class ReportTileAdmin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final reportsDataStorage = Provider.of<ReportsDataStorage>(context, listen: false);
-    final eventsDataStorage = Provider.of<EventsDataStorage>(context, listen: false);
+    final reportsDataStorage =
+        Provider.of<ReportsDataStorage>(context, listen: false);
+    final eventsDataStorage =
+        Provider.of<EventsDataStorage>(context, listen: false);
     return Dismissible(
       key: Key(report.id),
       background: Container(
@@ -25,7 +27,7 @@ class ReportTileAdmin extends StatelessWidget {
         child: Icon(Icons.edit, color: Colors.white),
       ),
       secondaryBackground: Container(
-        color: Colors.red,
+        color: Colors.redAccent,
         alignment: Alignment.centerRight,
         padding: EdgeInsets.symmetric(horizontal: 20),
         child: Icon(Icons.delete, color: Colors.white),
@@ -57,11 +59,11 @@ class ReportTileAdmin extends StatelessWidget {
                 ElevatedButton(
                   child: Text("Usuń"),
                   onPressed: () {
-                    eventsDataStorage.removeReportFromEvent(report);
+                    //eventsDataStorage.removeReportFromEvent(report);
+                    reportsDataStorage.removeReport(report);
                     Navigator.of(ctx).pop(true);
                   },
                 ),
-
               ],
             ),
           );

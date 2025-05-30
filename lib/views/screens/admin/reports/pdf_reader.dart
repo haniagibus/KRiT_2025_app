@@ -21,12 +21,11 @@ class PdfReader {
     String titleText = extractTitle(textLine);
     String authorsText = extractAuthors(textLine);
 
-
     return {
       'abstract': abstractText,
-      'keywords' : keywordsText,
-      'title' : titleText,
-      'authors' : authorsText
+      'keywords': keywordsText,
+      'title': titleText,
+      'authors': authorsText
     };
   }
   String _cleanText(String text) {

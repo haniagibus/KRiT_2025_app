@@ -15,7 +15,8 @@ class EventTileAdmin extends StatelessWidget {
   Widget build(BuildContext context) {
     final storage = Provider.of<EventsDataStorage>(context, listen: false);
     return Dismissible(
-      key: Key(event.id),
+      key:
+          ValueKey(event.id ?? 'temp-${DateTime.now().millisecondsSinceEpoch}'),
       background: Container(
         color: AppColors.secondary,
         alignment: Alignment.centerLeft,
@@ -23,7 +24,7 @@ class EventTileAdmin extends StatelessWidget {
         child: Icon(Icons.edit, color: Colors.white),
       ),
       secondaryBackground: Container(
-        color: Colors.red,
+        color: Colors.redAccent,
         alignment: Alignment.centerRight,
         padding: EdgeInsets.symmetric(horizontal: 20),
         child: Icon(Icons.delete, color: Colors.white),

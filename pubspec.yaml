@@ -37,6 +37,7 @@ dependencies:
     sdk: flutter
   flutter_gen: ^5.8.0
   provider: ^6.1.4
+  shared_preferences: ^2.0.15
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -45,8 +46,9 @@ dependencies:
   intl: ^0.19.0
   flutter_pdfview: ^1.2.7
   syncfusion_flutter_pdf: ^29.1.38
-  permission_handler: ^10.2.0
-  uuid: ^3.0.6
+  syncfusion_flutter_pdfviewer: ^29.1.38
+  permission_handler: ^11.0.0
+  uuid: ^4.5.1
   file_picker: ^10.1.2
 
 dev_dependencies:
@@ -60,6 +62,13 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
+
+  flutter_launcher_icons: ^0.13.1
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/KRiT2025_app_logo2.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

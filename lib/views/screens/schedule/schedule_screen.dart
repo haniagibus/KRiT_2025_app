@@ -15,27 +15,8 @@ class ScheduleScreen extends StatefulWidget {
 class _EventViewState extends State<ScheduleScreen> {
   String _searchQuery = '';
 
-  // @override
-  // void initState() {
-  //   _eventsDataStorage = EventsDataStorage(() => setState(() {}));
-  //   super.initState();
-  // }
-
-//BACKEND
-//   @override
-//   void initState() {
-//     super.initState();
-//     _eventsDataStorage = EventsDataStorage(() => setState(() {}));
-//     _loadEvents(); // Pobierz eventy
-//   }
-
-//   Future<void> _loadEvents() async {
-//     await _eventsDataStorage.initializeEvents();
-//   }
-
   @override
   Widget build(BuildContext context) {
-    final eventsDataStorage = Provider.of<EventsDataStorage>(context);
     return Column(
       children: [
         SearchBarApp(

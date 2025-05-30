@@ -43,7 +43,7 @@ class _EventFormState extends State<EventForm> {
       final event = widget.event!;
       _titleController.text = event.title;
       _subtitleController.text = event.subtitle;
-      _descriptionController.text = event.description;
+      //_descriptionController.text = event.description;
       _buildingController.text = event.building;
       _roomController.text = event.room;
       _selectedDate = event.dateTimeStart;
@@ -104,16 +104,8 @@ class _EventFormState extends State<EventForm> {
 
         return StatefulBuilder(
           builder: (context, setStateDialog) {
-            final filteredReports = allReports
-                .where((report) =>
-                    report.title
-                        .toLowerCase()
-                        .contains(_searchQuery.toLowerCase()) ||
-                    report.author
-                        .toLowerCase()
-                        .contains(_searchQuery.toLowerCase()))
-                .toList();
-
+            final filteredReports =
+            reportsData.filterReportsByQuery(_searchQuery);
             return AlertDialog(
               title: const Text("Wybierz referaty"),
               content: Column(
@@ -132,7 +124,7 @@ class _EventFormState extends State<EventForm> {
                       child: Column(
                         children: filteredReports.map((report) {
                           final isSelected =
-                              tempSelected.any((r) => r.id == report.id);
+                          tempSelected.any((r) => r.id == report.id);
 
                           return CheckboxListTile(
                             value: isSelected,
@@ -142,7 +134,7 @@ class _EventFormState extends State<EventForm> {
                               overflow: TextOverflow.ellipsis,
                             ),
                             subtitle: Text(
-                              report.author,
+                              report.authors.join(', '),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -166,7 +158,7 @@ class _EventFormState extends State<EventForm> {
               actions: [
                 TextButton(
                   style:
-                      TextButton.styleFrom(foregroundColor: AppColors.primary),
+                  TextButton.styleFrom(foregroundColor: AppColors.primary),
                   child: const Text("Anuluj"),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
@@ -216,7 +208,7 @@ class _EventFormState extends State<EventForm> {
       final newEvent = Event(
         title: _titleController.text.trim(),
         subtitle: _subtitleController.text.trim(),
-        description: _descriptionController.text.trim(),
+        //description: _descriptionController.text.trim(),
         type: EventType.Other,
         dateTimeStart: startDateTime,
         dateTimeEnd: endDateTime,
@@ -231,19 +223,42 @@ class _EventFormState extends State<EventForm> {
       if (widget.event == null) {
         storage.addEvent(newEvent);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Wydarzenie dodane pomyślnie!")),
+          const SnackBar(
+            content: Text("Wydarzenie dodane pomyślnie!"),
+            backgroundColor: Colors.green,
+          ),
         );
       } else {
-        storage.updateEvent(widget.event!, newEvent);
+        final updatedEvent = Event(
+          id: widget.event!.id,
+          title: _titleController.text.trim(),
+          subtitle: _subtitleController.text.trim(),
+          //description: _descriptionController.text.trim(),
+          type: EventType.Other,
+          dateTimeStart: startDateTime,
+          dateTimeEnd: endDateTime,
+          building: _buildingController.text.trim(),
+          room: _roomController.text.trim(),
+          reports: _selectedReports,
+          isFavourite: widget.event!.isFavourite,
+        );
+
+        storage.updateEvent(widget.event!, updatedEvent);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Wydarzenie zaktualizowane!")),
+          const SnackBar(
+            content: Text("Wydarzenie zaktualizowane!"),
+            backgroundColor: Colors.green,
+          ),
         );
       }
 
       Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Uzupełnij wszystkie wymagane pola")),
+        SnackBar(
+          content: Text("Uzupełnij wszystkie wymagane pola"),
+          backgroundColor: Colors.red,
+        ),
       );
     }
   }
@@ -257,151 +272,178 @@ class _EventFormState extends State<EventForm> {
         title: Text(isEditing ? "Edytuj Wydarzenie" : "Dodaj Wydarzenie"),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Card(
-            elevation: 6,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _buildTextField(_titleController, "Tytuł"),
-                    const SizedBox(height: 16),
-                    _buildTextField(_subtitleController, "Podtytuł"),
-                    const SizedBox(height: 16),
-                    _buildTextField(_descriptionController, "Opis", maxLines: 3),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            _selectedDate != null
-                                ? "Data: ${DateFormat('dd.MM.yyyy').format(_selectedDate!)}"
-                                : "Wybierz datę",
-                            style: TextStyle(
-                              color: isSubmitted && _selectedDate == null
-                                  ? Theme.of(context).colorScheme.error
-                                  : null,
-                              fontWeight: isSubmitted && _selectedDate == null
-                                  ? FontWeight.bold
-                                  : FontWeight.normal,
-                              fontSize: 16,
+      body: Center(
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: 700),
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Card(
+                  elevation: 6,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          _buildTextField(_titleController, "Tytuł"),
+                          const SizedBox(height: 16),
+                          _buildTextField(_subtitleController, "Podtytuł",
+                              maxLines: 3),
+                          const SizedBox(height: 16),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  _selectedDate != null
+                                      ? "Data: ${DateFormat('dd.MM.yyyy')
+                                      .format(
+                                      _selectedDate!)}"
+                                      : "Wybierz datę",
+                                  style: TextStyle(
+                                    color: isSubmitted && _selectedDate == null
+                                        ? Theme
+                                        .of(context)
+                                        .colorScheme
+                                        .error
+                                        : null,
+                                    fontWeight:
+                                    isSubmitted && _selectedDate == null
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.calendar_today),
+                                onPressed: _pickDate,
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  _selectedStartTime != null
+                                      ? "Godzina rozpoczęcia: ${_selectedStartTime!
+                                      .format(context)}"
+                                      : "Wybierz godzinę rozpoczęcia",
+                                  style: TextStyle(
+                                    color:
+                                    isSubmitted && _selectedStartTime == null
+                                        ? Theme
+                                        .of(context)
+                                        .colorScheme
+                                        .error
+                                        : null,
+                                    fontWeight:
+                                    isSubmitted && _selectedStartTime == null
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.access_time),
+                                onPressed: () => _pickTime(isStart: true),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  _selectedEndTime != null
+                                      ? "Godzina zakończenia: ${_selectedEndTime!
+                                      .format(context)}"
+                                      : "Wybierz godzinę zakończenia",
+                                  style: TextStyle(
+                                    color: isSubmitted &&
+                                        _selectedEndTime == null
+                                        ? Theme
+                                        .of(context)
+                                        .colorScheme
+                                        .error
+                                        : null,
+                                    fontWeight:
+                                    isSubmitted && _selectedEndTime == null
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.access_time),
+                                onPressed: () => _pickTime(isStart: false),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          _buildTextField(_buildingController, "Budynek"),
+                          const SizedBox(height: 16),
+                          _buildTextField(_roomController, "Sala"),
+                          const SizedBox(height: 16),
+                          GestureDetector(
+                            onTap: _showMultiSelectDialog,
+                            child: AbsorbPointer(
+                              child: TextFormField(
+                                readOnly: true,
+                                controller: TextEditingController(
+                                  text: _selectedReports
+                                      .map((r) => r.title)
+                                      .join(', '),
+                                ),
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  labelText: 'Referaty',
+                                  suffixIcon: const Icon(Icons.arrow_drop_down),
+                                  labelStyle: TextStyle(
+                                    color: isSubmitted &&
+                                        _selectedReports.isEmpty
+                                        ? Theme
+                                        .of(context)
+                                        .colorScheme
+                                        .error
+                                        : AppColors.primary,
+                                  ),
+                                ),
+                                validator: (_) =>
+                                _selectedReports.isEmpty
+                                    ? 'Wybierz referaty'
+                                    : null,
+                              ),
                             ),
                           ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.calendar_today),
-                          onPressed: _pickDate,
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            _selectedStartTime != null
-                                ? "Godzina rozpoczęcia: ${_selectedStartTime!.format(context)}"
-                                : "Wybierz godzinę rozpoczęcia",
-                            style: TextStyle(
-                              color: isSubmitted && _selectedStartTime == null
-                                  ? Theme.of(context).colorScheme.error
-                                  : null,
-                              fontWeight:
-                                  isSubmitted && _selectedStartTime == null
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
-                              fontSize: 16,
+                          const SizedBox(height: 30),
+                          ElevatedButton.icon(
+                            icon: Icon(Icons.save,
+                                color: AppColors.primary),
+                            label: Text(isEditing ? "Zapisz zmiany" : "Zapisz wydarzenie"),
+                            onPressed: _submitForm,
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 14, horizontal: 32),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
                             ),
                           ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.access_time),
-                          onPressed: () => _pickTime(isStart: true),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            _selectedEndTime != null
-                                ? "Godzina zakończenia: ${_selectedEndTime!.format(context)}"
-                                : "Wybierz godzinę zakończenia",
-                            style: TextStyle(
-                              color: isSubmitted && _selectedEndTime == null
-                                  ? Theme.of(context).colorScheme.error
-                                  : null,
-                              fontWeight:
-                                  isSubmitted && _selectedEndTime == null
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.access_time),
-                          onPressed: () => _pickTime(isStart: false),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    _buildTextField(_buildingController, "Budynek"),
-                    const SizedBox(height: 16),
-                    _buildTextField(_roomController, "Sala"),
-                    const SizedBox(height: 16),
-                    GestureDetector(
-                      onTap: _showMultiSelectDialog,
-                      child: AbsorbPointer(
-                        child: TextFormField(
-                          readOnly: true,
-                          controller: TextEditingController(
-                            text:
-                                _selectedReports.map((r) => r.title).join(', '),
-                          ),
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            labelText: 'Referaty',
-                            suffixIcon: const Icon(Icons.arrow_drop_down),
-                            labelStyle: TextStyle(
-                              color: isSubmitted && _selectedReports.isEmpty
-                                  ? Theme.of(context).colorScheme.error
-                                  : AppColors.primary,
-                            ),
-                          ),
-                          validator: (_) => _selectedReports.isEmpty
-                              ? 'Wybierz referaty'
-                              : null,
-                        ),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 30),
-                    ElevatedButton.icon(
-                      icon: Icon(
-                        isEditing ? Icons.check : Icons.add,
-                        color: AppColors.primary,
-                      ),
-                      label: Text(isEditing ? "Zapisz zmiany" : "Dodaj"),
-                      onPressed: _submitForm,
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 14, horizontal: 32),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),
@@ -419,8 +461,9 @@ class _EventFormState extends State<EventForm> {
       decoration: InputDecoration(
         labelText: label,
         labelStyle: TextStyle(
-          color: isSubmitted &&
-              _titleController.text.trim().isEmpty
+          color: isSubmitted && _titleController.text
+              .trim()
+              .isEmpty
               ? null
               : AppColors.primary,
         ),
@@ -432,7 +475,9 @@ class _EventFormState extends State<EventForm> {
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
       ),
       validator: (value) =>
-      value == null || value.trim().isEmpty ? 'Uzupełnij pole' : null,
+      value == null || value
+          .trim()
+          .isEmpty ? 'Uzupełnij pole' : null,
     );
   }
 }

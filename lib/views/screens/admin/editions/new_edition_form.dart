@@ -156,12 +156,14 @@ class _NewEditionFormState extends State<NewEditionForm> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
-                          validator: (_) =>
-                          _selectedLogoPath == null ? 'Wybierz plik logo' : null,
+                          validator: (_) => _selectedLogoPath == null
+                              ? 'Wybierz plik logo'
+                              : null,
                         ),
                       ),
                     ),
-                    if (_selectedLogoPath != null && File(_selectedLogoPath!).existsSync())
+                    if (_selectedLogoPath != null &&
+                        File(_selectedLogoPath!).existsSync())
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 12.0),
                         child: Image.file(
