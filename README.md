@@ -32,12 +32,12 @@ Backend aplikacji dostępny [tutaj](https://github.com/akulesz/KRiT_2025_api)
 git clone https://github.com/haniagibus/KRiT_2025_app.git
 ```
 3. Zainstaluj zależności
-```flutter
+```
 flutter pub get
 ```
 3. Uruchom emulator lub podłącz telefon
 4. Uruchom aplikację
-```flutter
+```
 flutter run
 ```
 
