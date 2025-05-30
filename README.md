@@ -29,14 +29,14 @@ Backend aplikacji dostępny [tutaj](https://github.com/akulesz/KRiT_2025_api)
 ```
 git clone https://github.com/haniagibus/KRiT_2025_app.git
 ```
-3. Zainstaluj zależności ```flutter pub get```
-4. Uruchom emulator lub podłącz telefon
-5. Uruchom aplikację ```flutter run```
+2. Zainstaluj zależności ```flutter pub get```
+3. Uruchom emulator lub podłącz telefon
+4. Uruchom aplikację ```flutter run```
 
 Po uruchomieniu aplikacja wyświetli się na wybranym emulatorze/urządzeniu
 
 ### _2. Uruchom za pomocą serwera lokalnego_
-_0. Pobierz ngrok ```choco install ngrok```_
+0. _Pobierz ngrok ```choco install ngrok```_
 1. Stwórz konto [ngrok](https://ngrok.com/) i dodaj swój token ```ngrok config add-authtoken $YOUR_AUTHTOKEN```
 2. Sklonuj repozytorium
 ```
