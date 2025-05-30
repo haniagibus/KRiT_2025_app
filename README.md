@@ -20,7 +20,7 @@ Backend aplikacji dostępny [tutaj](https://github.com/akulesz/KRiT_2025_api)
 - Flutter SDK - ver. 3.27.1
 - Dart SDK - ver. 3.6.1
 
-[Do uruchomienia w emulatorze](#1.-uruchom-za-pomocą-emulatora)
+[`Do uruchomienia w emulatorze`](#1.-uruchom-za-pomocą-emulatora)
 - Android Studio
 
 [Do uruchomienia przez serwer lokalny](###2.-uruchom-za-pomocą-serwera-lokalnego)
