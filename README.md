@@ -1,11 +1,11 @@
 # MAK KRiT - Mobilna Aplikacja Konferencyjna 
-**Autorzy:** [Agnieszka Kulesz](https://github.com/agatherat), [Weronika Koterba](https://github.com/weronikakoterba), [Hania Gibus](https://github.com/haniagibus)
+**Autorzy:** [`Agnieszka Kulesz`](https://github.com/agatherat), [`Weronika Koterba`](https://github.com/weronikakoterba), [`Hania Gibus`](https://github.com/haniagibus)
 
-**Projekt stworzony na potrzeby:** Konferencji Radiokomunikacji i Teleinformatyki 2025 ([KRiT 2025](https://krit.com.pl/#/))
+**Projekt stworzony na potrzeby:** Konferencji Radiokomunikacji i Teleinformatyki 2025 [`KRiT 2025`](https://krit.com.pl/#/)
 
 ## Technologie
-- [Flutter](https://flutter.dev/) 
-- [Dart](https://dart.dev/)
+- [`Flutter`](https://flutter.dev/) 
+- [`Dart`](https://dart.dev/)
 
 ## Opis projektu
 **MAK KRiT** to aplikacja mobilna zaprojektowana z myślą o uczestnikach KRiT 2025. Ułatwia nawigację podczas wydarzenia oraz zapewnia dostęp do najważniejszych informacji, takich jak:
@@ -14,7 +14,7 @@
 - Szczegóły sesji i wydarzeń
 - Panel administracyjny (dla organizatorów)
 
-Backend aplikacji dostępny [tutaj](https://github.com/akulesz/KRiT_2025_api)
+Backend aplikacji dostępny [`tutaj`](https://github.com/akulesz/KRiT_2025_api)
 
 ## Wymagania wstępne
 - Flutter SDK - ver. 3.27.1
@@ -23,7 +23,7 @@ Backend aplikacji dostępny [tutaj](https://github.com/akulesz/KRiT_2025_api)
 [`Do uruchomienia w emulatorze`](#1.-uruchom-za-pomocą-emulatora)
 - Android Studio
 
-[Do uruchomienia przez serwer lokalny](###2.-uruchom-za-pomocą-serwera-lokalnego)
+[`Do uruchomienia przez serwer lokalny`](###2.-uruchom-za-pomocą-serwera-lokalnego)
 - Python _(serwer HTTP)_
 - Ngrok _(tunelowanie HTTPS)_
 
