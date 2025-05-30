@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:krit_app/models/report/reports_data_storage.dart';
 import 'package:krit_app/services/api_service.dart';
 import 'package:provider/provider.dart';
+import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../models/report/report.dart';
@@ -14,6 +15,7 @@ import '../../../widgets/reports/report_tile.dart';
 import 'pdf_reader.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:typed_data';
+
 
 class ReportsPicker extends StatefulWidget {
   const ReportsPicker({super.key});
@@ -25,28 +27,42 @@ class ReportsPicker extends StatefulWidget {
 class _ReportsPickerState extends State<ReportsPicker> {
   bool isLoadingPdf = false;
   List<Report> _generatedReports = [];
+  List<String> fileNames = [];
+
+  Future<List<int>?> extractFirstPage(Uint8List originalBytes) async {
+    try {
+      final PdfDocument originalDocument = PdfDocument(inputBytes: originalBytes);
+      final PdfDocument newDoc = PdfDocument();
+      newDoc.pages.removeAt(0);
+
+      newDoc.pages.add().graphics.drawPdfTemplate(
+        originalDocument.pages[0].createTemplate(),
+        const Offset(0, 0),
+      );
+
+      final List<int> newBytes = newDoc.saveSync();
+      originalDocument.dispose();
+      newDoc.dispose();
+
+      return newBytes;
+    } catch (e) {
+      print("Błąd przy wycinaniu pierwszej strony: $e");
+      return null;
+    }
+  }
 
   Future<void> _pickMultiplePdfFiles() async {
-    // if (await Permission.storage.request().isDenied) {
-    //   print("Brak uprawnień do odczytu plików.");
-    //   return;
-    // }
+
+    final apiService = ApiService();
 
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['pdf'],
       allowMultiple: true,
-      withData: true, // ← TO JEST KLUCZOWE!
+      withData: true,
     );
 
-    print("Wybieram pliki: $result");
-
     if (result == null || result.files.isEmpty) return;
-
-    print('Wybrane pliki: ${result.files.length}');
-    for (var file in result.files) {
-      print('Plik: ${file.name}, path: ${file.path}');
-    }
 
     final pdfFiles = result.files
         .where((file) =>
@@ -55,39 +71,24 @@ class _ReportsPickerState extends State<ReportsPicker> {
 
     setState(() {
       isLoadingPdf = true;
-      //_generatedReports.clear();
     });
-
-    // final pdfReader = PdfReader();
-    final apiService = ApiService();
-
-    // for (var file in pdfFiles) {
-    //   if (file.path == null) continue;
-    //   final pdfBytes = file.bytes;
-    //   if (pdfBytes == null) continue;
-
-    final existingTitles = _generatedReports.map((r) => r.title).toSet();
 
     for (var file in pdfFiles) {
       if (file.path == null || file.bytes == null) continue;
-
-      final extractedData = await apiService.sendPdfToBackend(file.bytes!);
-      final title = extractedData?['title'] ?? 'Nieznany tytuł';
-      final pdfUrl = extractedData?['pdfUrl'] ?? '';
-      print("Dane z backendu: $extractedData");
-
-      if (existingTitles.contains(title)) {
+      if (fileNames.contains(file.name)) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               content: Text("Ten plik PDF już został dodany"),
               backgroundColor: Colors.red),
         );
-        continue; // skip duplicates
+        continue;
       }
 
+      final firstPageBytes = await extractFirstPage(file.bytes!);
+      if (firstPageBytes == null) continue;
+
+      final extractedData = await apiService.sendPdfToBackend(file.bytes);
       try {
-        // final extractedData = await pdfReader.extractDataFromPdf(pdfFile);
-        //final extractedData = await apiService.sendPdfToBackend(pdfBytes);
         final newReport = Report(
             id: const Uuid().v4(),
             title: extractedData?['title'] ?? 'Nieznany tytuł',
@@ -102,16 +103,16 @@ class _ReportsPickerState extends State<ReportsPicker> {
                 .map((e) => e.trim())
                 .where((e) => e.isNotEmpty)
                 .toList(),
-            pdfUrl: pdfUrl,
+            pdfUrl: extractedData?['pdfUrl'] ?? '',
             eventId: '',
             pdfBytes: file.bytes);
 
         _generatedReports.add(newReport);
+        fileNames.add(file.name);
       } catch (e) {
         print("Błąd odczytu PDF: $e");
       }
     }
-
     setState(() {
       isLoadingPdf = false;
     });
@@ -126,6 +127,7 @@ class _ReportsPickerState extends State<ReportsPicker> {
 
     String tmp = "referatów";
     if (_generatedReports.length == 1) tmp = "referat";
+    else if (_generatedReports.length > 1 && _generatedReports.length < 5) tmp = "referaty";
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
