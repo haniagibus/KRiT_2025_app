@@ -28,9 +28,7 @@ Backend aplikacji dostępny [tutaj](https://github.com/akulesz/KRiT_2025_api)
 ## Instrukcja uruchomienia
 ### _1. Uruchom za pomocą emulatora_
 1. Sklonuj repozytorium
-<pre>```
-git clone https://github.com/haniagibus/KRiT_2025_app.git
-```</pre>
+<pre> ```git clone https://github.com/haniagibus/KRiT_2025_app.git``` </pre>
 2. Zainstaluj zależności
 ```
 flutter pub get
