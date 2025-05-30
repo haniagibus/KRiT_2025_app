@@ -21,20 +21,17 @@ Backend aplikacji dostępny [tutaj](https://github.com/akulesz/KRiT_2025_api)
 ## Wymagania wstępne
 - Flutter SDK
 - Dart SDK
-- Android Studio _([uruchomienie za pomocą emulatora](#1.-uruchom-za-pomocą-emulatora))_
-- Ngrok _([uruchomienie za pomocą serwera lokalnego](###2.-uruchom-za-pomocą-serwera-lokalnego))_
+- Android Studio ([uruchomienie za pomocą emulatora](#1.-uruchom-za-pomocą-emulatora))
+- Ngrok ([uruchomienie za pomocą serwera lokalnego](###2.-uruchom-za-pomocą-serwera-lokalnego))
 
 ## Instrukcja uruchomienia
 ### _1. Uruchom za pomocą emulatora_
-#### 1. Klonowanie repozytorium
+1. Klonowanie repozytorium
 ```git clone https://github.com/haniagibus/KRiT_2025_app.git```
-
-#### 3. Zainstaluj zależności
+3. Zainstaluj zależności
 ```flutter pub get```
-
-#### 4. Uruchom emulator lub podłącz telefon.
-
-#### 5. Uruchom aplikację
+4. Uruchom emulator lub podłącz telefon.
+5. Uruchom aplikację
 Po uruchomieniu aplikacja wyświetli się na wybranym emulatorze/urządzeniu.
 
 ### _2. Uruchom za pomocą serwera lokalnego_
