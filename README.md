@@ -22,8 +22,9 @@ Backend aplikacji dostępny [tutaj](https://github.com/akulesz/KRiT_2025_api)
 - [Uruchomienie za pomocą emulatora](#1.-uruchom-za-pomocą-emulatora)
   - Android Studio
 - [Uruchomienie za pomocą serwera lokalnego](###2.-uruchom-za-pomocą-serwera-lokalnego)
--- Python 
--- Ngrok ([uruchomienie za pomocą serwera lokalnego](###2.-uruchom-za-pomocą-serwera-lokalnego))
+  - Android Studio
+  - Python _(serwer http)_
+  - Ngrok _(tunelowanie https)_
 
 ## Instrukcja uruchomienia
 ### _1. Uruchom za pomocą emulatora_
