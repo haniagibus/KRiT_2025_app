@@ -3,8 +3,6 @@
 
 **Projekt stworzony na potrzeby:** Konferencji Radiokomunikacji i Teleinformatyki 2025 ([KRiT 2025](https://krit.com.pl/#/))
 
----
-
 ## Technologie
 - [Flutter](https://flutter.dev/) - ver. 3.27.1
 - [Dart](https://dart.dev/) - ver. 3.6.1
