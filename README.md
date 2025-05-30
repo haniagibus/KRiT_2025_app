@@ -43,14 +43,8 @@ Po uruchomieniu aplikacja wyświetli się na wybranym emulatorze/urządzeniu
 git clone https://github.com/haniagibus/KRiT_2025_app.git
 ```
 3. Zainstaluj zależności ```flutter pub get```
-4. Zbuduj aplikację webową 
-```
-flutter build web
-```
-5. Przejdź do katalogu wygenerowanej aplikacji webowej
-```
-cd build/web
-```
+4. Zbuduj aplikację webową ```flutter build web```
+5. Przejdź do katalogu wygenerowanej aplikacji webowej ```cd build/web```
 6. Uruchom serwer http
 ```
 python -m http.server 8081
