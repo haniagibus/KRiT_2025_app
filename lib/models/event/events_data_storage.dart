@@ -1,14 +1,13 @@
 import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:krit_app/config.dart';
-import '../../services/ApiService.dart';
+import '../../services/api_service.dart';
 import '../report/report.dart';
 import '../report/reports_data_storage.dart';
 import 'event.dart';
 import 'mocked_events.dart';
 
 class EventsDataStorage extends ChangeNotifier {
-  // Singleton implementation
   static final EventsDataStorage _instance = EventsDataStorage._internal();
 
   factory EventsDataStorage(ReportsDataStorage reportsStorage, {VoidCallback? callback}) {
@@ -21,14 +20,12 @@ class EventsDataStorage extends ChangeNotifier {
 
   EventsDataStorage._internal();
 
-  // State variables
   List<Event> _eventList = [];
   bool _isInitialized = false;
   bool _mockGenerated = false;
   late ReportsDataStorage _reportsStorage;
   VoidCallback? _callback;
 
-  // Getters
   List<Event> get eventList => UnmodifiableListView(_eventList);
 
   List<Event> get favoriteEvents =>
@@ -36,17 +33,14 @@ class EventsDataStorage extends ChangeNotifier {
 
   bool get isInitialized => _isInitialized;
 
-  /// Update the reports storage reference
   void updateReportsStorage(ReportsDataStorage newStorage) {
     _reportsStorage = newStorage;
 
-    // Initialize mocks if required, but only if not already done
     if (Config.useMockData && !_mockGenerated) {
       _generateMockData();
     }
   }
 
-  /// Private method to generate mock data
   void _generateMockData() {
     if (Config.useMockData && !_mockGenerated) {
       print("🔄 Generating mock events data");
@@ -58,7 +52,6 @@ class EventsDataStorage extends ChangeNotifier {
     }
   }
 
-  /// Initialize events (real or mock)
   Future<void> initializeEvents() async {
     // Skip if already initialized or if using mock data that's already generated
     if (_isInitialized || (Config.useMockData && _mockGenerated)) {
@@ -79,7 +72,7 @@ class EventsDataStorage extends ChangeNotifier {
         print("✅ Pobranie zakończone, liczba eventów: ${_eventList.length}");
 
         for (var event in _eventList) {
-          print("📅 Event w storage: ${event.title} - ${event.dateTimeStart}");
+          print("Event w storage: ${event.title} - ${event.dateTimeStart}");
         }
 
         _callback?.call();
@@ -173,30 +166,22 @@ class EventsDataStorage extends ChangeNotifier {
         // Check if event already exists to avoid duplicates
         if (!_eventList.any((e) => e.id == addedEvent.id)) {
           _eventList.add(addedEvent);
-          print("✅ Event dodany do storage: ${addedEvent.title}");
+          print("✅ Event added to storage: ${addedEvent.title}");
         }
       } else {
         // For mock data, just add locally
         _eventList.add(event);
-        print("✅ Mock event dodany do storage: ${event.title}");
+        print("✅ Mock event added to storage: ${event.title}");
       }
 
       notifyListeners();
     } catch (e, stackTrace) {
-      print("❌ Błąd podczas dodawania eventu: $e");
-      print("📌 Stack Trace: $stackTrace"); // Wyświetlenie śladu stosu
+      print("❌ Error adding eventu: $e");
+      print("Stack Trace: $stackTrace");
       throw e;
     }
   }
-  //
-  // void updateEvent(Event oldEvent, Event updatedEvent) {
-  //   final index = _eventList.indexWhere((e) => e.id == oldEvent.id);
-  //   if (index != -1) {
-  //     _eventList[index] = updatedEvent;
-  //
-  //     notifyListeners();
-  //   }
-  // }
+
   Future<void> updateEvent(Event oldEvent, Event updatedEvent) async {
     try {
       final index = _eventList.indexWhere((e) => e.id == oldEvent.id);
@@ -239,15 +224,12 @@ class EventsDataStorage extends ChangeNotifier {
       }
     } catch (e, stackTrace) {
       print("❌ Error updating event: $e");
-      print("📌 Stack Trace: $stackTrace");
+      print("Stack Trace: $stackTrace");
       throw e;
     }
   }
 
   Future<void> removeEvent(Event event) async {
-   // _eventList.removeWhere((e) => e.id == event.id);
-    //notifyListeners();
-    //final apiService = ApiService();
     final apiService = ApiService();
     await apiService.deleteEvent(event);
   }

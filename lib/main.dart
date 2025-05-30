@@ -173,7 +173,7 @@ import 'package:provider/provider.dart';
 import 'package:krit_app/services/auth_service.dart';
 import 'package:syncfusion_flutter_core/core.dart';
 
-import 'services/ApiService.dart';
+import 'services/api_service.dart';
 import 'models/event/events_data_storage.dart';
 
 void main() {
@@ -345,7 +345,7 @@ class _MyHomePageState extends State<MyHomePage> {
       //   onTap: _onItemTapped,
       // ),
       bottomNavigationBar: Container(
-        height: 80,
+        // height: 80,
         child: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
