@@ -20,34 +20,42 @@ Backend aplikacji dostępny [tutaj](https://github.com/akulesz/KRiT_2025_api)
 - Flutter SDK - ver. 3.27.1
 - Dart SDK - ver. 3.6.1
 - Android Studio ([uruchomienie za pomocą emulatora](#1.-uruchom-za-pomocą-emulatora))
+- Python ([uruchomienie za pomocą serwera lokalnego](###2.-uruchom-za-pomocą-serwera-lokalnego))
 - Ngrok ([uruchomienie za pomocą serwera lokalnego](###2.-uruchom-za-pomocą-serwera-lokalnego))
 
 ## Instrukcja uruchomienia
 ### _1. Uruchom za pomocą emulatora_
 1. Sklonuj repozytorium
-```git clone https://github.com/haniagibus/KRiT_2025_app.git```
-3. Zainstaluj zależności
-```flutter pub get```
+```
+git clone https://github.com/haniagibus/KRiT_2025_app.git
+```
+3. Zainstaluj zależności ```flutter pub get```
 4. Uruchom emulator lub podłącz telefon
-5. Uruchom aplikację
+5. Uruchom aplikację ```flutter run```
 
 Po uruchomieniu aplikacja wyświetli się na wybranym emulatorze/urządzeniu
 
 ### _2. Uruchom za pomocą serwera lokalnego_
 _0. Pobierz ngrok ```choco install ngrok```_
-1. Stwórz konto [ngrok](https://ngrok.com/) i dodaj swój token
-```
-ngrok config add-authtoken $YOUR_AUTHTOKEN
-```
-3. Sklonuj repozytorium
+1. Stwórz konto [ngrok](https://ngrok.com/) i dodaj swój token ```ngrok config add-authtoken $YOUR_AUTHTOKEN```
+2. Sklonuj repozytorium
 ```
 git clone https://github.com/haniagibus/KRiT_2025_app.git
 ```
-5. Zainstaluj zależności
-```
-flutter pub get
-```
-7. Zbuduj projekt
+3. Zainstaluj zależności ```flutter pub get```
+4. Zbuduj aplikację webową 
 ```
 flutter build web
+```
+5. Przejdź do katalogu wygenerowanej aplikacji webowej
+```
+cd build/web
+```
+6. Uruchom serwer http
+```
+python -m http.server 8081
+```
+7. W oddzielnej konsoli uruchom tunelowanie https za pomocą ngrok
+```
+ngrok http 8081
 ```
