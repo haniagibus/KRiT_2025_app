@@ -52,7 +52,7 @@ git clone https://github.com/haniagibus/KRiT_2025_app.git
 ```
 python -m http.server 8081
 ```
-7. W oddzielnej konsoli uruchom tunelowanie https za pomocą ngrok
+7. W oddzielnej konsoli uruchom tunelowanie https
 ```
 ngrok http 8081
 ```
