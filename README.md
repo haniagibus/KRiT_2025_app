@@ -28,7 +28,7 @@ Backend aplikacji dostępny [tutaj](https://github.com/akulesz/KRiT_2025_api)
 ## Instrukcja uruchomienia
 ### _1. Uruchom za pomocą emulatora_
 1. Sklonuj repozytorium
-```terminal
+```console
 git clone https://github.com/haniagibus/KRiT_2025_app.git
 ```
 3. Zainstaluj zależności
@@ -37,7 +37,7 @@ flutter pub get
 ```
 3. Uruchom emulator lub podłącz telefon
 4. Uruchom aplikację
-```
+```console
 flutter run
 ```
 
@@ -45,43 +45,43 @@ Po uruchomieniu aplikacja wyświetli się na wybranym emulatorze/urządzeniu.
 
 ### _2. Uruchom za pomocą serwera lokalnego_
 0. _Zainstaluj ngrok_
-```
+```console
 choco install ngrok
 ```
 1. Stwórz konto [ngrok](https://ngrok.com/) i dodaj swój token
-```
+```console
 ngrok config add-authtoken $YOUR_AUTHTOKEN
 ```
 2. Sklonuj repozytorium
-```
+```console
 git clone https://github.com/haniagibus/KRiT_2025_app.git
 ```
 3. Zainstaluj zależności
-```
+```console
 flutter pub get
 ```
 4. Zbuduj aplikację webową
-```
+```console
 flutter build web
 ```
 5. Przejdź do katalogu wygenerowanej aplikacji webowej
-```
+```console
 cd build/web
 ```
 6. Uruchom serwer http
-```
+```console
 python -m http.server 8081
 ```
 7. W oddzielnej konsoli uruchom tunelowanie https
-```
+```console
 ngrok http 8081
 ```
 8. Sprawdź adres IP koputera w sieci lokalnej
-```
+```console
 ipconfig
 ```
 9. Otwórz aplikację na dowolnym urządzeniu w sieci lokalnej, wpisując w przeglądarce
-```
+```console
 http://$YOUR_IP_ADDR:8081
 ```
 
