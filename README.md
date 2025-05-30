@@ -76,10 +76,7 @@ python -m http.server 8081
 ```console
 ngrok http 8081
 ```
-8. Sprawdź adres IP koputera w sieci lokalnej
-```console
-ipconfig
-```
+8. Sprawdź adres IP koputera w sieci lokalnej ```ipconfig```
 9. Otwórz aplikację na dowolnym urządzeniu w sieci lokalnej, wpisując w przeglądarce
 ```console
 http://$YOUR_IP_ADDR:8081
