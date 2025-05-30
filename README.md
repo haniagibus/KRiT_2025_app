@@ -30,8 +30,9 @@ Backend aplikacji dostępny [tutaj](https://github.com/akulesz/KRiT_2025_api)
 ```git clone https://github.com/haniagibus/KRiT_2025_app.git```
 3. Zainstaluj zależności
 ```flutter pub get```
-4. Uruchom emulator lub podłącz telefon.
+4. Uruchom emulator lub podłącz telefon
 5. Uruchom aplikację
-Po uruchomieniu aplikacja wyświetli się na wybranym emulatorze/urządzeniu.
+
+Po uruchomieniu aplikacja wyświetli się na wybranym emulatorze/urządzeniu
 
 ### _2. Uruchom za pomocą serwera lokalnego_
