@@ -19,8 +19,10 @@ Backend aplikacji dostępny [tutaj](https://github.com/akulesz/KRiT_2025_api)
 ## Wymagania wstępne
 - Flutter SDK - ver. 3.27.1
 - Dart SDK - ver. 3.6.1
+
 [Do uruchomienia w emulatorze](#1.-uruchom-za-pomocą-emulatora)
 - Android Studio
+
 [Do uruchomienia przez serwer lokalny](###2.-uruchom-za-pomocą-serwera-lokalnego)
 - Python _(serwer HTTP)_
 - Ngrok _(tunelowanie HTTPS)_
