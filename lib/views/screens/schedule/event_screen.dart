@@ -6,15 +6,14 @@ import '../../../models/report/report.dart';
 import '../../widgets/element_icon.dart';
 import '../../widgets/reports/report_tile.dart';
 import '../../widgets/star_widget.dart';
+import '../../../services/favourite_event_service.dart';
 
 class EventScreen extends StatefulWidget {
   final Event event;
-  final Future<void> Function(Event event) onFavouriteControl;
 
   const EventScreen({
     super.key,
     required this.event,
-    required this.onFavouriteControl,
   });
 
   @override
@@ -27,20 +26,19 @@ class _EventScreenState extends State<EventScreen> {
   @override
   void initState() {
     super.initState();
-    isFavourite = widget.event.isFavourite;
+    isFavourite = FavoritesService.isFavorite(widget.event.id!);
+    widget.event.isFavourite = isFavourite;
   }
 
   Future<void> toggleFavourite() async {
-    setState(() {
-      isFavourite = !isFavourite;
-      widget.event.isFavourite = isFavourite;
-    });
+    FavoritesService.toggleFavorite(widget.event.id!);
 
-    try {
-      await widget.onFavouriteControl(widget.event);
-    } catch (e) {
-      print("[!] ERROR favourite control: $e");
-    }
+    final updated = FavoritesService.isFavorite(widget.event.id!);
+
+    setState(() {
+      isFavourite = updated;
+      widget.event.isFavourite = updated;
+    });
   }
 
   @override

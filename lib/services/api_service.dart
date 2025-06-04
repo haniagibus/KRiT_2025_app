@@ -6,6 +6,7 @@ import 'package:krit_app/models/report/report.dart';
 import 'package:krit_app/models/event/event.dart';
 import 'package:http_parser/http_parser.dart';
 import 'dart:typed_data';
+import 'favourite_event_service.dart';
 
 
 class ApiService {
@@ -20,8 +21,8 @@ class ApiService {
   final String baseUrl4 = "http://172.20.10.4:8080";
   final String baseUrl1 = "http://172.20.10.6:8080";
   final String baseUrl2 = "http://192.168.0.43:8080";
-  final String baseUrl = "http://10.0.2.2:8080";
-  final String baseUrl3 = "http://localhost:8080";
+  final String baseUrl3 = "http://10.0.2.2:8080";
+  final String baseUrl = "http://172.20.10.8:8080";
 
 
   bool _dataInitialized = false;
@@ -49,6 +50,10 @@ class ApiService {
 
       List jsonResponse = json.decode(utf8.decode(response.bodyBytes));
       List<Event> events = jsonResponse.map((event) => Event.fromJson(event)).toList();
+
+      for (var e in events) {
+        e.isFavourite = FavoritesService.isFavorite(e.id!);
+      }
 
       print("📊 Pobrano ${events.length} wydarzeń");
       return events;

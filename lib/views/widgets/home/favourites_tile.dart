@@ -6,12 +6,12 @@ import '../../../models/event/event.dart';
 
 class FavoritesTile extends StatelessWidget {
   final List<Event> favoriteEvents;
-  final Future<void> Function(Event) onFavouriteControl;
+  //final Future<void> Function(Event) onFavouriteControl;
 
   const FavoritesTile({
     super.key,
     required this.favoriteEvents,
-    required this.onFavouriteControl,
+    //required this.onFavouriteControl,
   });
 
   @override
@@ -45,9 +45,9 @@ class FavoritesTile extends StatelessWidget {
               final event = favoriteEvents[index];
               return EventTile(
                 event,
-                onFavouriteControl: (updatedEvent) async {
-                  await onFavouriteControl(updatedEvent);
-                },
+                // onFavouriteControl: (updatedEvent) async {
+                //   await onFavouriteControl(updatedEvent);
+                // },
               );
             },
           ),
