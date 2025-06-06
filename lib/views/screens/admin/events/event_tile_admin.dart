@@ -58,6 +58,12 @@ class EventTileAdmin extends StatelessWidget {
                   onPressed: () {
                     storage.removeEvent(event);
                     Navigator.of(ctx).pop(true);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Wydarzenie usunięte pomyślnie!"),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
                   },
                 ),
               ],

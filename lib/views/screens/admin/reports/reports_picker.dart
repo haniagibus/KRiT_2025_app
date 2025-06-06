@@ -131,7 +131,7 @@ class _ReportsPickerState extends State<ReportsPicker> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-          content: Text("Dodano ${_generatedReports.length} $tmp}!"),
+          content: Text("Dodano ${_generatedReports.length} $tmp!"),
           backgroundColor: Colors.green),
     );
 
