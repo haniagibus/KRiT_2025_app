@@ -46,8 +46,10 @@ flutter run
 Po uruchomieniu aplikacja wyświetli się na wybranym emulatorze/urządzeniu.
 
 ### _2. Uruchom za pomocą serwera lokalnego_
-0.1. _Zainstaluj ngrok_ ```choco install ngrok```
-0.2. _Stwórz konto [`ngrok`](https://ngrok.com/) i dodaj swój token_ ```ngrok config add-authtoken $YOUR_AUTHTOKEN```
+_0.1. Zainstaluj ngrok_ ```choco install ngrok```
+
+_0.2. Stwórz konto [`ngrok`](https://ngrok.com/) i dodaj swój token_ ```ngrok config add-authtoken $YOUR_AUTHTOKEN```
+
 1. Sklonuj repozytorium
 ```console
 git clone https://github.com/haniagibus/KRiT_2025_app.git
