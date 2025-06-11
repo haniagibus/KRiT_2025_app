@@ -23,6 +23,7 @@ class _CalendarWidgetState extends State<CalendarWidget> with SingleTickerProvid
   late DateTime _selectedDate;
   TabController? _tabController;
 
+
   @override
   void initState() {
     super.initState();
@@ -132,14 +133,7 @@ class _CalendarWidgetState extends State<CalendarWidget> with SingleTickerProvid
               : ListView(
             children: _eventsForSelectedDate
                 .map(
-                  (event) => EventTile(
-                event,
-                onFavouriteControl: (updatedEvent) async {
-                  await eventsDataStorage.controlFavourite(updatedEvent);
-                  setState(() {
-                  });
-                },
-              ),
+                  (event) => EventTile(event),
             )
                 .toList(),
           ),

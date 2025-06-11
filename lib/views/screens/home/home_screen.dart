@@ -120,11 +120,11 @@ class _HomeScreenState extends State<HomeScreen> {
           Expanded(
             child: FavoritesTile(
               favoriteEvents: favoriteEvents,
-              onFavouriteControl: (event) async {
-                setState(() {
-                  eventsDataStorage.controlFavourite(event);
-                });
-              },
+              // onFavouriteControl: (event) async {
+              //   setState(() {
+              //     eventsDataStorage.controlFavourite(event);
+              //   });
+              // },
             ),
           ),
         ],

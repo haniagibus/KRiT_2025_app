@@ -53,7 +53,7 @@ class Event {
           .map((reportJson) => Report.fromJson(reportJson))
           .toList()
           : [],
-      isFavourite: json['favourite'] ?? false,
+      //isFavourite: json['favourite'] ?? false,
     );
   }
 
@@ -68,7 +68,7 @@ class Event {
     'building': building,
     'room': room,
     'reportsId':  reports.map((r) => r.id).toList(),
-    'favourite': isFavourite,
+    //'favourite': isFavourite,
   };
 
 }

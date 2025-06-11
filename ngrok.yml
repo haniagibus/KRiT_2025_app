@@ -1,0 +1,12 @@
+version: 2
+authtoken: 2xjKSmDQt21iTi8Y4BypR31B9Qx_5A9Ka4jfGKTicMm5k6PWe
+
+tunnels:
+  frontend:
+    addr: 8081
+    proto: http
+    domain: popular-skink-square.ngrok-free.app
+
+  backend:
+    addr: 8080
+    proto: http

@@ -3,14 +3,37 @@ import 'package:krit_app/models/event/event.dart';
 import 'package:krit_app/views/screens/schedule/event_screen.dart';
 import 'package:krit_app/theme/app_colors.dart';
 import 'package:krit_app/views/widgets/star_widget.dart';
+import 'package:krit_app/views/widgets/element_icon.dart';
+import 'package:krit_app/services/favourite_event_service.dart';
 
-import '../element_icon.dart';
-
-class EventTile extends StatelessWidget {
+class EventTile extends StatefulWidget {
   final Event event;
-  final Future<void> Function(Event event) onFavouriteControl;
 
-  const EventTile(this.event, {super.key, required this.onFavouriteControl});
+  const EventTile(this.event, {super.key});
+
+  @override
+  State<EventTile> createState() => _EventTileState();
+}
+
+class _EventTileState extends State<EventTile> {
+  late bool isFavourite;
+
+  @override
+  void initState() {
+    super.initState();
+    isFavourite = FavoritesService.isFavorite(widget.event.id!);
+    widget.event.isFavourite = isFavourite;
+  }
+
+  void toggleFavourite() {
+    FavoritesService.toggleFavorite(widget.event.id!);
+    final updated = FavoritesService.isFavorite(widget.event.id!);
+
+    setState(() {
+      isFavourite = updated;
+      widget.event.isFavourite = updated;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,14 +43,16 @@ class EventTile extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => EventScreen(
-              event: event,
-              onFavouriteControl: onFavouriteControl,
+              event: widget.event,
             ),
           ),
         );
-        if (updatedFavourite != null && updatedFavourite != event.isFavourite) {
-          event.isFavourite = updatedFavourite;
-          onFavouriteControl(event);
+
+        if (updatedFavourite != null && updatedFavourite != isFavourite) {
+          setState(() {
+            isFavourite = updatedFavourite;
+            widget.event.isFavourite = updatedFavourite;
+          });
         }
       },
       child: Container(
@@ -44,18 +69,18 @@ class EventTile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                event.formattedTime,
-                style: TextStyle(
+                widget.event.formattedTime,
+                style: const TextStyle(
                     color: AppColors.accent, fontWeight: FontWeight.bold),
               ),
               Text(
-                event.title,
-                style: TextStyle(fontWeight: FontWeight.bold),
+                widget.event.title,
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ],
           ),
           subtitle: Text(
-            event.subtitle,
+            widget.event.subtitle,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
@@ -63,11 +88,8 @@ class EventTile extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               StarWidget(
-                isFavourite: event.isFavourite,
-                onTap: () async {
-                  event.isFavourite = !event.isFavourite;
-                  await onFavouriteControl(event);
-                },
+                isFavourite: isFavourite,
+                onTap: toggleFavourite,
               ),
               Icon(
                 Icons.arrow_forward_ios,
