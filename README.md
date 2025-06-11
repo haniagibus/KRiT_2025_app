@@ -46,34 +46,36 @@ flutter run
 Po uruchomieniu aplikacja wyświetli się na wybranym emulatorze/urządzeniu.
 
 ### _2. Uruchom za pomocą serwera lokalnego_
-0. _Zainstaluj ngrok_ ```choco install ngrok```
-1. _Stwórz konto [`ngrok`](https://ngrok.com/) i dodaj swój token_ ```ngrok config add-authtoken $YOUR_AUTHTOKEN```
-2. Sklonuj repozytorium
+_0.1. Zainstaluj ngrok_ ```choco install ngrok```
+
+_0.2. Stwórz konto [`ngrok`](https://ngrok.com/) i dodaj swój token_ ```ngrok config add-authtoken $YOUR_AUTHTOKEN```
+
+1. Sklonuj repozytorium
 ```console
 git clone https://github.com/haniagibus/KRiT_2025_app.git
 ```
-3. Zainstaluj zależności
+2. Zainstaluj zależności
 ```console
 flutter pub get
 ```
-4. Zbuduj aplikację webową
+3. Zbuduj aplikację webową
 ```console
 flutter build web
 ```
-5. Przejdź do katalogu wygenerowanej aplikacji webowej
+4. Przejdź do katalogu wygenerowanej aplikacji webowej
 ```console
 cd build/web
 ```
-6. Uruchom serwer http
+5. Uruchom serwer http
 ```console
 python -m http.server 8081
 ```
-7. W oddzielnej konsoli uruchom tunelowanie https
+6. W oddzielnej konsoli uruchom tunelowanie https
 ```console
 ngrok http 8081
 ```
-8. Sprawdź adres IP koputera w sieci lokalnej ```ipconfig```
-9. Otwórz aplikację na dowolnym urządzeniu w sieci lokalnej, wpisując w przeglądarce
+7. Sprawdź adres IP koputera w sieci lokalnej ```ipconfig```
+8. Otwórz aplikację na dowolnym urządzeniu w sieci lokalnej, wpisując w przeglądarce
 ```console
 http://$YOUR_IP_ADDR:8081
 ```
