@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:krit_app/models/event/events_data_storage.dart';
 import '../../../theme/app_colors.dart';
 import '../../widgets/home/favourites_tile.dart';
+import '../../../services/favourite_event_service.dart';
 import 'dart:html' as html;
 
 class HomeScreen extends StatefulWidget {
@@ -19,8 +20,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final eventsDataStorage = Provider.of<EventsDataStorage>(context);
-    final favoriteEvents = eventsDataStorage.favoriteEvents;
+    final favoritesService = context.watch<FavoritesService>();
+    final eventsDataStorage = context.watch<EventsDataStorage>();
+    final favoriteEvents = eventsDataStorage.eventList.where((event) => favoritesService.isFavorite(event.id!)).toList();
     int currentYear = DateTime.now().year;
 
     return Scaffold(

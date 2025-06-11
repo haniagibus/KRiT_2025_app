@@ -4,6 +4,7 @@ import 'package:krit_app/models/event/event.dart';
 import 'package:krit_app/models/event/events_data_storage.dart';
 import 'package:krit_app/theme/app_colors.dart';
 import 'event_tile.dart';
+import '../../../services/favourite_event_service.dart';
 
 class CalendarWidget extends StatefulWidget {
   final String searchQuery;
@@ -30,7 +31,8 @@ class _CalendarWidgetState extends State<CalendarWidget> with SingleTickerProvid
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final dataStorage = context.read<EventsDataStorage>();
-      await dataStorage.refreshEvents();
+      final favoritesService = Provider.of<FavoritesService>(context, listen: false);
+      await dataStorage.refreshEvents(favoritesService);
 
       _initializeDates();
 

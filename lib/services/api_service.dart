@@ -22,7 +22,7 @@ class ApiService {
   final String baseUrl1 = "http://172.20.10.6:8080";
   final String baseUrl2 = "http://192.168.0.43:8080";
   final String baseUrl3 = "http://10.0.2.2:8080";
-  final String baseUrl = "http://172.20.10.8:8080";
+  final String baseUrl = "http://localhost:8080";
 
 
   bool _dataInitialized = false;
@@ -34,7 +34,7 @@ class ApiService {
     return prefs.getString('token');
   }
 
-  Future<List<Event>> fetchEvents() async {
+  Future<List<Event>> fetchEvents(FavoritesService favoritesService) async {
     final token = await _getToken();
     final response = await http.get(
       Uri.parse('$baseUrl/api/events'),
@@ -52,7 +52,7 @@ class ApiService {
       List<Event> events = jsonResponse.map((event) => Event.fromJson(event)).toList();
 
       for (var e in events) {
-        e.isFavourite = FavoritesService.isFavorite(e.id!);
+        e.isFavourite = favoritesService.isFavorite(e.id!);
       }
 
       print("📊 Pobrano ${events.length} wydarzeń");
@@ -62,6 +62,7 @@ class ApiService {
       throw Exception('Błąd podczas pobierania eventów');
     }
   }
+
 
   Future<List<Report>> fetchReports() async {
     final token = await _getToken();

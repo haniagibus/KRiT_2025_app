@@ -4,6 +4,8 @@ import 'package:krit_app/config.dart';
 import '../../services/api_service.dart';
 import '../report/report.dart';
 import '../report/reports_data_storage.dart';
+import '../../services/favourite_event_service.dart';
+import 'package:provider/provider.dart';
 import 'event.dart';
 import 'mocked_events.dart';
 
@@ -52,7 +54,7 @@ class EventsDataStorage extends ChangeNotifier {
     }
   }
 
-  Future<void> initializeEvents() async {
+  Future<void> initializeEvents(FavoritesService favoritesService) async {
     // Skip if already initialized or if using mock data that's already generated
     if (_isInitialized || (Config.useMockData && _mockGenerated)) {
       print("🟢 Events already initialized, skipping initialization");
@@ -66,7 +68,7 @@ class EventsDataStorage extends ChangeNotifier {
     } else {
       try {
         final apiService = ApiService();
-        _eventList = await apiService.fetchEvents();
+        _eventList = await apiService.fetchEvents(favoritesService);
         _isInitialized = true;
 
         print("✅ Pobranie zakończone, liczba eventów: ${_eventList.length}");
@@ -84,13 +86,13 @@ class EventsDataStorage extends ChangeNotifier {
   }
 
   /// Refresh events from the backend
-  Future<void> refreshEvents() async {
+  Future<void> refreshEvents(FavoritesService favoritesService) async {
     print("🔄 Odświeżanie eventów");
 
     if (!Config.useMockData) {
       try {
         final apiService = ApiService();
-        _eventList = await apiService.fetchEvents();
+        _eventList = await apiService.fetchEvents(favoritesService);
         // _isInitialized = true;
 
         print("✅ Odświeżanie zakończone, liczba eventów: ${_eventList.length}");
