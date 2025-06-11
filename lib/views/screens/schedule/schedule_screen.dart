@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:krit_app/models/event/event.dart';
-import 'package:krit_app/models/event/events_data_storage.dart';
 import 'package:krit_app/views/widgets/searchbar_widget.dart';
 import '../../widgets/schedule/calendar_widget.dart';
 
