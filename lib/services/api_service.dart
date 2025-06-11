@@ -25,7 +25,6 @@ class ApiService {
   final String baseUrl4 = "http://localhost:8080";
   final String baseUrl = "https://3a8a-2a02-a312-c6ab-eb00-28e0-10ee-81f9-42fe.ngrok-free.app";
 
-
   bool _dataInitialized = false;
   bool get dataInitialized => _dataInitialized;
   set dataInitialized(bool value) => _dataInitialized = value;
@@ -35,7 +34,7 @@ class ApiService {
     return prefs.getString('token');
   }
 
-  Future<List<Event>> fetchEvents() async {
+  Future<List<Event>> fetchEvents(FavoritesService favoritesService) async {
     final token = await _getToken();
     final response = await http.get(
       Uri.parse('$baseUrl/api/events'),
@@ -54,7 +53,7 @@ class ApiService {
       List<Event> events = jsonResponse.map((event) => Event.fromJson(event)).toList();
 
       for (var e in events) {
-        e.isFavourite = FavoritesService.isFavorite(e.id!);
+        e.isFavourite = favoritesService.isFavorite(e.id!);
       }
 
       print("📊 Pobrano ${events.length} wydarzeń");
@@ -64,6 +63,7 @@ class ApiService {
       throw Exception('Błąd podczas pobierania eventów');
     }
   }
+
 
   Future<List<Report>> fetchReports() async {
     final token = await _getToken();

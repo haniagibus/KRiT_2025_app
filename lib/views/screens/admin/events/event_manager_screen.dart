@@ -5,6 +5,7 @@ import 'package:krit_app/models/event/events_data_storage.dart';
 
 import '../../../../theme/app_colors.dart';
 import '../../../widgets/searchbar_widget.dart';
+import '../../../../services/favourite_event_service.dart';
 
 class EventManagerScreen extends StatefulWidget {
   const EventManagerScreen({super.key});
@@ -22,7 +23,8 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final dataStorage = context.read<EventsDataStorage>();
-      await dataStorage.refreshEvents();
+      final favoritesService = Provider.of<FavoritesService>(context, listen: false);
+      await dataStorage.refreshEvents(favoritesService);
     });
   }
 
