@@ -176,6 +176,9 @@ import 'package:syncfusion_flutter_core/core.dart';
 
 import 'services/api_service.dart';
 import 'models/event/events_data_storage.dart';
+import 'dart:html' as html;
+import 'package:flutter/foundation.dart' show kIsWeb;
+
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -249,6 +252,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
   final PageController controller = PageController(initialPage: 0);
+  bool _showInstallHint = false;
 
   void _onItemTapped(int index) {
     controller.animateToPage(
@@ -263,6 +267,46 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _checkTooltipVisibility();
+  }
+
+  void _checkTooltipVisibility() {
+    if (!kIsWeb) return;
+
+    final isStandalone = html.window.matchMedia('(display-mode: standalone)').matches;
+    final wasDismissed = html.window.localStorage['installHintDismissed'] == 'true';
+
+    if (!isStandalone && !wasDismissed) {
+      setState(() => _showInstallHint = true);
+    }
+  }
+
+  void _dismissTooltip() {
+    html.window.localStorage['installHintDismissed'] = 'true';
+    setState(() => _showInstallHint = false);
+  }
+
+  String _getInstallMessage() {
+    final userAgent = html.window.navigator.userAgent.toLowerCase();
+    if (userAgent.contains('iphone') || userAgent.contains('ipad')) {
+      return 'Kliknij opcję "Udostępnij" i wybierz „Dodaj do ekranu początkowego”';
+    } else {
+      return 'Kliknij opcję Menu (⋮) i wybierz „Dodaj do ekranu głównego”';
+    }
+  }
+
+  Widget _getPlatformIcon() {
+    final userAgent = html.window.navigator.userAgent.toLowerCase();
+    if (userAgent.contains('iphone') || userAgent.contains('ipad') || userAgent.contains('macintosh')) {
+      return const Icon(Icons.ios_share, size: 28, color: Colors.black87); // iOS-style share
+    } else {
+      return const Icon(Icons.more_vert, size: 28, color: Colors.black87); // Android-style menu
+    }
   }
 
   @override
@@ -318,13 +362,71 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       body: SafeArea(
-        child: PageView(
-          controller: controller,
-          onPageChanged: _onPageChanged,
+        child: Stack(
           children: [
-            HomeScreen(),
-            ScheduleScreen(),
-            ReportsScreen(),
+            PageView(
+              controller: controller,
+              onPageChanged: _onPageChanged,
+              children: const [
+                HomeScreen(),
+                ScheduleScreen(),
+                ReportsScreen(),
+              ],
+            ),
+            // Tooltip popup
+            if (_showInstallHint)
+              Positioned(
+                left: 16,
+                right: 16,
+                bottom: 20,
+                child: AnimatedOpacity(
+                  duration: const Duration(milliseconds: 300),
+                  opacity: 1.0,
+                  child: Material(
+                    elevation: 10,
+                    borderRadius: BorderRadius.circular(16),
+                    color: Colors.white,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          _getPlatformIcon(),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Zainstaluj KRiT $currentYear',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  _getInstallMessage(),
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.black54,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.close, color: Colors.black54),
+                            onPressed: _dismissTooltip,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
           ],
         ),
       ),

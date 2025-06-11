@@ -20,6 +20,8 @@ class InfoScreen extends StatelessWidget {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
+        title: Text("Informacje o aplikacji"),
+        centerTitle: true,
       ),
       body: Center(
         child: Align(
@@ -32,29 +34,29 @@ class InfoScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 10),
-                    const Align(
-                      alignment: Alignment.topCenter,
-                      child: Padding(
-                        padding: EdgeInsets.only(left: 8.0),
-                        child: Text(
-                          'Informacje o aplikacji',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.text_primary,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 8.0),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 8.0, right: 80.0),
-                      child: Divider(
-                        color: Colors.grey,
-                        thickness: 1,
-                      ),
-                    ),
+                    // const SizedBox(height: 10),
+                    // const Align(
+                    //   alignment: Alignment.topCenter,
+                    //   child: Padding(
+                    //     padding: EdgeInsets.only(left: 8.0),
+                    //     child: Text(
+                    //       'Informacje o aplikacji',
+                    //       style: TextStyle(
+                    //         fontSize: 24,
+                    //         fontWeight: FontWeight.bold,
+                    //         color: AppColors.text_primary,
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                    // const SizedBox(height: 8.0),
+                    // const Padding(
+                    //   padding: EdgeInsets.only(left: 8.0, right: 80.0),
+                    //   child: Divider(
+                    //     color: Colors.grey,
+                    //     thickness: 1,
+                    //   ),
+                    // ),
                     const SizedBox(height: 16),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
