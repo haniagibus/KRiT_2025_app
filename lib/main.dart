@@ -162,6 +162,7 @@ import 'package:krit_app/models/report/reports_data_storage.dart';
 import 'package:krit_app/theme/app_colors.dart';
 import 'package:krit_app/views/screens/admin/admin_screen.dart';
 import 'package:krit_app/views/screens/home/home_screen.dart';
+import 'package:krit_app/views/screens/info/info_screen.dart';
 import 'package:krit_app/views/screens/login/login_screen.dart';
 import 'package:krit_app/views/screens/schedule/schedule_screen.dart';
 import 'package:krit_app/views/screens/reports/reports_screen.dart';
@@ -282,6 +283,14 @@ class _MyHomePageState extends State<MyHomePage> {
         automaticallyImplyLeading: true,
         elevation: _selectedIndex == 0 ? 0 : 4,
         actions: [
+          IconButton(
+              icon: const Icon(Icons.question_mark),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => InfoScreen()),
+                );
+              }),
           Consumer<AuthProvider>(
             builder: (context, authProvider, _) {
               return IconButton(
@@ -345,7 +354,7 @@ class _MyHomePageState extends State<MyHomePage> {
       //   onTap: _onItemTapped,
       // ),
       bottomNavigationBar: Container(
-        // height: 80,
+        height: 80,
         child: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
