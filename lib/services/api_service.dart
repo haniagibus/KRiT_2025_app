@@ -18,11 +18,12 @@ class ApiService {
 
   ApiService._internal();
 
-  final String baseUrl4 = "http://172.20.10.4:8080";
-  final String baseUrl1 = "http://172.20.10.6:8080";
-  final String baseUrl2 = "http://192.168.0.43:8080";
+  final String baseUrl1 = "http://172.20.10.4:8080";
+  final String baseUrl2 = "http://172.20.10.6:8080";
+  final String baseUrl5 = "http://192.168.0.43:8080";
   final String baseUrl3 = "http://10.0.2.2:8080";
-  final String baseUrl = "http://172.20.10.8:8080";
+  final String baseUrl4 = "http://localhost:8080";
+  final String baseUrl = "https://3a8a-2a02-a312-c6ab-eb00-28e0-10ee-81f9-42fe.ngrok-free.app";
 
 
   bool _dataInitialized = false;
@@ -41,6 +42,7 @@ class ApiService {
       headers: {
         'Content-Type': 'application/json',
         if (token != null) 'Authorization': 'Bearer $token',
+        'ngrok-skip-browser-warning': 'true'
       },
     );
     print("🔍 Wysłano zapytanie GET do: $baseUrl/api/events");
@@ -70,6 +72,7 @@ class ApiService {
       headers: {
         'Content-Type': 'application/json',
         if (token != null) 'Authorization': 'Bearer $token',
+        'ngrok-skip-browser-warning': 'true'
       },
     );
     print("🔍 Wysłano zapytanie GET do: $baseUrl/api/reports");
@@ -95,6 +98,7 @@ class ApiService {
       headers: {
         'Content-Type': 'application/json',
         if (token != null) 'Authorization': 'Bearer $token',
+        'ngrok-skip-browser-warning': 'true'
       },
       body: json.encode(report.toJson()),
     );
@@ -119,7 +123,8 @@ class ApiService {
     final response = await http.post(
       uri,
       headers: {'Content-Type': 'application/json',
-        if (token != null) 'Authorization': 'Bearer $token'},
+        if (token != null) 'Authorization': 'Bearer $token',
+        'ngrok-skip-browser-warning': 'true',},
       body: json.encode(event.toJson()),
     );
 
@@ -151,7 +156,8 @@ class ApiService {
     final response = await http.put(
       Uri.parse('$baseUrl/api/events/${event.id}'),
       headers: {'Content-Type': 'application/json',
-        if (token != null) 'Authorization': 'Bearer $token',},
+        if (token != null) 'Authorization': 'Bearer $token',
+        'ngrok-skip-browser-warning': 'true'},
       body: json.encode(event.toJson()),
     );
     print("AAA Wysyłany event jako JSON:");
@@ -175,7 +181,8 @@ class ApiService {
     final response = await http.delete(
       Uri.parse('$baseUrl/api/events/${event.id}'),
       headers: {'Content-Type': 'application/json',
-        if (token != null) 'Authorization': 'Bearer $token'},
+        if (token != null) 'Authorization': 'Bearer $token',
+        'ngrok-skip-browser-warning': 'true'},
       //body: json.encode(event.toJson()),
     );
 
@@ -194,7 +201,8 @@ class ApiService {
     final response = await http.delete(
       Uri.parse('$baseUrl/api/reports/${report.id}'),
       headers: {'Content-Type': 'application/json',
-        if (token != null) 'Authorization': 'Bearer $token'},
+        if (token != null) 'Authorization': 'Bearer $token',
+        'ngrok-skip-browser-warning': 'true'},
       //body: json.encode(event.toJson()),
     );
 
@@ -213,7 +221,8 @@ class ApiService {
     final response = await http.put(
       Uri.parse('$baseUrl/api/reports/${report.id}'),
       headers: {'Content-Type': 'application/json',
-        if (token != null) 'Authorization': 'Bearer $token'},
+        if (token != null) 'Authorization': 'Bearer $token',
+        'ngrok-skip-browser-warning': 'true'},
       body: json.encode(report.toJson()),
     );
     print("AAA Wysyłany report jako JSON:");
@@ -279,7 +288,8 @@ class ApiService {
 
     final response = await http.post(
       url,
-      headers: {'Content-Type': 'application/json'},
+      headers: {'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': 'true'},
       body: json.encode({
         'username': username,
         'password': password,
