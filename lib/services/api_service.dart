@@ -22,8 +22,8 @@ class ApiService {
   final String baseUrl2 = "http://172.20.10.6:8080";
   final String baseUrl5 = "http://192.168.0.43:8080";
   final String baseUrl3 = "http://10.0.2.2:8080";
-  final String baseUrl4 = "http://localhost:8080";
-  final String baseUrl = "https://3a8a-2a02-a312-c6ab-eb00-28e0-10ee-81f9-42fe.ngrok-free.app";
+  final String baseUrl = "http://localhost:8080";
+  final String baseUrl4 = "https://3a8a-2a02-a312-c6ab-eb00-28e0-10ee-81f9-42fe.ngrok-free.app";
 
   bool _dataInitialized = false;
   bool get dataInitialized => _dataInitialized;
