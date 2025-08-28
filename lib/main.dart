@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:krit_app/models/report/reports_data_storage.dart';
-import 'package:krit_app/theme/app_colors.dart';
 import 'package:krit_app/views/screens/admin/admin_screen.dart';
 import 'package:krit_app/views/screens/home/home_screen.dart';
 import 'package:krit_app/views/screens/info/info_screen.dart';
@@ -9,12 +8,9 @@ import 'package:krit_app/views/screens/login/login_screen.dart';
 import 'package:krit_app/views/screens/schedule/schedule_screen.dart';
 import 'package:krit_app/views/screens/reports/reports_screen.dart';
 import 'package:krit_app/theme/app_theme.dart';
-import 'package:krit_app/views/widgets/side_menu.dart';
-import 'package:krit_app/generated/l10n.dart';
 
 import 'package:provider/provider.dart';
 import 'package:krit_app/services/auth_service.dart';
-import 'package:syncfusion_flutter_core/core.dart';
 
 import 'services/api_service.dart';
 import 'services/favourite_event_service.dart';
@@ -25,7 +21,6 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  SyncfusionLicense.registerLicense('TWÓJ_KLUCZ_TUTAJ');
 
   // Create our data storage instances first
   final reportsStorage = ReportsDataStorage();
@@ -71,7 +66,7 @@ class MyApp extends StatelessWidget {
       // Use a flag on a singleton to ensure we only initialize once
       final apiService = ApiService();
       if (!apiService.dataInitialized) {
-        print("🚀 First time initialization");
+        print("First time initialization");
         final favoritesService = Provider.of<FavoritesService>(context, listen: false);
         Provider.of<ReportsDataStorage>(context, listen: false)
             .initializeReports()
