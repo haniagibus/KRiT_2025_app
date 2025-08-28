@@ -5,7 +5,6 @@ import '../../services/api_service.dart';
 import '../report/report.dart';
 import '../report/reports_data_storage.dart';
 import '../../services/favourite_event_service.dart';
-import 'package:provider/provider.dart';
 import 'event.dart';
 import 'mocked_events.dart';
 
@@ -45,7 +44,7 @@ class EventsDataStorage extends ChangeNotifier {
 
   void _generateMockData() {
     if (Config.useMockData && !_mockGenerated) {
-      print("🔄 Generating mock events data");
+      print("Generating mock events data");
       _eventList = MockedEvents.getMockedEvents();
       _reportsStorage.generateMockReports(_eventList);
       _mockGenerated = true;
@@ -57,11 +56,11 @@ class EventsDataStorage extends ChangeNotifier {
   Future<void> initializeEvents(FavoritesService favoritesService) async {
     // Skip if already initialized or if using mock data that's already generated
     if (_isInitialized || (Config.useMockData && _mockGenerated)) {
-      print("🟢 Events already initialized, skipping initialization");
+      print("Events already initialized, skipping initialization");
       return;
     }
 
-    print("🟡 Start pobierania eventów");
+    print("Start pobierania eventów");
 
     if (Config.useMockData) {
       _generateMockData();
@@ -71,7 +70,7 @@ class EventsDataStorage extends ChangeNotifier {
         _eventList = await apiService.fetchEvents(favoritesService);
         _isInitialized = true;
 
-        print("✅ Pobranie zakończone, liczba eventów: ${_eventList.length}");
+        print("Pobranie zakończone, liczba eventów: ${_eventList.length}");
 
         for (var event in _eventList) {
           print("Event w storage: ${event.title} - ${event.dateTimeStart}");
@@ -80,14 +79,14 @@ class EventsDataStorage extends ChangeNotifier {
         _callback?.call();
         notifyListeners();
       } catch (e) {
-        print("❌ Błąd podczas inicjalizacji eventów: $e");
+        print("Błąd podczas inicjalizacji eventów: $e");
       }
     }
   }
 
   /// Refresh events from the backend
   Future<void> refreshEvents(FavoritesService favoritesService) async {
-    print("🔄 Odświeżanie eventów");
+    print("Odświeżanie eventów");
 
     if (!Config.useMockData) {
       try {
@@ -95,7 +94,7 @@ class EventsDataStorage extends ChangeNotifier {
         _eventList = await apiService.fetchEvents(favoritesService);
         // _isInitialized = true;
 
-        print("✅ Odświeżanie zakończone, liczba eventów: ${_eventList.length}");
+        print("Odświeżanie zakończone, liczba eventów: ${_eventList.length}");
 
         for (Event event in _eventList) {
           print("isFavorite ${event.isFavourite}");
@@ -104,7 +103,7 @@ class EventsDataStorage extends ChangeNotifier {
         _callback?.call();
         notifyListeners();
       } catch (e) {
-        print("❌ Błąd podczas odświeżania eventów: $e");
+        print("Błąd podczas odświeżania eventów: $e");
       }
     }
   }
@@ -168,17 +167,17 @@ class EventsDataStorage extends ChangeNotifier {
         // Check if event already exists to avoid duplicates
         if (!_eventList.any((e) => e.id == addedEvent.id)) {
           _eventList.add(addedEvent);
-          print("✅ Event added to storage: ${addedEvent.title}");
+          print("Event added to storage: ${addedEvent.title}");
         }
       } else {
         // For mock data, just add locally
         _eventList.add(event);
-        print("✅ Mock event added to storage: ${event.title}");
+        print("Mock event added to storage: ${event.title}");
       }
 
       notifyListeners();
     } catch (e, stackTrace) {
-      print("❌ Error adding eventu: $e");
+      print("Error adding eventu: $e");
       print("Stack Trace: $stackTrace");
       throw e;
     }
@@ -212,20 +211,20 @@ class EventsDataStorage extends ChangeNotifier {
 
           // Update the local copy with the response from the API
           _eventList[index] = updatedEventFromApi;
-          print("✅ Event updated successfully: ${updatedEventFromApi.title}");
+          print("Event updated successfully: ${updatedEventFromApi.title}");
         } else {
           // For mock data, just update locally
           _eventList[index] = updatedEvent;
-          print("✅ Mock event updated in storage: ${updatedEvent.title}");
+          print("Mock event updated in storage: ${updatedEvent.title}");
         }
 
         notifyListeners();
       } else {
-        print("❌ Event not found for update: ${oldEvent.title}");
+        print("Event not found for update: ${oldEvent.title}");
         throw Exception('Event not found with ID: ${oldEvent.id}');
       }
     } catch (e, stackTrace) {
-      print("❌ Error updating event: $e");
+      print("Error updating event: $e");
       print("Stack Trace: $stackTrace");
       throw e;
     }
@@ -247,15 +246,15 @@ class EventsDataStorage extends ChangeNotifier {
         // Check if report is already linked to the event
         if (!_eventList[eventIndex].reports.any((r) => r.id == report.id)) {
           _eventList[eventIndex].reports.add(report);
-          print("✅ Report linked to event: ${_eventList[eventIndex].title}");
+          print("Report linked to event: ${_eventList[eventIndex].title}");
           notifyListeners();
         }
       } else {
-        print("❌ Event not found for report: ${report.title}");
+        print("Event not found for report: ${report.title}");
         throw Exception('Event not found with ID: ${report.eventId}');
       }
     } catch (e) {
-      print("❌ Error adding report to event: $e");
+      print("Error adding report to event: $e");
       throw e;
     }
   }
@@ -267,7 +266,7 @@ class EventsDataStorage extends ChangeNotifier {
     _reportsStorage.removeReport(report);
       notifyListeners();
     } else {
-      print("❌ Event not found for report removal: ${report.title}");
+      print("Event not found for report removal: ${report.title}");
     }
 
   }

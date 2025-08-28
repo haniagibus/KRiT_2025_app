@@ -1,6 +1,5 @@
 import 'dart:collection';
 import 'dart:math';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:krit_app/config.dart';
 import 'package:krit_app/models/event/event.dart';
@@ -100,7 +99,7 @@ class ReportsDataStorage extends ChangeNotifier {
       if (!Config.useMockData) {
         _reportList = await apiService.fetchReports();
         _isInitialized = true;
-        print("✅ Pobranie zakończone, liczba raportów: ${_reportList.length}");
+        print("Pobranie zakończone, liczba raportów: ${_reportList.length}");
 
         for (var report in _reportList) {
           print("Raport w storage: ${report.title} - ${report.id}");
@@ -113,18 +112,18 @@ class ReportsDataStorage extends ChangeNotifier {
       }
       notifyListeners();
     } catch (e) {
-      print("❌ Błąd podczas inicjalizacji raportów: $e");
+      print("Błąd podczas inicjalizacji raportów: $e");
     }
   }
 
   Future<void> refreshReports() async {
-    print("🔄 Odświeżanie raportów");
+    print("Odświeżanie raportów");
 
     try {
       final apiService = ApiService();
       _reportList = await apiService.fetchReports();
       _isInitialized = true;
-      print("✅ Odświeżanie zakończone, liczba raportów: ${_reportList.length}");
+      print("Odświeżanie zakończone, liczba raportów: ${_reportList.length}");
 
       // Only call callback if it's defined
       if (_callback != null) {
@@ -132,7 +131,7 @@ class ReportsDataStorage extends ChangeNotifier {
       }
       notifyListeners();
     } catch (e) {
-      print("❌ Błąd podczas odświeżania raportów: $e");
+      print("Błąd podczas odświeżania raportów: $e");
     }
   }
 
@@ -158,7 +157,7 @@ class ReportsDataStorage extends ChangeNotifier {
     //         event.reports.add(newReport);
     //       }
     //     } catch (e) {
-    //       print("❌ Event not found for ID: $eventId");
+    //       print("Event not found for ID: $eventId");
     //     }
     //   }
     //   _isInitialized = true;
@@ -186,11 +185,11 @@ class ReportsDataStorage extends ChangeNotifier {
 
       if (!_reportList.any((r) => r.id == addedReport.id)) {
         _reportList.add(addedReport);
-        print("✅ Raport dodany do storage: ${addedReport.title}");
+        print("Raport dodany do storage: ${addedReport.title}");
         notifyListeners();
       }
     } catch (e) {
-      print("❌ Błąd podczas dodawania raportu: $e");
+      print("Błąd podczas dodawania raportu: $e");
       throw e;
     }
   }
